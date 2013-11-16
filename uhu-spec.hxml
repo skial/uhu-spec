@@ -1,0 +1,3 @@
+-cp src
+-js bin/uhuspec.js
+-main Main

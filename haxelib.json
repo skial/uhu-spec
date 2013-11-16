@@ -1,0 +1,16 @@
+{
+  "name": "uhu-spec",
+  "license": "MIT",
+  "classPath": "src",
+  "tags": ["uhu"],
+  "description": "Unit Tests for Uhu and Uhx",
+  "contributors": ["skial"],
+  "releasenote": "Initial Release",
+  "version": "0.0.1-alpha",
+  "url": "https://github.com/skial/uhu-spec",
+  "dependencies": {
+    "uhu": "",
+    "tem": "",
+    "utest": ""
+  }
+}
