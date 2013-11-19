@@ -5,7 +5,7 @@ package ;
 import uhx.tem.TemSpec;
 #end
 
-//import uhx.sys.EdeSpec;	// TODO Need to setup new project with hooks Ede into Klas
+//import uhx.sys.EdeSpec;	// TODO Need to setup new project with hooks Ede into Klas.
 import uhx.sys.LiySpec;
 import uhx.sys.LodSpec;
 
@@ -70,12 +70,12 @@ class AllTests {
 		#end
 		
 		runner.addCase( new WaitSpec() );
-		runner.addCase( new NamedArgsSpec() );
+		runner.addCase( new NamedArgsSpec() );	// TODO Move underlying macro to its own repo.
 		
 		runner.addCase( new RequestSpec() );
 		runner.addCase( new LodSpec() );
 		runner.addCase( new LiySpec() );
-		//runner.addCase( new EdeSpec() );	// TODO Need to setup new project with hooks Ede into Klas
+		//runner.addCase( new EdeSpec() );	// TODO Need to setup new project with hooks Ede into Klas.
 		
 		Report.create( runner );
 		
