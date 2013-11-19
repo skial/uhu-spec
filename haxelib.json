@@ -10,6 +10,7 @@
   "url": "https://github.com/skial/uhu-spec",
   "dependencies": {
     "uhu": "",
+    "wait": "",
     "tem": "",
 	"requests": "",
     "utest": "",
