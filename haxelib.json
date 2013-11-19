@@ -11,6 +11,8 @@
   "dependencies": {
     "uhu": "",
     "tem": "",
-    "utest": ""
+	"requests": "",
+    "utest": "",
+	"mconsole": ""
   }
 }

@@ -1,12 +1,12 @@
 package ;
 
-import uhx.macro.NamedArgsSpec;
+/*import uhx.macro.NamedArgsSpec;
 import uhx.sys.EdeSpec;
 import uhx.sys.LiySpec;
-import uhx.sys.LodSpec;
+import uhx.sys.LodSpec;*/
 //import uhx.macro.PubSubSpec;
 #if js
-import uhx.macro.WaitSpec;
+//import uhx.macro.WaitSpec;
 import uhx.tem.TemSpec;
 #end
 
@@ -30,9 +30,9 @@ import uhu.mu.WalkContextSpec;*/
 //#end
 
 //#if js
-import uhx.http.Request;
+/*import uhx.http.Request;
 import uhx.http.Response;
-import uhx.http.RequestSpec;
+import uhx.http.RequestSpec;*/
 //#end
 
 /*#if sys
@@ -101,14 +101,14 @@ class AllTests {
 		
 		#if js
 		runner.addCase( new TemSpec() );	//	No useful error given if TemSpec and RequestSpec are compiled together...
-		runner.addCase( new WaitSpec() );
+		//runner.addCase( new WaitSpec() );
 		#end
 		//runner.addCase( new PubSubSpec() );
-		runner.addCase( new RequestSpec() );
+		/*runner.addCase( new RequestSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		runner.addCase( new LodSpec() );
 		runner.addCase( new LiySpec() );
-		runner.addCase( new EdeSpec() );
+		runner.addCase( new EdeSpec() );*/
 		
 		Report.create( runner );
 		
