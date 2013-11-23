@@ -43,13 +43,17 @@ class RequestSpec implements Klas {
 		Assert.equals( url, request.response.url.toString() );
 		Assert.equals( EStatus.OK, request.response.status );
 		
-		/*@:wait Requests.get( url, [r] );
+		/*var async = Assert.createAsync( function() {
+			@:wait Requests.get( url, [r] );
+			
+			Assert.equals( 200, r.status_code );
+			Assert.isTrue( r.headers.exists('Content-Type') );
+			Assert.isTrue( r.headers.exists('content-type') );
+			Assert.equals( url, r.url.toString() );
+			Assert.equals( EStatus.OK, r.status );
+		} );
 		
-		Assert.equals( 200, r.status_code );
-		Assert.isTrue( r.headers.exists('Content-Type') );
-		Assert.isTrue( r.headers.exists('content-type') );
-		Assert.equals( url, r.url.toString() );
-		Assert.equals( EStatus.OK, r.status );*/
+		async();*/
 	}
 	
 	public function testPOST_StringMap() {

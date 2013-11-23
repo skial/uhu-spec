@@ -60,6 +60,16 @@ class WaitSpec implements Klas {
 		Assert.equals( 'abc', success );
 	}
 	
+	public function testNestedMethod() {
+		var async = Assert.createAsync( function() {
+			@:wait doSomething( 'WOOOT', [cbr] );
+			
+			Assert.equals( 'WOOOT', cbr );
+		} );
+		
+		async();
+	}
+	
 	public function doSomething(v:String, cb:String->Void) cb(v);
 	public function doOther(v:String, success:String->Void, error:String->Void) v == null? error('bugger') : success(v);
 	
