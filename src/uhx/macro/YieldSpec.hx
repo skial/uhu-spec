@@ -1,7 +1,6 @@
 package uhx.macro;
 
 import haxe.Timer;
-import taurine.async._internal.Generator;
 import utest.Assert;
 
 /**
@@ -14,14 +13,28 @@ class YieldSpec implements Klas {
 		
 	}
 	
-	@:access( taurine.async.Generator.test )
-	public function testTickTock() {
-		var clock = new Generator().change( {
-			@yield 'tick';
-			@yield 'tock';
-		} );
-		for (noise in clock) trace( noise );
-		// TODO Wait.hx is stripping @:yield from the method body, even though it doesnt detect any @:wait meta. Big problem...
+	public function testTicker_manual() {
+		var count = ticker();
+		Assert.equals(1, count.next());
+		Assert.equals(2, count.next());
+	}
+	
+	public function testTicker_for() {
+		var values = [for (t in ticker()) t];
+		Assert.equals('' + [1, 2, 3, 4, 5], '' + values);
+	}
+	
+	public function ticker() {
+		trace( 'Hello' );
+		@:yield return 1;
+		trace( 'Hello World' );
+		@:yield return 2;
+		trace( 'Hello Universe' );
+		@:yield return 3;
+		trace( 'Goodbye' );
+		@:yield return 4;
+		trace( 'Goodbye World' );
+		@:yield return 5;
 	}
 	
 }

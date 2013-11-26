@@ -2,21 +2,22 @@ package ;
 
 // Target specific imports first
 #if js
-import uhx.tem.TemSpec;
+//import uhx.tem.TemSpec;
 #end
 
 //import uhx.sys.EdeSpec;	// TODO Need to setup new project with hooks Ede into Klas.
-import uhx.sys.LiySpec;
-import uhx.sys.LodSpec;
+//import uhx.sys.LiySpec;
+//import uhx.sys.LodSpec;
 
-import uhx.macro.WaitSpec;
-import uhx.macro.NamedArgsSpec;
+//import uhx.macro.WaitSpec;
+import uhx.macro.YieldSpec;
+//import uhx.macro.NamedArgsSpec;
 
 //import haxe.Utf8Spec;
 //import uhx.web.URISpec;
 //import uhx.fmt.ASCIISpec;
 //import uhx.oauth.GithubSpec;
-import uhx.http.RequestSpec;
+//import uhx.http.RequestSpec;
 
 /*#if sys
 import uhx.oauth.OAuth10aSpec;
@@ -66,15 +67,16 @@ class AllTests {
 		//runner.addCase( new GithubSpec() );
 		
 		#if js
-		runner.addCase( new TemSpec() );
+		//runner.addCase( new TemSpec() );
 		#end
 		
-		runner.addCase( new WaitSpec() );
-		runner.addCase( new NamedArgsSpec() );	// TODO Move underlying macro to its own repo.
+		//runner.addCase( new WaitSpec() );
+		runner.addCase( new YieldSpec() );
+		//runner.addCase( new NamedArgsSpec() );	// TODO Move underlying macro to its own repo.
 		
-		runner.addCase( new RequestSpec() );
-		runner.addCase( new LodSpec() );
-		runner.addCase( new LiySpec() );
+		//runner.addCase( new RequestSpec() );
+		//runner.addCase( new LodSpec() );
+		//runner.addCase( new LiySpec() );
 		//runner.addCase( new EdeSpec() );	// TODO Need to setup new project with hooks Ede into Klas.
 		
 		Report.create( runner );
