@@ -84,6 +84,51 @@ class YieldSpec implements Klas {
 		Assert.equals(4, range.next());
 	}
 	
+	public function testArg_for() {
+		var args = arg(2);
+		var values = [for (a in args) a];
+		Assert.equals('' + [0, 2, 4, 6, 8], '' + values);
+		Assert.equals(false, args.hasNext());
+	}
+	
+	public function testArg_while() {
+		var values = [];
+		var args = arg(2);
+		while (args.hasNext()) values.push( args.next() );
+		Assert.equals('' + [0, 2, 4, 6, 8], '' + values);
+		Assert.equals(false, args.hasNext());
+	}
+	
+	public function testWhileIf_manual() {
+		var whif = whileIf(10);
+		Assert.equals(0, whif.next());
+		Assert.equals(1, whif.next());
+		Assert.equals(2, whif.next());
+	}
+	
+	public function testWhileIf_for() {
+		var whifs = whileIf(2);
+		var values = [for (w in whifs) w];
+		Assert.equals('' + [0, 1], '' + values);
+		Assert.equals(false, whifs.hasNext());
+	}
+	
+	public function testIfs_manual() {
+		var ifs = ifs();
+		Assert.equals(20, ifs.next());
+		Assert.equals(30, ifs.next());
+		Assert.equals(5, ifs.next());
+		Assert.equals(5, ifs.next());
+		Assert.equals(false, ifs.hasNext());
+		Assert.equals(5, ifs.next());
+	}
+	
+	/*public function testFibonacci() {
+		var fib = fibonacci(10);
+		trace( fib.next() );
+		Assert.equals(4, 4);
+	}*/
+	
 	public function ticker() {
 		trace( 'Hello' );
 		@:yield return 1;
@@ -116,5 +161,40 @@ class YieldSpec implements Klas {
 			@:yield return v * i;
 		}
 	}
+	
+	public function whileIf(limit:Int) {
+		var v = 0;
+		while (true) {
+			if (v == v) {
+				if (v == limit) @:yield break;
+				@:yield return v++;
+			}
+		}
+	}
+	
+	public function ifs() {
+		var v = 10;
+		if (v < 11) @:yield return v * 2;
+		if (v < 12) @:yield return v * 3;
+		if (v > 9) {
+			@:yield return v / 2;
+		}
+		if (v > 2) {
+			@:yield break;
+		}
+		@:yield return v;
+	}
+	
+	/*public function fibonacci(limit:Int) {
+		var fn1:Int = 1;
+		var fn2:Int = 1;
+		while (true){
+			var result:Int = fn2;
+			fn2 = fn1;
+			fn1 = fn1 + result;
+			if (result > limit) @:yield break;
+			@:yield return result;
+		}
+	}*/
 	
 }
