@@ -123,11 +123,24 @@ class YieldSpec implements Klas {
 		Assert.equals(5, ifs.next());
 	}
 	
-	/*public function testFibonacci() {
+	public function testFib_manual() {
 		var fib = fibonacci(10);
-		trace( fib.next() );
-		Assert.equals(4, 4);
-	}*/
+		Assert.equals( 0, fib.next() );
+		Assert.equals( 1, fib.next() );
+		Assert.equals( 1, fib.next() );
+		Assert.equals( 2, fib.next() );
+		Assert.equals( 3, fib.next() );
+		Assert.equals( 5, fib.next() );
+		Assert.equals( 8, fib.next() );
+		Assert.equals( false, fib.hasNext() );
+	}
+	
+	public function testFib_for() {
+		var fib = fibonacci(10);
+		var values = [for (f in fib) f];
+		Assert.equals('' + [0, 1, 1, 2, 3, 5, 8], '' + values);
+		Assert.equals(false, fib.hasNext());
+	}
 	
 	public function ticker() {
 		trace( 'Hello' );
@@ -185,16 +198,17 @@ class YieldSpec implements Klas {
 		@:yield return v;
 	}
 	
-	/*public function fibonacci(limit:Int) {
-		var fn1:Int = 1;
-		var fn2:Int = 1;
-		while (true){
-			var result:Int = fn2;
-			fn2 = fn1;
-			fn1 = fn1 + result;
+	public function fibonacci(limit:Int) {
+		var f1:Int = 1;
+		var f2:Int = 1;
+		var result:Int = 0;
+		while (true) {
+			result = f2;
+			f2 = f1;
+			f1 = f1 + result;
 			if (result > limit) @:yield break;
 			@:yield return result;
 		}
-	}*/
+	}
 	
 }
