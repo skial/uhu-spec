@@ -126,8 +126,8 @@ class YieldSpec implements Klas {
 	public function testFib_manual() {
 		var fib = fibonacci(10);
 		// http://en.wikipedia.org/wiki/Fibonacci_number
-		// This is still correct, but my initial intention was to start
-		// to go as follows `1, 1, 2, 3, 5, 8, ...`. TODO `this.current` is being generated to soon.
+		// This is correct, but my initial intention was to output
+		// the following `1, 1, 2, 3, 5, 8, ...`. TODO `this.current` is being generated to soon, I think :)
 		Assert.equals( 0, fib.next() );
 		Assert.equals( 1, fib.next() );
 		Assert.equals( 1, fib.next() );
