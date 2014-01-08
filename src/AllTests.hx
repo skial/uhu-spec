@@ -81,10 +81,6 @@ class AllTests {
 		
 		Report.create( runner );
 		
-		/*#if !macro
-		Console.start();
-		#end*/
-		
 		runner.run();
 		
 	}
