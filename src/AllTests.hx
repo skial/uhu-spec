@@ -9,7 +9,7 @@ package ;
 //import uhx.sys.LiySpec;
 //import uhx.sys.LodSpec;
 
-//import uhx.macro.WaitSpec;
+import uhx.macro.WaitSpec;
 import uhx.macro.YieldSpec;
 //import uhx.macro.NamedArgsSpec;
 
@@ -70,7 +70,7 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		//runner.addCase( new WaitSpec() );
+		runner.addCase( new WaitSpec() );
 		runner.addCase( new YieldSpec() );
 		//runner.addCase( new NamedArgsSpec() );	// TODO Move underlying macro to its own repo.
 		
