@@ -32,56 +32,39 @@ class RequestSpec implements Klas {
 	}
 	
 	public function testGET() {
-		var url = 'http://ip.jsontest.com';
-		request = new Request( new Uri( url ), GET );
+		var url = 'http://httpbin.org/ip';
 		
-		@:wait request.send( Assert.createAsync( [], 1000 ) );
+		@:wait Requests.get( url, Assert.createEvent( [response], 1000 ) );
 		
-		Assert.equals( 200, request.response.status_code );
-		Assert.isTrue( request.response.headers.exists('Content-Type') );
-		Assert.isTrue( request.response.headers.exists('content-type') );
-		Assert.equals( url, request.response.url.toString() );
-		Assert.equals( EStatus.OK, request.response.status );
-		
-		/*var async = Assert.createAsync( function() {
-			@:wait Requests.get( url, [r] );
-			
-			Assert.equals( 200, r.status_code );
-			Assert.isTrue( r.headers.exists('Content-Type') );
-			Assert.isTrue( r.headers.exists('content-type') );
-			Assert.equals( url, r.url.toString() );
-			Assert.equals( EStatus.OK, r.status );
-		} );
-		
-		async();*/
+		Assert.equals( 200, response.status_code );
+		Assert.equals( EStatus.OK, response.status );
+		Assert.isTrue( response.headers.exists('Content-Type') );
+		Assert.isTrue( response.headers.exists('content-type') );
+		Assert.equals( url, response.url.toString() );
 	}
 	
-	public function testPOST_StringMap() {
+	public function testPOST() {
 		var url = 'http://posttestserver.com/post.php';
-		request = new Request( new Uri( url ), POST );
 		
-		@:wait request.send( Assert.createAsync( [], 1000 ) );
+		@:wait Requests.post( url, Assert.createEvent( [response], 1000 ) );
 		
-		Assert.equals( 200, request.response.status_code );
-		Assert.equals( EStatus.OK, request.response.status );
-		Assert.equals( url, request.response.url.toString() );
+		Assert.equals( 200, response.status_code );
+		Assert.equals( EStatus.OK, response.status );
+		Assert.equals( url, response.url.toString() );
 	}
 	
 	public function testHeaders() {
-		trace( uhx.http.impl.Rules.OCTET( 'skial' ) );
-		var url = 'http://headers.jsontest.com/';
+		var url = 'http://httpbin.org/headers';
 		request = new Request( new Uri( url ), GET );
-		request.headers.set( 'content-type', 'application/json' );
+		//request.headers.set( 'x-content-type', 'application/json' );
 		
-		@:wait request.send( Assert.createAsync( [], 1000 ) );
+		@:wait request.send( Assert.createEvent( [response], 1000 ) );
 		
-		var json = Json.parse( request.response.text );
-		trace( json );
-		Assert.equals( 200, request.response.status_code );
-		Assert.equals( EStatus.OK, request.response.status );
-		Assert.stringContains( 'localhost', json.Origin );
-		Assert.stringContains( 'headers.jsontest.com', json.Host );
-		Assert.equals( 'application/json', Reflect.field( json, 'Content-Type' ) );
+		var json = Json.parse( response.text );
+		
+		Assert.equals( 200, response.status_code );
+		Assert.equals( EStatus.OK, response.status );
+		Assert.equals( 'httpbin.org', Reflect.field( json.headers, 'Host' ) );
 	}
 	
 }
