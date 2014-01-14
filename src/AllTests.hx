@@ -11,13 +11,13 @@ package ;
 
 import uhx.macro.WaitSpec;
 import uhx.macro.YieldSpec;
-//import uhx.macro.NamedArgsSpec;
+import uhx.macro.NamedArgsSpec;
 
 //import haxe.Utf8Spec;
 //import uhx.web.URISpec;
 //import uhx.fmt.ASCIISpec;
 //import uhx.oauth.GithubSpec;
-import uhx.http.RequestSpec;
+//import uhx.http.RequestSpec;
 
 /*#if sys
 import uhx.oauth.OAuth10aSpec;
@@ -42,7 +42,6 @@ import utest.TestHandler;
 class AllTests {
 	
 	public static function main() {	
-		
 		var runner = new Runner();
 		
 		//runner.addCase( new ASCIISpec() );
@@ -72,9 +71,9 @@ class AllTests {
 		
 		runner.addCase( new WaitSpec() );
 		runner.addCase( new YieldSpec() );
-		//runner.addCase( new NamedArgsSpec() );	// TODO Move underlying macro to its own repo.
+		runner.addCase( new NamedArgsSpec() );
 		
-		runner.addCase( new RequestSpec() );
+		//runner.addCase( new RequestSpec() );
 		//runner.addCase( new LodSpec() );
 		//runner.addCase( new LiySpec() );
 		//runner.addCase( new EdeSpec() );	// TODO Need to setup new project with hooks Ede into Klas.
