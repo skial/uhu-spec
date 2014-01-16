@@ -17,7 +17,7 @@ import uhx.macro.NamedArgsSpec;
 //import uhx.web.URISpec;
 //import uhx.fmt.ASCIISpec;
 //import uhx.oauth.GithubSpec;
-//import uhx.http.RequestSpec;
+import uhx.http.RequestSpec;
 
 /*#if sys
 import uhx.oauth.OAuth10aSpec;
@@ -73,7 +73,7 @@ class AllTests {
 		runner.addCase( new YieldSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		
-		//runner.addCase( new RequestSpec() );
+		runner.addCase( new RequestSpec() );
 		//runner.addCase( new LodSpec() );
 		//runner.addCase( new LiySpec() );
 		//runner.addCase( new EdeSpec() );	// TODO Need to setup new project with hooks Ede into Klas.
