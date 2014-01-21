@@ -35,13 +35,13 @@ class YieldSpec implements Klas {
 	}
 	
 	public function testLoop_range_manual() {
-		var range = range();
+		var range = range_loop();
 		Assert.equals(0, range.next());
 		Assert.equals(1, range.next());
 	}
 	
 	public function testLoop_range_for() {
-		var range = range();
+		var range = range_loop();
 		var values = [for (r in range) r];
 		Assert.equals('' + [0, 1, 2, 3, 4], '' + values);
 		Assert.equals(false, range.hasNext());
@@ -49,7 +49,7 @@ class YieldSpec implements Klas {
 	
 	public function testLoop_range_while() {
 		var values = [];
-		var range = range();
+		var range = range_loop();
 		while (range.hasNext()) values.push( range.next() );
 		Assert.equals('' + [0, 1, 2, 3, 4], '' + values);
 		Assert.equals(false, range.hasNext());
@@ -145,63 +145,67 @@ class YieldSpec implements Klas {
 		Assert.equals(false, fib.hasNext());
 	}
 	
-	public function ticker() {
-		trace( 'Hello' );
-		@:yield return 1;
-		trace( 'Hello World' );
-		@:yield return 2;
-		trace( 'Hello Universe' );
-		@:yield return 3;
-		trace( 'Goodbye' );
-		@:yield return 4;
-		trace( 'Goodbye World' );
-		@:yield return 5;
+	public function log(v:Dynamic) {
+		return v;
 	}
 	
-	public function range() {
+	@:generator public function ticker() {
+		log( 'Hello' );
+		return 1;
+		log( 'Hello World' );
+		return 2;
+		log( 'Hello Universe' );
+		return 3;
+		log( 'Goodbye' );
+		return 4;
+		log( 'Goodbye World' );
+		return 5;
+	}
+	
+	@:generator public function range_loop() {
 		for (i in 0...5) {
-			@:yield return i;
+			return i;
 		}
 	}
 	
-	public function multi_range() {
+	@:generator public function multi_range() {
 		for (i in 0...2) {
-			@:yield return i + 1;
-			@:yield return i + 2;
-			@:yield return i + 3;
+			return i + 1;
+			return i + 2;
+			return i + 3;
 		}
 	}
 	
-	public function arg(v:Int) {
+	@:generator public function arg(v:Int) {
 		for (i in 0...5) {
-			@:yield return v * i;
+			return v * i;
 		}
 	}
 	
-	public function whileIf(limit:Int) {
+	@:generator public function whileIf(limit:Int) {
 		var v = 0;
 		while (true) {
 			if (v == v) {
-				if (v == limit) @:yield break;
-				@:yield return v++;
+				if (v == limit) break;
+				return v++;
 			}
 		}
 	}
 	
-	public function ifs() {
+	@:generator public function ifs() {
 		var v = 10;
-		if (v < 11) @:yield return v * 2;
-		if (v < 12) @:yield return v * 3;
+		if (v < 11) return v * 2;
+		if (v < 12) return v * 3;
 		if (v > 9) {
-			@:yield return v / 2;
+			return v / 2;
 		}
 		if (v > 2) {
-			@:yield break;
+			break;
 		}
-		@:yield return v;
+		return v;
 	}
 	
-	public function fibonacci(limit:Int) {
+	@:generator public function fibonacci(limit:Int) {
 		var f1:Int = 1;
 		var f2:Int = 1;
 		var result:Int = 0;
@@ -209,8 +213,8 @@ class YieldSpec implements Klas {
 			result = f2;
 			f2 = f1;
 			f1 = f1 + result;
-			if (result > limit) @:yield break;
-			@:yield return result;
+			if (result > limit) break;
+			return result;
 		}
 	}
 	
