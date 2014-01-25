@@ -32,7 +32,7 @@ class WaitSpec implements Klas {
 		Assert.equals('Waiting...', 'Waiting...');
 	}*/
 	
-	public function testDeep() {
+	/*public function testDeep() {
 		@:wait Timer.delay( Assert.createAsync( Assert.createAsync( Assert.createAsync( Assert.createAsync( [] ) ) ) ), 100 );
 		Assert.equals('Hello', 'Hello');
 	}
@@ -52,7 +52,7 @@ class WaitSpec implements Klas {
 		
 		@:wait doSomething( c2 + '789', [c3] );
 		Assert.equals( '123456789', c3 );
-	}
+	}*/
 	
 	public function testMany() {
 		@:wait doOther( 'abc', [success], [error] );
@@ -60,7 +60,7 @@ class WaitSpec implements Klas {
 		Assert.equals( 'abc', success );
 	}
 	
-	public function testNestedMethod() {
+	/*public function testNestedMethod() {
 		var async = Assert.createAsync( function() {
 			@:wait doSomething( 'WOOOT', [cbr] );
 			
@@ -68,7 +68,7 @@ class WaitSpec implements Klas {
 		} );
 		
 		async();
-	}
+	}*/
 	
 	public function doSomething(v:String, cb:String->Void) cb(v);
 	public function doOther(v:String, success:String->Void, error:String->Void) v == null? error('bugger') : success(v);

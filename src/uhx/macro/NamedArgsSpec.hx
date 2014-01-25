@@ -1,7 +1,6 @@
 package uhx.macro;
 
 import utest.Assert;
-
 /**
  * ...
  * @author Skial Bainn
@@ -51,6 +50,26 @@ class NamedArgsSpec implements Klas {
 	public function testColonlessMeta() {
 		var d = new A( @d 'Foo' );
 		Assert.equals('Foo', d._d);
+	}
+	
+	public function testMethodCall() {
+		var ech = echo(@:c 3.3, @a 'Hello Hello Hello', @:b 10);
+		Assert.equals( 'Hello Hello Hello', ech.a );
+		Assert.equals( 10, ech.b );
+		Assert.equals( 3.3, ech.c );
+	}
+	
+	public function testNestedMethodCall() {
+		var m = function(a:String, b:Int, c:Float) return function(a:String, b:Int, c:Float) return { a:a, b:b, c:c };
+		var r = m(@c 4.4, @a 'Hello', @b 10)(@c 3.3, @a 'Hello', @b 10);
+		var r2 = m('', 0, 4.4)('', 0, 3.3);
+		Assert.equals( 'Hello', r.a );
+		Assert.equals( 10, r.b );
+		Assert.equals( 3.3, r.c );
+	}
+	
+	public function echo(a:String, b:Int, c:Float): { a:String, b:Int, c:Float } {
+		return { a:a, b:b, c:c };
 	}
 	
 }
