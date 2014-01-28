@@ -11,12 +11,14 @@
   "dependencies": {
     "uhu": "",
 	"mo": "",
+	"hocco": "",
     "wait": "",
 	"yield": "",
 	"named": "",
     "tem": "",
 	"requests": "",
-    "utest": "",
-	"3rd_klas": ""
+	"3rd_klas": "",
+	"cmd": "",
+    "utest": ""
   }
 }

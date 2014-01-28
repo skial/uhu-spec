@@ -9,9 +9,11 @@ package ;
 //import uhx.sys.LiySpec;
 //import uhx.sys.LodSpec;
 
+import uhx.lexer.HaxeParserSpec;
 import uhx.macro.WaitSpec;
 import uhx.macro.YieldSpec;
 import uhx.macro.NamedArgsSpec;
+import uhx.mo.MoSpec;
 
 //import haxe.Utf8Spec;
 //import uhx.web.URISpec;
@@ -73,10 +75,17 @@ class AllTests {
 		runner.addCase( new YieldSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		
+		// HTTP Request Tests
 		runner.addCase( new RequestSpec() );
+		
+		// Lexer and Parser Tests
+		runner.addCase( new MoSpec() );
+		runner.addCase( new HaxeParserSpec() );
+		
+		// Commandline Tests
 		//runner.addCase( new LodSpec() );
 		//runner.addCase( new LiySpec() );
-		//runner.addCase( new EdeSpec() );	// TODO Need to setup new project with hooks Ede into Klas.
+		//runner.addCase( new EdeSpec() );
 		
 		Report.create( runner );
 		
