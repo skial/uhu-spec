@@ -38,7 +38,7 @@ class HaxeParserSpec {
 		
 		for (x in 0...4) i.next();
 		
-		var h = p.toHTML( [ i.next() ] );
+		var h = p.printHTML( i.next() );
 		
 		Assert.isTrue( h.indexOf( '&#34;&#92;&#116;' ) > -1 );
 	}

@@ -37,6 +37,62 @@
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
     <hidden path="obj" />
+    <hidden path="src\example\abstractBool" />
+    <hidden path="src\example\abstractSignal" />
+    <hidden path="src\example\auto_impl" />
+    <hidden path="src\example\buildLoop" />
+    <hidden path="src\example\defineType" />
+    <hidden path="src\example\defineTypeOnGenerate" />
+    <hidden path="src\example\exprCache" />
+    <hidden path="src\example\forceBuild" />
+    <hidden path="src\example\getTypedExpr" />
+    <hidden path="src\example\hxparse" />
+    <hidden path="src\example\inline_properties_abstracts" />
+    <hidden path="src\example\inlineMeta" />
+    <hidden path="src\example\jsCompare" />
+    <hidden path="src\example\jumlaBind" />
+    <hidden path="src\example\jumlaModules" />
+    <hidden path="src\example\macroExprFails" />
+    <hidden path="src\example\magicGetterSetter" />
+    <hidden path="src\example\methodCascades" />
+    <hidden path="src\example\methodName" />
+    <hidden path="src\example\module" />
+    <hidden path="src\example\namedArgs" />
+    <hidden path="src\example\printConstructor" />
+    <hidden path="src\example\printTypeDefinition" />
+    <hidden path="src\example\reTypeDefinedType" />
+    <hidden path="src\example\reTypeModules" />
+    <hidden path="src\example\thxPromises" />
+    <hidden path="build.abstractBool.hxml" />
+    <hidden path="build.abstractSignal.hxml" />
+    <hidden path="build.auto_impl.hxml" />
+    <hidden path="build.buildLoop.hxml" />
+    <hidden path="build.defineType.hxml" />
+    <hidden path="build.defineTypeOnGenerate.hxml" />
+    <hidden path="build.echo.hxml" />
+    <hidden path="build.exprCache.hxml" />
+    <hidden path="build.forceBuild.hxml" />
+    <hidden path="build.getTypedExpr.hxml" />
+    <hidden path="build.hxparse.hxml" />
+    <hidden path="build.inline_properties_abstracts.example.hxml" />
+    <hidden path="build.inlineMeta.hxml" />
+    <hidden path="build.js.hxml" />
+    <hidden path="build.jsCompare.hxml" />
+    <hidden path="build.jumlaBind.hxml" />
+    <hidden path="build.jumlaModules.hxml" />
+    <hidden path="build.macroExprFails.hxml" />
+    <hidden path="build.magicGetterSetter.hxml" />
+    <hidden path="build.methodCascades.hxml" />
+    <hidden path="build.methodName.hxml" />
+    <hidden path="build.module.hxml" />
+    <hidden path="build.namedArgs.hxml" />
+    <hidden path="build.neko.hxml" />
+    <hidden path="build.php.hxml" />
+    <hidden path="build.printConstructor.hxml" />
+    <hidden path="build.printTypeDefinition.hxml" />
+    <hidden path="build.reTypeDefinedType.hxml" />
+    <hidden path="build.reTypeModules.hxml" />
+    <hidden path="build.thxPromises.hxml" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />

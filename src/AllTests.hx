@@ -9,8 +9,9 @@ package ;
 //import uhx.sys.LiySpec;
 //import uhx.sys.LodSpec;
 
-import uhx.lexer.HaxeParserSpec;
-import uhx.macro.WaitSpec;
+//import uhx.lexer.HaxeParserSpec;
+import uhx.lexer.MarkdownParserSpec;
+/*import uhx.macro.WaitSpec;
 import uhx.macro.YieldSpec;
 import uhx.macro.NamedArgsSpec;
 import uhx.mo.MoSpec;
@@ -71,7 +72,7 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		runner.addCase( new WaitSpec() );
+		/*runner.addCase( new WaitSpec() );
 		runner.addCase( new YieldSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		
@@ -80,7 +81,8 @@ class AllTests {
 		
 		// Lexer and Parser Tests
 		runner.addCase( new MoSpec() );
-		runner.addCase( new HaxeParserSpec() );
+		runner.addCase( new HaxeParserSpec() );*/
+		runner.addCase( new MarkdownParserSpec() );
 		
 		// Commandline Tests
 		//runner.addCase( new LodSpec() );
