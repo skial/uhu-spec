@@ -42,7 +42,7 @@ class A implements Klas {
 			untyped console.log( value );
 		}*/
 		
-		attrSrc = '[src]'.find().getNode();
+		/*attrSrc = '[src]'.find().getNode();
 		dataName = '[data-name]'.find().getNode();
 		dataAge = '[data-age]'.find().getNode();
 		dataHeight = '[data-height]'.find().getNode();
@@ -78,11 +78,11 @@ class A implements Klas {
 		testArray_DOM();
 		testDOMNode();
 		testNested();
-		testDeep();
+		testDeep();*/
 	}
 	
 	public function testArray_String() {
-		Assert.equals(3, sarray.length);
+		/*Assert.equals(3, sarray.length);
 		Assert.equals('Hello Skial', sarray[0]);
 		
 		sarray = ['1', '2', '3'];
@@ -108,11 +108,11 @@ class A implements Klas {
 		Assert.equals('Future loop', dataSArray.children().collection[5].text());
 		
 		Assert.equals('undefined loop', sarray[4]);
-		Assert.equals('undefined loop', dataSArray.children().collection[4].text());
+		Assert.equals('undefined loop', dataSArray.children().collection[4].text());*/
 	}
 	
 	public function testArray_Int() {
-		Assert.equals(3, iarray.length);
+		/*Assert.equals(3, iarray.length);
 		Assert.equals(11, iarray[0]);
 		
 		iarray = [66, -100, 23];
@@ -138,11 +138,11 @@ class A implements Klas {
 		Assert.equals( -99, dataIArray.children().collection[1].text());
 		
 		Assert.equals('' + Math.NaN, '' + iarray[4]);
-		Assert.equals('' + Math.NaN, dataIArray.children().collection[4].text());
+		Assert.equals('' + Math.NaN, dataIArray.children().collection[4].text());*/
 	}
 	
 	public function testArray_DOM() {
-		Assert.equals(3, darray.length);
+		/*Assert.equals(3, darray.length);
 		Assert.equals('Hello 1', darray[0].text());
 		
 		darray = ['<div>World 0</div>'.parse().getNode(), '<div>World 1</div>'.parse().getNode(), '<div>World 2</div>'.parse().getNode()];
@@ -165,26 +165,26 @@ class A implements Klas {
 		}
 		
 		Assert.equals('Disc World 5', dataDArray.children().collection[5].text());
-		Assert.equals('', dataDArray.children().collection[4].text());
+		Assert.equals('', dataDArray.children().collection[4].text());*/
 	}
 	
 	public function testDOMNode() {
-		this.node.append( '<span>World!!</span>'.parse().getNode() );
+		/*this.node.append( '<span>World!!</span>'.parse().getNode() );
 		Assert.equals('Hello 1', this.dataNode.children().collection[0].text());
-		Assert.equals('World!!', this.dataNode.children().collection[3].text());
+		Assert.equals('World!!', this.dataNode.children().collection[3].text());*/
 	}
 	
 	public function testNested() {
-		Assert.equals(2, nested.length);
+		/*Assert.equals(2, nested.length);
 		Assert.equals(3, nested[0].length);
-		Assert.equals(3, nested[1].length);
+		Assert.equals(3, nested[1].length);*/
 	}
 	
 	public function testDeep() {
-		Assert.equals(3, deep[0][0][0][0][0].length);
+		/*Assert.equals(3, deep[0][0][0][0][0].length);
 		Assert.equals('Hello 1', deep[0][0][0][0][0][0]);
 		Assert.equals('Hello 2', deep[0][0][0][0][0][1]);
-		Assert.equals('Hello 3', deep[0][0][0][0][0][2]);
+		Assert.equals('Hello 3', deep[0][0][0][0][0][2]);*/
 	}
 	
 }

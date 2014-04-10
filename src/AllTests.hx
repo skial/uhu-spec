@@ -1,16 +1,19 @@
 package ;
 
 // Target specific imports first
-#if js
+//#if js
 //import uhx.tem.TemSpec;
-#end
+//#end
 
 //import uhx.sys.EdeSpec;	// TODO Need to setup new project with hooks Ede into Klas.
 //import uhx.sys.LiySpec;
 //import uhx.sys.LodSpec;
 
 //import uhx.lexer.HaxeParserSpec;
-import uhx.lexer.MarkdownParserSpec;
+import uhx.lexer.HtmlLexerSpec;
+import uhx.lexer.CssParserSpec;
+import uhx.select.Json;
+//import uhx.lexer.MarkdownParserSpec;
 /*import uhx.macro.WaitSpec;
 import uhx.macro.YieldSpec;
 import uhx.macro.NamedArgsSpec;
@@ -69,6 +72,7 @@ class AllTests {
 		//runner.addCase( new GithubSpec() );
 		
 		#if js
+		//runner.addCase( new TuliSpec() );
 		//runner.addCase( new TemSpec() );
 		#end
 		
@@ -82,7 +86,35 @@ class AllTests {
 		// Lexer and Parser Tests
 		runner.addCase( new MoSpec() );
 		runner.addCase( new HaxeParserSpec() );*/
-		runner.addCase( new MarkdownParserSpec() );
+		//runner.addCase( new MarkdownParserSpec() );
+		runner.addCase( new HtmlLexerSpec() );
+		runner.addCase( new CssParserSpec() );
+		
+		var obj = untyped {
+			array:[
+			{
+				name:'bob',
+				age:22,
+				height:1,
+			},
+			{
+				name:'bobby',
+				age:22,
+			}
+			],
+			o: {
+				a: {
+					b:'Hello',
+					c:'World',
+				}
+			}
+		}
+		untyped console.log( Json.find(obj, '.name') );
+		untyped console.log( Json.find(obj, 'int.age') );
+		untyped console.log( Json.find(obj, '.o .a .b, .o .a .c') );
+		untyped console.log( Json.find(obj, 'string') );
+		untyped console.log( Json.find(obj, 'array') );
+		untyped console.log( Json.find(obj, 'int, string') );
 		
 		// Commandline Tests
 		//runner.addCase( new LodSpec() );

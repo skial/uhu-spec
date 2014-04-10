@@ -1,7 +1,7 @@
 package uhx.tem;
 
 import utest.Assert;
-import help.metadata.tem.A;
+//import help.metadata.tem.A;
 
 /**
  * ...

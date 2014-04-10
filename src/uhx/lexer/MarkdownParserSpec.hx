@@ -518,7 +518,9 @@ class MarkdownParserSpec {
 			{ ref:true, text:'bar', url:'1', title:'' },
 			{ ref:true, text:'bar', url:'1', title:'' },
 			{ ref:false, text:'1', url:'/url/', title:'Title' },
-			{ ref:true, text:'embedded [brackets]', url:'b', title:'' },
+			// See https://github.com/skial/mo/issues/2
+			{ ref:true, text:'brackets', url:'brackets', title:'' },
+			//{ ref:true, text:'embedded [brackets]', url:'b', title:'' },
 			{ ref:true, text:'once', url:'once', title:'' },
 			{ ref:true, text:'twice', url:'twice', title:'' },
 			{ ref:true, text:'thrice', url:'thrice', title:'' },
@@ -536,8 +538,11 @@ class MarkdownParserSpec {
 			{ ref:true, text:'that 1', url:'that 1', title:'' },
 			{ ref:true, text:'that 2', url:'that 2', title:'' },
 			{ ref:true, text:'that 3', url:'that 3', title:'' },
-			{ ref:true, text:'Something in brackets like [this 6][] should work', url:'Something in brackets like [this 6][] should work', title:'' },
-			{ ref:true, text:'Same with [this 7].', url:'Same with [this 7].', title:'' },
+			// See https://github.com/skial/mo/issues/2
+			//{ ref:true, text:'Something in brackets like [this 6][] should work', url:'Something in brackets like [this 6][] should work', title:'' },
+			{ ref:true, text:'this 6', url:'this 6', title:'' },
+			{ ref:true, text:'this 7', url:'this 7', title:'' },
+			//{ ref:true, text:'Same with [this 7].', url:'Same with [this 7].', title:'' },
 			{ ref:false, text:'this 8', url:'/somethingelse/', title:'' },
 			{ ref:false, text:'this', url:'foo', title:'' },
 			{ ref:true, text:'link breaks', url:'link breaks', title:'' },
@@ -548,6 +553,9 @@ class MarkdownParserSpec {
 		
 		for (i in 0...filtered.length) switch(filtered[i].token) {
 			case Keyword(Paragraph(tokens)):
+				
+				//trace( tokens );
+				
 				var filtered = tokens.filter( function(t) return switch(t.token) {
 					case Keyword(Link(_, _, _, _)), Keyword(Resource(_, _, _)): true;
 					case _: false;
@@ -576,6 +584,56 @@ class MarkdownParserSpec {
 			case _:
 				
 		}
+	}
+	
+	public function testIssue1() {
+		var payload = { md:haxe.Resource.getString('issue1.md'), html:haxe.Resource.getString('issue1.html') };
+		var md = payload.md;
+		var html = payload.html;
+		
+		var parser = new MarkdownParser();
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue1' );
+		
+		//trace( tokens );
+		//untyped console.log( tokens );
+		
+		Assert.equals( 2, tokens.length );
+		
+		var expected = [ { a:112, b:2 }, { a:1, b:1 } ];
+		
+		for (i in 0...tokens.length) switch (tokens[i].token) {
+			case Keyword(Paragraph(toks)):
+				Assert.equals( expected[i].a, toks.length );
+				
+				var filtered = toks.filter( function(t) return switch (t.token) {
+					case Keyword(Link(_, _, _, _)), Keyword(Resource(_, _, _)): true;
+					case _: false;
+				} );
+				
+				Assert.equals( expected[i].b, filtered.length );
+				
+			case _:
+				
+		}
+	}
+	
+	public function testIssue3() {
+		var payload = { md:haxe.Resource.getString('issue3.md'), html:haxe.Resource.getString('issue3.html') };
+		var md = payload.md;
+		var html = payload.html;
+		
+		var parser = new MarkdownParser();
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue3' );
+		
+		//trace( tokens );
+		//untyped console.log( tokens );
+		
+		var filtered = tokens.filter( function(t) return switch(t.token) {
+			case Keyword(Header(_, _, _)): true;
+			case _: false;
+		} );
+		
+		Assert.equals( 6, filtered.length );
 	}
 	
 	/*public function testLineBreak() {
