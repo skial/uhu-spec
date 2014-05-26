@@ -11,6 +11,7 @@ class Main {
 		var a = new A();
 		_.some();
 		_.thing();
+		_.
 	}
 	
 }

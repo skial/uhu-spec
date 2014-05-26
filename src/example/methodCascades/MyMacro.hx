@@ -78,6 +78,10 @@ class MyMacro {
 				prev = vars[0];
 				result = { expr:EVars( vars ), pos:e.pos };
 				
+			case EDisplay(e1, isCall): 
+				// Thanks @simn - https://github.com/HaxeFoundation/haxe/issues/1704
+				result = { expr: EDisplay(find(e1),isCall), pos: e.pos };
+				
 			case _:
 				trace( e );
 				
