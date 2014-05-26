@@ -119,7 +119,7 @@ class MarkdownParserSpec {
 		var parser = new MarkdownParser();
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-be_paragraph' );
 		
-		//trace( tokens );
+		//untyped console.log( tokens );
 		
 		Assert.equals( 2, tokens.length );
 		
@@ -130,7 +130,7 @@ class MarkdownParserSpec {
 					case _: true;
 				} );
 				
-				//trace( filtered );
+				//untyped console.log( filtered );
 				
 				Assert.equals( 7, filtered.length );
 				
@@ -309,6 +309,7 @@ class MarkdownParserSpec {
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-ordered_lists' );
 		
 		//trace( tokens );
+		//untyped console.log( tokens );
 		
 		Assert.equals( 8, tokens.length );
 		
@@ -316,6 +317,8 @@ class MarkdownParserSpec {
 			case Keyword(Collection(_, _)): true;
 			case _: false;
 		} );
+		
+		//untyped console.log( filtered );
 		
 		Assert.equals( 4, filtered.length );
 		
@@ -329,6 +332,7 @@ class MarkdownParserSpec {
 				} );
 				
 				//trace( filtered );
+				//untyped console.log( filtered );
 				
 				Assert.equals( 3, filtered.length );
 				
@@ -346,10 +350,11 @@ class MarkdownParserSpec {
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-list_paragraphs' );
 		
 		//trace( tokens );
+		//untyped console.log( tokens );
 		
 		Assert.equals( 2, tokens.length );
 		
-		var expected = [ { m:1, tl:49 }, { m:2, tl:8 }, { m:3, tl:4 } ];
+		var expected = [ { m:1, tl:45 }, { m:2, tl:7 }, { m:3, tl:3 } ];
 		
 		for (token in tokens) switch (token.token) {
 			case Keyword(Collection(ordered, tokens)):
@@ -358,6 +363,9 @@ class MarkdownParserSpec {
 				
 				for (i in 0...tokens.length) switch( tokens[i].token ) {
 					case Keyword(Item(mark, tokens)):
+						//untyped console.log( expected[i] );
+						//untyped console.log( tokens );
+						
 						Assert.equals( expected[i].m, mark );
 						Assert.equals( expected[i].tl, tokens.length );
 						
@@ -511,7 +519,7 @@ class MarkdownParserSpec {
 			case _: false;
 		} );
 		
-		//trace( filtered );
+		//untyped console.log( filtered );
 		
 		var expected = [
 			{ ref:true, text:'bar', url:'1', title:'' },
@@ -519,8 +527,8 @@ class MarkdownParserSpec {
 			{ ref:true, text:'bar', url:'1', title:'' },
 			{ ref:false, text:'1', url:'/url/', title:'Title' },
 			// See https://github.com/skial/mo/issues/2
-			{ ref:true, text:'brackets', url:'brackets', title:'' },
-			//{ ref:true, text:'embedded [brackets]', url:'b', title:'' },
+			//{ ref:true, text:'brackets', url:'brackets', title:'' },
+			{ ref:true, text:'embedded [brackets]', url:'b', title:'' },
 			{ ref:true, text:'once', url:'once', title:'' },
 			{ ref:true, text:'twice', url:'twice', title:'' },
 			{ ref:true, text:'thrice', url:'thrice', title:'' },
@@ -539,10 +547,10 @@ class MarkdownParserSpec {
 			{ ref:true, text:'that 2', url:'that 2', title:'' },
 			{ ref:true, text:'that 3', url:'that 3', title:'' },
 			// See https://github.com/skial/mo/issues/2
-			//{ ref:true, text:'Something in brackets like [this 6][] should work', url:'Something in brackets like [this 6][] should work', title:'' },
-			{ ref:true, text:'this 6', url:'this 6', title:'' },
-			{ ref:true, text:'this 7', url:'this 7', title:'' },
-			//{ ref:true, text:'Same with [this 7].', url:'Same with [this 7].', title:'' },
+			{ ref:true, text:'Something in brackets like [this 6][] should work', url:'Something in brackets like [this 6][] should work', title:'' },
+			//{ ref:true, text:'this 6', url:'this 6', title:'' },
+			//{ ref:true, text:'this 7', url:'this 7', title:'' },
+			{ ref:true, text:'Same with [this 7].', url:'Same with [this 7].', title:'' },
 			{ ref:false, text:'this 8', url:'/somethingelse/', title:'' },
 			{ ref:false, text:'this', url:'foo', title:'' },
 			{ ref:true, text:'link breaks', url:'link breaks', title:'' },
@@ -554,7 +562,7 @@ class MarkdownParserSpec {
 		for (i in 0...filtered.length) switch(filtered[i].token) {
 			case Keyword(Paragraph(tokens)):
 				
-				//trace( tokens );
+				//untyped console.log( tokens );
 				
 				var filtered = tokens.filter( function(t) return switch(t.token) {
 					case Keyword(Link(_, _, _, _)), Keyword(Resource(_, _, _)): true;
@@ -563,7 +571,7 @@ class MarkdownParserSpec {
 				
 				var e = expected[i];
 				
-				//trace( filtered );
+				//untyped console.log( filtered );
 				
 				switch (filtered[0].token) {
 					case Keyword(Link(ref, text, url, title)):
@@ -596,19 +604,23 @@ class MarkdownParserSpec {
 		
 		//trace( tokens );
 		//untyped console.log( tokens );
-		
+		//untyped console.log( tokens.map( function(t) return new MarkdownParser().printHTML( t, ['' => { url:'', title:'' } ] ) ).join('') );
 		Assert.equals( 2, tokens.length );
 		
-		var expected = [ { a:112, b:2 }, { a:1, b:1 } ];
+		var expected = [ { a:108, b:2 }, { a:2, b:2 } ];
 		
 		for (i in 0...tokens.length) switch (tokens[i].token) {
 			case Keyword(Paragraph(toks)):
+				//untyped console.log( expected[i] );
+				
 				Assert.equals( expected[i].a, toks.length );
 				
 				var filtered = toks.filter( function(t) return switch (t.token) {
 					case Keyword(Link(_, _, _, _)), Keyword(Resource(_, _, _)): true;
 					case _: false;
 				} );
+				
+				//untyped console.log( filtered );
 				
 				Assert.equals( expected[i].b, filtered.length );
 				
@@ -636,350 +648,52 @@ class MarkdownParserSpec {
 		Assert.equals( 6, filtered.length );
 	}
 	
-	/*public function testLineBreak() {
+	public function testIssue6() {
+		var payload = { md:haxe.Resource.getString('issue6.md'), html:haxe.Resource.getString('issue6.html') };
+		var md = payload.md;
+		var html = payload.html;
+		
 		var parser = new MarkdownParser();
-		var md = 'Roses are red,   
-Violets are blue.';
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md' );
-		trace( tokens );
-		trace( toHTML( tokens ) );
-	}*/
-	
-	/*public function testHeaders_normal() {
-		var parser = new MarkdownParser();
-		var md = '# H1
-## H2
-### H3
-#### H4
-##### H5
-###### H6';
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-headers' );
-		var filtered = tokens.filter( function(t) return switch(t.token) {
-			case Carriage, Newline, Tab(_): false;
-			case _: true;
-		} );
-		
-		var it = filtered.iterator();
-		
-		Assert.isTrue( it.next().token.equals( Keyword( Header(false, 1, 'H1') ) ) );
-		Assert.isTrue( it.next().token.equals( Keyword( Header(false, 2, 'H2') ) ) );
-		Assert.isTrue( it.next().token.equals( Keyword( Header(false, 3, 'H3') ) ) );
-		Assert.isTrue( it.next().token.equals( Keyword( Header(false, 4, 'H4') ) ) );
-		Assert.isTrue( it.next().token.equals( Keyword( Header(false, 5, 'H5') ) ) );
-		Assert.isTrue( it.next().token.equals( Keyword( Header(false, 6, 'H6') ) ) );
-		
-		Assert.equals( escape( '<h1>H1</h1>
-
-<h2>H2</h2>
-
-<h3>H3</h3>
-
-<h4>H4</h4>
-
-<h5>H5</h5>
-
-<h6>H6</h6>
-
-' ), escape( toHTML( tokens ) ) );
-	}*/
-	
-	/*public function testHeaders_alt() {
-		var parser = new MarkdownParser();
-		var md = 
-'H1
-=====
-
-H2
------';
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-alt-headers' );
-		var filtered = tokens.filter( function(t) return switch(t.token) {
-			case Keyword(Break), Carriage, Newline, Tab(_): false;
-			case _: true;
-		} );
-		
-		var it = filtered.iterator();
-		
-		Assert.isTrue( it.next().token.equals( Keyword( Header(true, 1, 'H1') ) ) );
-		Assert.isTrue( it.next().token.equals( Keyword( Header(true, 2, 'H2') ) ) );
-		
-		Assert.equals( escape('<h1>H1</h1>
-
-<h2>H2</h2>
-
-'), escape(toHTML( tokens )));
-	}*/
-	
-	/*public function testEmphasis() {
-		var parser = new MarkdownParser();
-		var md = 
-'Emphasis, aka italics, with *asterisks* or _underscores_.
-
-Strong emphasis, aka bold, with **asterisks** or __underscores__.
-
-Combined emphasis with **asterisks and _underscores_**.
-
-Strikethrough uses two tildes. ~~Scratch this.~~';
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-emphasis' );
-		var filtered = tokens.filter( function(t) return switch(t.token) {
-			case Keyword(Italic(_)), Keyword(Bold(_)), Keyword(Strike(_)): true;
-			case _: false;
-		} );
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue6' );
 		
 		//trace( tokens );
-		
-		Assert.equals( 6, filtered.length );
-		
-		var expected = ['asterisks', 'underscores', 'asterisks', 
-		'underscores', 'asterisks and underscores', 'Scratch this.'];
-		
-		for (i in 0...filtered.length) switch (filtered[i].token) {
-			case Keyword(Italic(_, [ { token:Const(CString(v)) } ])):
-				Assert.equals( expected[i], v );
-				
-			case Keyword(Bold(_, [ { token:Const(CString(v)) } ])):
-				Assert.equals( expected[i], v );
-				
-			case Keyword(Bold(_, [ { token:Const(CString(v1)) }, { token:Keyword(Italic(_, [ { token:Const(CString(v2)) } ])) } ])):
-				Assert.equals( expected[i], '$v1$v2' );
-				
-			case Keyword(Strike([ { token:Const(CString(v)) } ])):
-				Assert.equals( expected[i], v );
-				
-			case _:
-		}
-		
-		Assert.equals( escape('<p>Emphasis, aka italics, with <em>asterisks</em> or <em>underscores</em>.</p>
-
-<p>Strong emphasis, aka bold, with <strong>asterisks</strong> or <strong>underscores</strong>.</p>
-
-<p>Combined emphasis with <strong>asterisks and <em>underscores</em></strong>.</p>
-
-<p>Strikethrough uses two tildes. <del>Scratch this.</del></p>'), escape(toHTML( tokens )));
-	}*/
-	
-	/*public function testLists() {
-		var parser = new MarkdownParser();
-		var md = 
-'1. First ordered list item
-2. Another item
-	* Tabbed unordered sub-list 1\\.
-	* Tabbed unordered sub-list 2\\.
-1. Actual numbers don\'t matter, just that it\'s a number
-    1. Ordered sub-list
-	2. Ordered sub-list
-	3. Ordered sub-list
-		- Unordered
-		+ Unordered
-		* Unordered
-4. And another item.
-* Unordered list can use asterisks
-- Or minuses
-+ Or pluses';
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-lists' );
-		
-		trace(tokens);
-		untyped console.log( tokens );
+		//untyped console.log( tokens );
 		
 		Assert.equals( 2, tokens.length );
-		
-		var expectedOrders = [true, true, true, true, false, false, false];
-		var expectedLengths = [3, 5, 6, 3, 3, 3, 1];
-		
-		for (i in 0...tokens.length) switch (tokens[i].token) {
-			case Keyword(Collection(ordered, items)):
-				
-				
-			case _:
-				
-		}
-		
-		untyped console.log( '<ol>
-<li>First ordered list item</li>
-<li>Another item
-<ul><li>Tabbed unordered sub-list 1.</li>
-<li>Tabbed unordered sub-list 2.</li></ul></li>
-<li>Actual numbers don\'t matter, just that it\'s a number
-<ol><li>Ordered sub-list</li>
-<li>Ordered sub-list</li>
-<li>Ordered sub-list
-<ul><li>Unordered</li>
-<li>Unordered</li>
-<li>Unordered</li></ul></li></ol></li>
-<li>And another item.</li>
-<li>Unordered list can use asterisks</li>
-<li>Or minuses</li>
-<li>Or pluses</li>
-</ol>'); untyped console.log( toHTML(tokens) );
-	}*/
+	}
 	
-	/*public function testLinks() {
+	public function testIssue7() {
+		var payload = { md:haxe.Resource.getString('issue7.md'), html:haxe.Resource.getString('issue7.html') };
+		var md = payload.md;
+		var html = payload.html;
+		
 		var parser = new MarkdownParser();
-		var md = 
-"[I'm an inline-style link](https://www.google.com)
-[I'm an inline-style link with title](https://www.google.com \"Google's Homepage\")
-[I'm a reference-style link][Arbitrary case-insensitive reference text]
-[I'm a relative reference to a repository file](../blob/master/LICENSE)
-[You can use numbers for reference-style link definitions][1]
-Or leave it empty and use the [link text itself]
-Some text to show that the reference links can follow later.";
-		
-		var onlyLinks = function(t) return switch(t.token) {
-			case Keyword(Link(_, _, _)): true;
-			case _: false;
-		};
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-links' );
-		var filtered = tokens.filter( onlyLinks );
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue7' );
 		
 		//trace( tokens );
-		//untyped console.log( filtered );
+		//untyped console.log( tokens );
+		//untyped console.log( tokens.map( function(t) return new MarkdownParser().printHTML( t, ['' => { url:'', title:'' } ] ) ).join('') );
 		
-		Assert.equals( 6, filtered.length );
+		Assert.equals( 1, tokens.length );
 		
-		var expected = [ 
-			{ text:"I'm an inline-style link", url:'https://www.google.com', title:'' },
-			{ text:"I'm an inline-style link with title", url:'https://www.google.com', title:"Google's Homepage" },
-			{ text:"I'm a reference-style link", url:'', title:"Arbitrary case-insensitive reference text" },
-			{ text:"I'm a relative reference to a repository file", url:'../blob/master/LICENSE', title:"" },
-			{ text:"You can use numbers for reference-style link definitions", url:'', title:"1" },
-			{ text:"link text itself", url:'', title:"" },
-		];
-		
-		for (i in 0...filtered.length) switch(filtered[i].token) {
-			case Keyword(Link(ref, text, url, title)):
-				var e = expected[i];
-				Assert.equals(e.text, text);
-				Assert.equals(e.url, url);
-				Assert.equals(e.title, title);
+		switch (tokens[0].token) {
+			case Keyword(Paragraph(tokens)):
+				var filtered = tokens.filter( function(t) return switch (t.token) {
+					case Const(_), Tilde: true;
+					case _: false;
+				} );
+				
+				Assert.equals( 32, filtered.length );
+				
+				filtered = tokens.filter( function(t) return switch (t.token) {
+					case Tilde: true;
+					case _: false;
+				} );
+				
+				Assert.equals( 1, filtered.length );
 				
 			case _:
-				
 		}
-		
-	}*/
-	
-	/*public function testImages() {
-		var parser = new MarkdownParser();
-		var md = 
-"
-Inline-style: 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png \"Logo Title Text 1\")
-
-Reference-style: 
-![alt text][logo]
-";
-		var onlyImages = function(t) return switch(t.token) {
-			case Keyword(Image(_, _, _)): true;
-			case _: false;
-		};
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md' );
-		var filtered = tokens.filter( onlyImages );
-		//trace( tokens );
-		
-		var expected = [ 
-			{ text:"alt text", url:'https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png', title:'Logo Title Text 1' },
-			{ text:"alt text", url:'', title:'logo' },
-		];
-		
-		for (i in 0...filtered.length) switch(filtered[i].token) {
-			case Keyword(Image(ref, text, url, title)):
-				var e = expected[i];
-				Assert.equals(e.text, text);
-				Assert.equals(e.url, url);
-				Assert.equals(e.title, title);
-				
-			case _:
-				
-		}
-		
-	}*/
-	
-	/*public function testCode() {
-		var parser = new MarkdownParser();
-		var md = 
-"
-Inline `code` has `back-ticks around` it.
-
-```javascript
-var s = \"JavaScript syntax highlighting\";
-alert(s);
-```
-
-```
-No language indicated, so no syntax highlighting. 
-But let's throw in a <b>tag</b>.
-```
-";
-		var onlyCode = function(t) return switch(t.token) {
-			case Keyword(Code(_, _, _)): true;
-			case _: false;
-		};
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md' );
-		var filtered = tokens.filter( onlyCode );
-		//trace( filtered );
-		
-		var expected = [ 
-			{ fenced:false, language:'', code:'code' },
-			{ fenced:false, language:'', code:'back-ticks around' },
-			{ fenced:true, language:'javascript', code:'var s = \"JavaScript syntax highlighting\";
-alert(s);' },
-			{ fenced:true, language:'', code:'No language indicated, so no syntax highlighting. 
-But let\'s throw in a <b>tag</b>.' },
-		];
-		
-		for (i in 0...filtered.length) switch(filtered[i].token) {
-			case Keyword(Code(fenced, language, code)):
-				var e = expected[i];
-				Assert.equals(e.fenced, fenced);
-				Assert.equals(e.language, language);
-				Assert.equals(e.code, code);
-				
-			case _:
-				
-		}
-		
-	}*/
-	
-	/*public function testBlockquotes() {
-		var parser = new MarkdownParser();
-		var md = 
-"
-> Blockquotes are very handy in email to emulate reply text.
-> This line is part of the same quote.
-
-Quote break.
-
-> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
-";
-		var onlyBlockquotes = function(t) return switch(t.token) {
-			case Keyword(Blockquote(_)): true;
-			case _: false;
-		};
-		
-		var tokens = parser.toTokens( ByteData.ofString( md ), 'md' );
-		var filtered = tokens.filter( onlyBlockquotes );
-		
-		//trace( filtered );
-		
-		Assert.equals( 3, filtered.length );
-		
-		var expected = [ 
-			'> Blockquotes are very handy in email to emulate reply text.',
-			'> This line is part of the same quote.',
-			'> This is a very long line that will still be quoted properly when it wraps. Oh boy let\'s keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. '
-		];
-		
-		for (i in 0...filtered.length) {
-			Assert.equals( expected[i], toMarkdown( [filtered[i]] ) );
-		}
-		
-	}*/
+	}
 	
 }
