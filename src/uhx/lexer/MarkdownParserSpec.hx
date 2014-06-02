@@ -147,7 +147,7 @@ class MarkdownParserSpec {
 		var parser = new MarkdownParser();
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-indent_code' );
 		
-		//trace( tokens );
+		//untyped console.log( tokens );
 		
 		Assert.equals( 7, tokens.length );
 		
@@ -156,7 +156,7 @@ class MarkdownParserSpec {
 			case _: false;
 		} );
 		
-		//trace( filtered );
+		//untyped console.log( filtered );
 		
 		Assert.equals( 4, filtered.length );
 	}
@@ -694,6 +694,21 @@ class MarkdownParserSpec {
 				
 			case _:
 		}
+	}
+	
+	public function testIssue8() {
+		var payload = { md:haxe.Resource.getString('issue8.md'), html:haxe.Resource.getString('issue8.html') };
+		var md = payload.md;
+		var html = payload.html;
+		
+		var parser = new MarkdownParser();
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue8' );
+		
+		//untyped console.log( tokens );
+		
+		var filtered = tokens.filter( function(t) return t.token.match( Keyword(Code(_, _, _)) ) );
+		
+		Assert.equals( 1, filtered.length );
 	}
 	
 }

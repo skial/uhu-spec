@@ -5,9 +5,9 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
-//import uhx.sys.EdeSpec;	// TODO Need to setup new project with hooks Ede into Klas.
-//import uhx.sys.LiySpec;
-//import uhx.sys.LodSpec;
+import uhx.sys.EdeSpec;
+import uhx.sys.LiySpec;
+import uhx.sys.LodSpec;
 
 //import uhx.lexer.HaxeParserSpec;
 import uhx.lexer.HtmlLexerSpec;
@@ -15,8 +15,8 @@ import uhx.lexer.CssParserSpec;
 import uhx.select.Json;
 import uhx.select.JsonSelectSpec;
 import uhx.lexer.MarkdownParserSpec;
-/*import uhx.macro.WaitSpec;
-import uhx.macro.YieldSpec;
+import uhx.macro.WaitSpec;
+/*import uhx.macro.YieldSpec;
 import uhx.macro.NamedArgsSpec;
 import uhx.mo.MoSpec;
 
@@ -77,8 +77,8 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		/*runner.addCase( new WaitSpec() );
-		runner.addCase( new YieldSpec() );
+		runner.addCase( new WaitSpec() );
+		/*runner.addCase( new YieldSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		
 		// HTTP Request Tests
@@ -92,9 +92,9 @@ class AllTests {
 		runner.addCase( new JsonSelectSpec() );
 		runner.addCase( new CssParserSpec() );
 		// Commandline Tests
-		//runner.addCase( new LodSpec() );
-		//runner.addCase( new LiySpec() );
-		//runner.addCase( new EdeSpec() );
+		runner.addCase( new LodSpec() );
+		runner.addCase( new LiySpec() );
+		runner.addCase( new EdeSpec() );
 		
 		Report.create( runner );
 		

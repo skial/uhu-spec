@@ -27,13 +27,6 @@ class EdeSpec {
 		Assert.equals(4, peep.limbs);
 	}
 	
-	public function testHelp() {
-		var peep = new Person( ['-h'] );
-		
-		var h = peep.help();
-		Assert.is(h, String);
-	}
-	
 }
 
 /**
