@@ -437,7 +437,9 @@ class CssParserSpec {
 	
 	public function testNotPseduo() {
 		var t = parse( '*:not([type]) { a:b; }' );
-		untyped console.log( t );
+		
+		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0].token) {
@@ -487,6 +489,56 @@ class CssParserSpec {
 		Assert.equals( 0, media.length );
 		Assert.equals( 40, rules.length );
 		Assert.equals( t.length, comments.length + media.length + rules.length );
+	}
+	
+	public function testCssVariables() {
+		var t = parse( '.class { --my-colour: red;\r\ncolor: var(--my-colour); }' );
+		
+		//untyped console.log( t );
+		
+		switch (t[0].token) {
+			case Keyword(RuleSet(s, t)):
+				Assert.isTrue( s.match( CssSelectors.Class( ['class'] ) ) );
+				Assert.equals( 2, t.length );
+				Assert.isTrue( t[0].token.match( Keyword( Declaration( '--my-colour', 'red' ) ) ) );
+				Assert.isTrue( t[1].token.match( Keyword( Declaration( 'color', 'var(--my-colour)' ) ) ) );
+				
+			case _:
+				
+		}
+	}
+	
+	public function testCommentInSelector() {
+		var t = parse( 'a, /* 1 */ b { c:d; }' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0].token) {
+			case Keyword( RuleSet(s, t) ):
+				Assert.isTrue( s.match( Group( [Type('a'), Type('b')] ) ) );
+				
+			case _:
+				
+		}
+	}
+	
+	public function testCalc() {
+		var t = parse( 'a { height: calc(100px - 2em); }' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0].token) {
+			case Keyword( RuleSet(s, t) ):
+				Assert.isTrue( s.match( Type('a') ) );
+				Assert.isTrue( t[0].token.match( Keyword( Declaration('height', 'calc(100px - 2em)') ) ) );
+				
+			case _:
+				
+		}
 	}
 	
 }
