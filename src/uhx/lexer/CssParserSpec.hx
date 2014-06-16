@@ -27,7 +27,7 @@ class CssParserSpec {
 		try while (true) {
 			tokens.push( lexer.token( CssLexer.root ) );
 		} catch (e:Eof) { } catch (e:Dynamic) {
-			trace( e );
+			untyped console.log( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
 		}
 		
 		return tokens;
@@ -390,6 +390,103 @@ class CssParserSpec {
 		
 		Assert.equals( '<span class="keyword ruleset">a[b="/"] {\r\n\t<span class="keyword declaration">c: d;</span>\r\n}</span>', html );
 		Assert.equals( 'a[b="/"] {\r\n\tc: d;\r\n}', string );
+	}
+	
+	public function testDeclarationComment() {
+		var t = parse( 'a { /*c1*/b: 1;/*c:2;*/ }' );
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0].token) {
+			case Keyword(RuleSet(s, t)):
+				Assert.equals( 3, t.length );
+				
+				for (i in 0...t.length) switch (t[0].token) {
+					case Comment(v) if (i == 0 || i == 2):
+						Assert.contains( v, ['c1', 'c:2;']);
+						
+					case Keyword(Declaration(n, v)) if (i == 1):
+						Assert.equals( 'b', n );
+						Assert.equals( '1', v );
+						
+					case _:
+						
+				}
+				
+			case _:
+				
+		}
+	}
+	
+	public function testUniversalSelector() {
+		var t = parse( '* { a:b; }' );
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0].token) {
+			case Keyword(RuleSet(s, t)):
+				Assert.isTrue( s.match( Universal ) );
+				Assert.equals( 1, t.length );
+				
+			case _:
+				
+		}
+	}
+	
+	public function testNotPseduo() {
+		var t = parse( '*:not([type]) { a:b; }' );
+		untyped console.log( t );
+		Assert.equals( 1, t.length );
+		
+		switch (t[0].token) {
+			case Keyword(RuleSet(s, t)):
+				Assert.isTrue( s.match( Group( [Universal, Pseudo( 'not', '[type]' )] ) ) );
+				Assert.equals( 1, t.length );
+				
+			case _:
+				
+		}
+	}
+	
+	public function testHaxeIoCss() {
+		var t = parser.toTokens( ByteData.ofString( haxe.Resource.getString('haxe.io.css') ), 'haxe.io.css' );
+		var comments = t.filter( function (t) return t.token.match( Comment(_) ) );
+		var media = t.filter( function(t) return t.token.match( Keyword( AtRule(_, _, _) ) ) );
+		var rules = t.filter( function(t) return t.token.match( Keyword( RuleSet(_, _) ) ) );
+		var remainder = t.filter( function(t) return switch (t.token) {
+			case Comment(_), Keyword( AtRule(_, _, _) ), Keyword( RuleSet(_, _) ): false;
+			case _: true;
+		} );
+		
+		//untyped console.log( remainder );
+		
+		Assert.equals( 0, remainder.length );
+		Assert.equals( 10, comments.length );
+		Assert.equals( 5, media.length );
+		Assert.equals( 48, rules.length );
+		Assert.equals( t.length, comments.length + media.length + rules.length );
+	}
+	
+	public function testNormalizeCss() {
+		var t = parser.toTokens( ByteData.ofString( haxe.Resource.getString('normalize.css') ), 'normalize.css' );
+		var comments = t.filter( function (t) return t.token.match( Comment(_) ) );
+		var media = t.filter( function(t) return t.token.match( Keyword( AtRule(_, _, _) ) ) );
+		var rules = t.filter( function(t) return t.token.match( Keyword( RuleSet(_, _) ) ) );
+		var remainder = t.filter( function(t) return switch (t.token) {
+			case Comment(_), Keyword( AtRule(_, _, _) ), Keyword( RuleSet(_, _) ): false;
+			case _: true;
+		} );
+		
+		//untyped console.log( t );
+		//untyped console.log( remainder );
+		
+		Assert.equals( 0, remainder.length );
+		Assert.equals( 46, comments.length );
+		Assert.equals( 0, media.length );
+		Assert.equals( 40, rules.length );
+		Assert.equals( t.length, comments.length + media.length + rules.length );
 	}
 	
 }
