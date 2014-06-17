@@ -6,6 +6,8 @@ import uhx.mo.Token;
 import byte.ByteData;
 import uhx.lexer.CssLexer;
 
+using StringTools;
+
 /**
  * ...
  * @author Skial Bainn
@@ -572,6 +574,9 @@ class CssParserSpec {
 			case _:
 				
 		}
+		
+		Assert.equals( '@media all and (min-width: 1156px) {\r\n\ta {\r\n\t\tb: c;\r\n\t}\r\n}', parser.printString( t[0] ) );
+		Assert.equals( '@media all and (min-width:1156px) {a{b:c;}}', parser.printString( t[0], true ) );
 	}
 	
 }
