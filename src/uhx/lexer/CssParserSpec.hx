@@ -182,7 +182,6 @@ class CssParserSpec {
 		
 		switch( t[0].token ) {
 			case Keyword(RuleSet(s, t)):
-				untyped console.log( s.toString() );
 				Assert.isTrue(
 					//s.match( Group( [CssSelectors.Class( ['class1'] ), CssSelectors.Class( ['class2'] )] ) )
 					s.match( CssSelectors.Class( ['class1', 'class2'] ) )
