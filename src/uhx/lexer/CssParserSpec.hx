@@ -558,4 +558,20 @@ class CssParserSpec {
 		}
 	}
 	
+	public function testAtRule() {
+		var t = parse( '@media all and (min-width: 1156px) { a { b:c; } }' );
+		
+		//untyped console.log( t );
+		
+		switch (t[0].token) {
+			case Keyword( AtRule(n, q, t) ):
+				Assert.equals( 'media', n );
+				Assert.isTrue( q.match( CssMedia.Group( [Feature('all', ''), Feature('and', ''), CssMedia.Expr( [Feature('min-width', '1156px')] )] ) ) );
+				Assert.equals( 1, t.length );
+				
+			case _:
+				
+		}
+	}
+	
 }
