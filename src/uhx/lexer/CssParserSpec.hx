@@ -568,7 +568,10 @@ class CssParserSpec {
 		switch (t[0].token) {
 			case Keyword( AtRule(n, q, t) ):
 				Assert.equals( 'media', n );
-				Assert.isTrue( q.match( CssMedia.Group( [Feature('all', ''), Feature('and', ''), CssMedia.Expr( [Feature('min-width', '1156px')] )] ) ) );
+				Assert.equals( 
+					'' + [Feature('all'), Feature('and'), CssMedia.Expr('min-width', '1156px')],
+					'' + q
+				);
 				Assert.equals( 1, t.length );
 				
 			case _:
@@ -577,6 +580,32 @@ class CssParserSpec {
 		
 		Assert.equals( '@media all and (min-width: 1156px) {\r\n\ta {\r\n\t\tb: c;\r\n\t}\r\n}', parser.printString( t[0] ) );
 		Assert.equals( '@media all and (min-width:1156px) {a{b:c;}}', parser.printString( t[0], true ) );
+	}
+	
+	public function testAtRule_MultiExpr() {
+		var t = parse( '@media all and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {a {b:c;} }' );
+		
+		untyped console.log( t );
+		
+		switch (t[0].token) {
+			case Keyword( AtRule(n, q, t) ):
+				Assert.equals( 'media', n );
+				Assert.equals( 
+					'' + [CssMedia.Group([ 
+						[Feature('all'), Feature('and'), CssMedia.Expr('min-width', '699px'),
+						Feature('all'), CssMedia.Expr('min-width', '520px')],
+						[CssMedia.Expr('min-width', '1151px')]
+					])],
+					'' + q
+				);
+				Assert.equals( 1, t.length );
+				
+			case _:
+				
+		}
+		
+		Assert.equals( '@media all and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {\r\n\ta {\r\n\t\tb: c;\r\n\t}\r\n}', parser.printString( t[0] ) );
+		Assert.equals( '@media all and (max-width:699px) and (min-width:520px),(min-width:1151px) {a{b:c;}}', parser.printString( t[0], true ) );
 	}
 	
 }
