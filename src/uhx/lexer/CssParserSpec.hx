@@ -585,7 +585,7 @@ class CssParserSpec {
 	public function testAtRule_MultiExpr() {
 		var t = parse( '@media all and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {a {b:c;} }' );
 		
-		untyped console.log( t );
+		//untyped console.log( t );
 		
 		switch (t[0].token) {
 			case Keyword( AtRule(n, q, t) ):
@@ -606,6 +606,30 @@ class CssParserSpec {
 		
 		Assert.equals( '@media all and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {\r\n\ta {\r\n\t\tb: c;\r\n\t}\r\n}', parser.printString( t[0] ) );
 		Assert.equals( '@media all and (max-width:699px) and (min-width:520px),(min-width:1151px) {a{b:c;}}', parser.printString( t[0], true ) );
+	}
+	
+	public function testRuleSet_Multi() {
+		var t = parse( 'a {b:c;} d {e:f;}' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 2, t.length );
+		
+		for (i in 0...t.length) switch (t[i].token) {
+			case Keyword(RuleSet(s, t)) if (i == 0):
+				Assert.isTrue( s.match( Type('a') ) );
+				Assert.equals( 1, t.length );
+				
+			case Keyword(RuleSet(s, t)) if (i == 1):
+				Assert.isTrue( s.match( Type('d') ) );
+				Assert.equals( 1, t.length );
+				
+			case _:
+				
+		}
+		
+		Assert.equals( 'a {\r\n\tb: c;\r\n}\r\nd {\r\n\te: f;\r\n}', [for (i in t) parser.printString( i )].join('\r\n') );
+		Assert.equals( 'a{b:c;}d{e:f;}', [for (i in t) parser.printString( i, true )].join('') );
 	}
 	
 }
