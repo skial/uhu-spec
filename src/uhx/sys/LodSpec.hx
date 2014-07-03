@@ -14,8 +14,7 @@ class LodSpec {
 	}
 	
 	public function testArgs() {
-		var l = new Lod();
-		l.args = ['--a', '1', '-b', '2', '--no-c'];
+		var l = new Lod( ['--a', '1', '-b', '2', '--no-c'] );
 		
 		var map:StringMap<Array<Dynamic>> = l.parse();
 		
@@ -26,8 +25,7 @@ class LodSpec {
 	}
 	
 	public function testArgv() {
-		var l = new Lod();
-		l.args = ['--a', '1', '--', '-b', '2', '--no-c'];
+		var l = new Lod( ['--a', '1', '--', '-b', '2', '--no-c'] );
 		
 		var map = l.parse();
 		
@@ -36,9 +34,8 @@ class LodSpec {
 	}
 	
 	public function testSeperator() {
-		var l = new Lod();
+		var l = new Lod( ['-a=1', '-b=2', '-c="Hello World"', "-d='Hello Skial'"] );
 		l.seperator = '=';
-		l.args = ['-a=1', '-b=2', '-c="Hello World"', "-d='Hello Skial'"];
 		
 		var map = l.parse();
 		

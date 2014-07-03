@@ -14,18 +14,13 @@ class LiySpec {
 	}
 	
 	public function testReflection() {
-		var ld = new Lod();
-		ld.args = ['--a', '1', '-b', '2', '-----c', '3', '-f', '4', '-r', '5', '6'];
+		var ld = new Lod( ['--a', '1', '-b', '2', '-----c', '3', '-f', '4', '-r', '5', '6'] );
 		
 		var map = ld.parse();
 		
 		var aaa = new A();
 		
-		var ly = new Liy();
-		ly.args = map;
-		ly.fields = Type.getInstanceFields( A );
-		ly.meta = Meta.getFields( A );
-		ly.obj = aaa;
+		var ly = new Liy( aaa, Type.getInstanceFields( A ), map, Meta.getFields( A ));
 		
 		ly.parse();
 		
