@@ -32,23 +32,6 @@ typedef Payload = {
  * @author Skial Bainn
  */
 class MarkdownParserSpec {
-	
-	/*public static macro function loadMarkdown(name:ExprOf<String>):ExprOf<Payload> {
-		var path = 'C:/Users/Skial/Dropbox/dev/skialbainn/src/uhu-spec/resources/markdown/';
-		var name = ExprTools.toString( name ).replace('"', '');
-		return if (FileSystem.exists('$path$name.md')) {
-			Context.addResource( '$name.md', File.getBytes( '$path$name.md' ) );
-			Context.addResource( '$name.html', File.getBytes( '$path$name.html' ) );
-			//var txt = File.getContent( '$path$name.md' );
-			//var txt = haxe.Resource.getString( '$name.md' );
-			//var html = File.getContent( '$path$name.html' );
-			//var html = haxe.Resource.getString( '$name.html' );
-			//macro { md:$v { txt }, html:$v { html } };
-			macro { md:haxe.Resource.getString( $v{'$name.md'} ), html:haxe.Resource.getString( $v{'$name.html'} ) };
-		} else {
-			macro { md:'failed', html:'failed' };
-		}
-	}*/
 
 	public function new() {
 		
@@ -57,59 +40,7 @@ class MarkdownParserSpec {
 	private function escape(v:String):String {
 		return v.replace('\r', '\\r').replace('\n', '\\n').replace('\t', '\\t').replace(' ', '\\s');
 	}
-	/*
-	private function toHTML(tokens:Array<Token<MarkdownKeywords>>):String {
-		var result = new StringBuf();
-		var parser = new MarkdownParser();
-		
-		var inParagraph = false;
-		var crlf = 0;
-		
-		for (token in tokens) {
-			switch (token.token) {
-				case Carriage, Newline:
-					crlf++;
-					if (crlf == 4 && inParagraph) {
-						result.add('</p>\r\n\r\n');
-						inParagraph = false;
-						crlf = 0;
-					}
-					
-				case Keyword(Header(_, _, _)): 
-					if (inParagraph) {
-						result.add('</p>\r\n\r\n');
-						inParagraph = false;
-					}
-					
-				case Const(CString(_)):
-					if (!inParagraph) {
-						result.add('<p>');
-						inParagraph = true;
-					}
-					
-				case _:
-			}
-			
-			result.add(parser.printHTML( token ));
-		}
-		
-		if (inParagraph) {
-			result.add('</p>');
-			inParagraph = false;
-		}
-		
-		return result.toString();
-	}
 	
-	private function toMarkdown(tokens:Array<Token<MarkdownKeywords>>):String {
-		var result = new StringBuf();
-		var parser = new MarkdownParser();
-		
-		for (token in tokens) result.add(parser.printString( token ));
-		
-		return result.toString();
-	}
-	*/
 	public function testBlockElements_paragraph() {
 		//var payload = loadMarkdown( 'be_paragraph' );
 		var payload = { md:haxe.Resource.getString('be_paragraph.md'), html:haxe.Resource.getString('be_paragraph.html') };
@@ -709,6 +640,30 @@ class MarkdownParserSpec {
 		var filtered = tokens.filter( function(t) return t.token.match( Keyword(Code(_, _, _)) ) );
 		
 		Assert.equals( 1, filtered.length );
+	}
+	
+	public function testIssue14() {
+		var payload = { md:haxe.Resource.getString('issue14.md'), html:haxe.Resource.getString('issue14.html') };
+		var md = payload.md;
+		var html = payload.html;
+		
+		var parser = new MarkdownParser();
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue14' );
+		
+		switch (tokens[0].token) {
+			case Keyword(Paragraph(tokens)):
+				var filtered = tokens.filter( function(t) return t.token.match( Keyword(Image(_, _, _, _)) ) );
+				
+				//untyped console.log( filtered );
+				//untyped console.log( filtered.map( function(t) return parser.printHTML( t, ['' => {url:'', title:''}] ) ).join('\r\n') );
+				
+				Assert.equals( 4, filtered.length );
+				Assert.equals( html, filtered.map( function(t) return parser.printHTML( t, ['' => { url:'', title:'' } ] ) ).join('\r\n') );
+				
+			case _:
+				
+		}
+		
 	}
 	
 }
