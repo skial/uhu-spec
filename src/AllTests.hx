@@ -16,9 +16,9 @@ import uhx.select.Json;
 import uhx.select.JsonSelectSpec;
 import uhx.lexer.MarkdownParserSpec;
 import uhx.macro.WaitSpec;
-/*import uhx.macro.YieldSpec;
+import uhx.macro.YieldSpec;
 import uhx.macro.NamedArgsSpec;
-import uhx.mo.MoSpec;
+/*import uhx.mo.MoSpec;
 
 //import haxe.Utf8Spec;
 //import uhx.web.URISpec;
@@ -78,11 +78,11 @@ class AllTests {
 		#end
 		
 		runner.addCase( new WaitSpec() );
-		/*runner.addCase( new YieldSpec() );
+		runner.addCase( new YieldSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		
 		// HTTP Request Tests
-		runner.addCase( new RequestSpec() );
+		/*runner.addCase( new RequestSpec() );
 		
 		// Lexer and Parser Tests
 		runner.addCase( new MoSpec() );*/
