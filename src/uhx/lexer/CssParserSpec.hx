@@ -29,7 +29,7 @@ class CssParserSpec {
 		try while (true) {
 			tokens.push( lexer.token( CssLexer.root ) );
 		} catch (e:Eof) { } catch (e:Dynamic) {
-			untyped console.log( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
+			//untyped console.log( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
 		}
 		
 		return tokens;
@@ -592,8 +592,8 @@ class CssParserSpec {
 				Assert.equals( 'media', n );
 				Assert.equals( 
 					'' + [CssMedia.Group([ 
-						[Feature('all'), Feature('and'), CssMedia.Expr('min-width', '699px'),
-						Feature('all'), CssMedia.Expr('min-width', '520px')],
+						[Feature('all'), Feature('and'), CssMedia.Expr('max-width', '699px'),
+						Feature('and'), CssMedia.Expr('min-width', '520px')],
 						[CssMedia.Expr('min-width', '1151px')]
 					])],
 					'' + q
