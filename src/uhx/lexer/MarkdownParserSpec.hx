@@ -1,18 +1,14 @@
 package uhx.lexer;
 
-#if macro
-import haxe.Json;
-import haxe.macro.Compiler;
-import haxe.macro.ExprTools;
-import haxe.Resource;
+#if cs
 import sys.io.File;
 import sys.FileSystem;
-import haxe.macro.Expr;
-import haxe.macro.Context;
 #end
 
+import haxe.Json;
 import uhx.mo.Token;
 import utest.Assert;
+import haxe.Resource;
 import byte.ByteData;
 import uhx.mo.TokenDef;
 import hxparse.Position;
@@ -37,13 +33,40 @@ class MarkdownParserSpec {
 		
 	}
 	
-	private function escape(v:String):String {
-		return v.replace('\r', '\\r').replace('\n', '\\n').replace('\t', '\\t').replace(' ', '\\s');
+	private function load(name:String) {
+		#if cs
+		// See https://github.com/skial/mo/issues/19 which 
+		// depends on https://github.com/HaxeFoundation/haxe/issues/3177
+		return { 
+			md: File.getContent( '../../../../uhu-spec/resources/markdown/$name.md' ),
+			html: File.getContent( '../../../../uhu-spec/resources/markdown/$name.html' )
+		}
+		#else
+		return { md:haxe.Resource.getString('$name.md'), html:haxe.Resource.getString('$name.html') }
+		#end
 	}
 	
+	private function escape(v:String):String {
+		return v.replace('\r', '\\r').replace('\n', '\\n').replace('\t', '\\t');
+	}
+	
+	public function testIssue19() {
+		var payload = load('issue19');
+		var md = payload.md;
+		var html = payload.html;
+		
+		var parser = new MarkdownParser();
+		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue19' );
+		
+		//for (token in tokens) trace(token.token);
+		//trace( escape( tokens.map( function(t) return parser.printString(t) ).join('') ) );
+		
+		Assert.equals( 2, tokens.length );
+	}
+	
+	
 	public function testBlockElements_paragraph() {
-		//var payload = loadMarkdown( 'be_paragraph' );
-		var payload = { md:haxe.Resource.getString('be_paragraph.md'), html:haxe.Resource.getString('be_paragraph.html') };
+		var payload = load('be_paragraph');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -51,7 +74,8 @@ class MarkdownParserSpec {
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-be_paragraph' );
 		
 		//untyped console.log( tokens );
-		
+		//for (t in tokens) trace( t );
+		//trace( tokens.map( function(t) return parser.printString(t) ).join('') );
 		Assert.equals( 2, tokens.length );
 		
 		switch(tokens[1].token) {
@@ -66,12 +90,12 @@ class MarkdownParserSpec {
 				Assert.equals( 7, filtered.length );
 				
 			case _:
+				Assert.fail();
 		}
 	}
 	
 	public function testCode_indented() {
-		//var payload = loadMarkdown( 'indent_code' );
-		var payload = { md:haxe.Resource.getString('indent_code.md'), html:haxe.Resource.getString('indent_code.html') };
+		var payload = load('indent_code');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -93,8 +117,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testBlockquote_lazy() {
-		//var payload = loadMarkdown( 'lazy_blockquote' );
-		var payload = { md:haxe.Resource.getString('lazy_blockquote.md'), html:haxe.Resource.getString('lazy_blockquote.html') };
+		var payload = load('lazy_blockquote');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -129,8 +152,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testBlockquote_withCode() {
-		//var payload = loadMarkdown( 'code_in_blockquote' );
-		var payload = { md:haxe.Resource.getString('code_in_blockquote.md'), html:haxe.Resource.getString('code_in_blockquote.html') };
+		var payload = load('code_in_blockquote');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -157,8 +179,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testBlockquote_nested() {
-		//var payload = loadMarkdown( 'nested_blockquotes' );
-		var payload = { md:haxe.Resource.getString('nested_blockquotes.md'), html:haxe.Resource.getString('nested_blockquotes.html') };
+		var payload = load('nested_blockquotes');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -194,8 +215,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testLists_unordered() {
-		//var payload = loadMarkdown( 'unordered_lists' );
-		var payload = { md:haxe.Resource.getString('unordered_lists.md'), html:haxe.Resource.getString('unordered_lists.html') };
+		var payload = load('unordered_lists');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -231,8 +251,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testLists_ordered() {
-		//var payload = loadMarkdown( 'ordered_lists' );
-		var payload = { md:haxe.Resource.getString('ordered_lists.md'), html:haxe.Resource.getString('ordered_lists.html') };
+		var payload = load('ordered_lists');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -272,8 +291,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testLists_multi_paragraphs() {
-		//var payload = loadMarkdown( 'list_paragraphs' );
-		var payload = { md:haxe.Resource.getString('list_paragraphs.md'), html:haxe.Resource.getString('list_paragraphs.html') };
+		var payload = load('list_paragraphs');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -285,7 +303,7 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 2, tokens.length );
 		
-		var expected = [ { m:1, tl:45 }, { m:2, tl:7 }, { m:3, tl:3 } ];
+		var expected = [ { m:'1', tl:45 }, { m:'2', tl:7 }, { m:'3', tl:3 } ];
 		
 		for (token in tokens) switch (token.token) {
 			case Keyword(Collection(ordered, tokens)):
@@ -308,8 +326,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testHeaders() {
-		//var payload = loadMarkdown( 'headers' );
-		var payload = { md:haxe.Resource.getString('headers.md'), html:haxe.Resource.getString('headers.html') };
+		var payload = load('headers');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -329,27 +346,27 @@ class MarkdownParserSpec {
 		Assert.equals( 14, filtered.length );
 		
 		var expected = [ 
-			{a:false, l:1, t:'H1' },
-			{a:false, l:2, t:'H2' },
-			{a:false, l:3, t:'H3' },
-			{a:false, l:4, t:'H4' },
-			{a:false, l:5, t:'H5' },
-			{a:false, l:6, t:'H6' },
-			{a:false, l:1, t:'H1' },
-			{a:false, l:2, t:'H2' },
-			{a:false, l:3, t:'H3' },
-			{a:false, l:1, t:'H1' },
-			{a:false, l:2, t:'H2' },
-			{a:false, l:3, t:'H3' },
-			{a:true, l:1, t:'H1-alt' },
-			{a:true, l:2, t:'H2-alt' },
+			{a:false, l:1, t: Const(CString('H1')) }, 
+			{a:false, l:2, t: Const(CString('H2')) }, 
+			{a:false, l:3, t: Const(CString('H3')) }, 
+			{a:false, l:4, t: Const(CString('H4')) }, 
+			{a:false, l:5, t: Const(CString('H5')) }, 
+			{a:false, l:6, t: Const(CString('H6')) }, 
+			{a:false, l:1, t: Const(CString('H1')) }, 
+			{a:false, l:2, t: Const(CString('H2')) }, 
+			{a:false, l:3, t: Const(CString('H3')) }, 
+			{a:false, l:1, t: Const(CString('H1')) }, 
+			{a:false, l:2, t: Const(CString('H2')) }, 
+			{a:false, l:3, t: Const(CString('H3')) }, 
+			{a:true, l:1, t: Const(CString('H1-alt')) }, 
+			{a:true, l:2, t: Const(CString('H2-alt')) }, 
 		];
 		
 		for (i in 0...filtered.length) switch (filtered[i].token) {
 			case Keyword(Header(alt, len, text)):
 				Assert.equals( expected[i].a, alt );
 				Assert.equals( expected[i].l, len );
-				Assert.equals( expected[i].t, text );
+				Assert.isTrue( haxe.EnumTools.EnumValueTools.equals(text[0].token, expected[i].t ) );
 				
 			case _:
 				
@@ -357,8 +374,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testHorizontalRules() {
-		//var payload = loadMarkdown( 'horizontal_rules' );
-		var payload = { md:haxe.Resource.getString('horizontal_rules.md'), html:haxe.Resource.getString('horizontal_rules.html') };
+		var payload = load('horizontal_rules');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -387,8 +403,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testLinks_inline() {
-		//var payload = loadMarkdown( 'inline_links' );
-		var payload = { md:haxe.Resource.getString('inline_links.md'), html:haxe.Resource.getString('inline_links.html') };
+		var payload = load('inline_links');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -435,7 +450,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testReferenceLinks() {
-		var payload = { md:haxe.Resource.getString('reference_links.md'), html:haxe.Resource.getString('reference_links.html') };
+		var payload = load('reference_links');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -526,7 +541,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testIssue1() {
-		var payload = { md:haxe.Resource.getString('issue1.md'), html:haxe.Resource.getString('issue1.html') };
+		var payload = load('issue1');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -561,7 +576,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testIssue3() {
-		var payload = { md:haxe.Resource.getString('issue3.md'), html:haxe.Resource.getString('issue3.html') };
+		var payload = load('issue3');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -580,7 +595,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testIssue6() {
-		var payload = { md:haxe.Resource.getString('issue6.md'), html:haxe.Resource.getString('issue6.html') };
+		var payload = load('issue6');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -594,7 +609,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testIssue7() {
-		var payload = { md:haxe.Resource.getString('issue7.md'), html:haxe.Resource.getString('issue7.html') };
+		var payload = load('issue7');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -628,7 +643,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testIssue8() {
-		var payload = { md:haxe.Resource.getString('issue8.md'), html:haxe.Resource.getString('issue8.html') };
+		var payload = load('issue8');
 		var md = payload.md;
 		var html = payload.html;
 		
@@ -643,7 +658,7 @@ class MarkdownParserSpec {
 	}
 	
 	public function testIssue14() {
-		var payload = { md:haxe.Resource.getString('issue14.md'), html:haxe.Resource.getString('issue14.html') };
+		var payload = load('issue14');
 		var md = payload.md;
 		var html = payload.html;
 		
