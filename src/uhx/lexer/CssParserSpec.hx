@@ -119,19 +119,43 @@ class CssParserSpec {
 	}
 	
 	public function testIdDeclaration() {
-		var t = parse( '#id { display: block; }' );
+		var t = parse( '#a { b: c; }' );
 		//untyped console.log ( t );
 		Assert.equals( 1, t.length );
 		
 		switch ( t[0].token ) {
 			case Keyword(RuleSet(s, t)):
-				Assert.isTrue( s.match( ID( 'id' ) ) );
+				Assert.isTrue( s.match( ID( 'a' ) ) );
 				Assert.equals( 1, t.length );
 				
 				switch (t[0].token) {
 					case Keyword(Declaration(n, v)):
-						Assert.equals( 'display', n );
-						Assert.equals( 'block', v );
+						Assert.equals( 'b', n );
+						Assert.equals( 'c', v );
+						
+					case _:
+						
+				}
+				
+			case _:
+				
+		}
+	}
+	
+	public function testIdDeclaration_multi() {
+		var t = parse( '#a, #b, #c { d: e; }' );
+		//untyped console.log( t );
+		Assert.equals( 1, t.length );
+		
+		switch ( t[0].token ) {
+			case Keyword(RuleSet(s, t)):
+				Assert.isTrue( s.match( Group( [ID('a'), ID('b'), ID('c')] ) ) );
+				Assert.equals( 1, t.length );
+				
+				switch (t[0].token) {
+					case Keyword(Declaration(n, v)):
+						Assert.equals( 'd', n );
+						Assert.equals( 'e', v );
 						
 					case _:
 						
