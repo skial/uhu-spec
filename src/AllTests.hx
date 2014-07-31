@@ -5,19 +5,19 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
-import uhx.sys.EdeSpec;
+/*import uhx.sys.EdeSpec;
 import uhx.sys.LiySpec;
-import uhx.sys.LodSpec;
+import uhx.sys.LodSpec;*/
 
 //import uhx.lexer.HaxeParserSpec;
-import uhx.lexer.HtmlLexerSpec;
 import uhx.lexer.CssParserSpec;
-import uhx.select.Json;
+import uhx.lexer.HtmlLexerSpec;
+/*import uhx.select.Json;
 import uhx.select.JsonSelectSpec;
+import uhx.macro.YieldSpec;*/
 import uhx.lexer.MarkdownParserSpec;
-import uhx.macro.WaitSpec;
-import uhx.macro.YieldSpec;
-import uhx.macro.NamedArgsSpec;
+//import uhx.macro.WaitSpec;
+//import uhx.macro.NamedArgsSpec;
 /*import uhx.mo.MoSpec;
 
 //import haxe.Utf8Spec;
@@ -77,8 +77,8 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		runner.addCase( new WaitSpec() );
-		runner.addCase( new YieldSpec() );
+		//runner.addCase( new WaitSpec() );
+		/*runner.addCase( new YieldSpec() );
 		runner.addCase( new NamedArgsSpec() );
 		
 		// HTTP Request Tests
@@ -88,13 +88,13 @@ class AllTests {
 		runner.addCase( new MoSpec() );*/
 		//runner.addCase( new HaxeParserSpec() );
 		runner.addCase( new MarkdownParserSpec() );
-		runner.addCase( new HtmlLexerSpec() );
-		runner.addCase( new JsonSelectSpec() );
 		runner.addCase( new CssParserSpec() );
+		runner.addCase( new HtmlLexerSpec() );
+		/*runner.addCase( new JsonSelectSpec() );
 		// Commandline Tests
 		runner.addCase( new LodSpec() );
 		runner.addCase( new LiySpec() );
-		runner.addCase( new EdeSpec() );
+		runner.addCase( new EdeSpec() );*/
 		
 		Report.create( runner );
 		
