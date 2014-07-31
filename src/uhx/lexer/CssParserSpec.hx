@@ -118,12 +118,36 @@ class CssParserSpec {
 		Assert.equals( 'div,img{display:block;}', parser.printString( t[0], true ) );
 	}
 	
+	public function testIdDeclaration() {
+		var t = parse( '#id { display: block; }' );
+		//untyped console.log ( t );
+		Assert.equals( 1, t.length );
+		
+		switch ( t[0].token ) {
+			case Keyword(RuleSet(s, t)):
+				Assert.isTrue( s.match( ID( 'id' ) ) );
+				Assert.equals( 1, t.length );
+				
+				switch (t[0].token) {
+					case Keyword(Declaration(n, v)):
+						Assert.equals( 'display', n );
+						Assert.equals( 'block', v );
+						
+					case _:
+						
+				}
+				
+			case _:
+				
+		}
+	}
+	
 	public function testClassDeclaration() {
 		var t = parse( '.class { display: block; }' );
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch( t[0].token ) {
+		switch ( t[0].token ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
 					s.match( CssSelectors.Class( ['class'] ) )
