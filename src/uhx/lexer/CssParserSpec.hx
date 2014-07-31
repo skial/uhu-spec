@@ -166,6 +166,30 @@ class CssParserSpec {
 		}
 	}
 	
+	public function testIdDeclaration_child() {
+		var t = parse( '#a > #b { c: d; }' );
+		untyped console.log( t );
+		Assert.equals( 1, t.length );
+		
+		switch (t[0].token) {
+			case Keyword(RuleSet(s, t)):
+				Assert.isTrue( s.match( Combinator( ID( 'a' ), ID( 'b' ), Child ) ) );
+				Assert.equals( 1, t.length );
+				
+				switch (t[0].token) {
+					case Keyword(Declaration(n, v)):
+						Assert.equals( 'c', n );
+						Assert.equals( 'd', v );
+						
+					case _:
+						
+				}
+				
+			case _:
+				
+		}
+	}
+	
 	public function testClassDeclaration() {
 		var t = parse( '.class { display: block; }' );
 		//untyped console.log( t );
