@@ -9,6 +9,18 @@ package help.macro;
 class Person implements Klas {
 	
 	/**
+	 * This person is female/
+	 */
+	@alias('f')
+	public var female:Bool = false;
+	
+	/**
+	 * This person is male/
+	 */
+	@alias('m')
+	public var male:Bool = false;
+	
+	/**
 	 * The persons age.
 	 */
 	@alias('a')

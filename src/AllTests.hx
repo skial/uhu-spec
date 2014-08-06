@@ -5,9 +5,9 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
-/*import uhx.sys.EdeSpec;
+import uhx.sys.EdeSpec;
 import uhx.sys.LiySpec;
-import uhx.sys.LodSpec;*/
+import uhx.sys.LodSpec;
 
 //import uhx.lexer.HaxeParserSpec;
 import uhx.lexer.CssParserSpec;
@@ -90,11 +90,11 @@ class AllTests {
 		runner.addCase( new MarkdownParserSpec() );
 		runner.addCase( new CssParserSpec() );
 		runner.addCase( new HtmlLexerSpec() );
-		/*runner.addCase( new JsonSelectSpec() );
+		//runner.addCase( new JsonSelectSpec() );
 		// Commandline Tests
 		runner.addCase( new LodSpec() );
 		runner.addCase( new LiySpec() );
-		runner.addCase( new EdeSpec() );*/
+		runner.addCase( new EdeSpec() );
 		
 		Report.create( runner );
 		
