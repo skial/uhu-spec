@@ -196,7 +196,7 @@ class JsonSelectSpec {
 	
 	public function testLevel3_hasComma() {
 		var m = level3.find(':has(:root > .language, :root > .last)');
-		untyped console.log( m );
+		//untyped console.log( m );
 	}
 	
 }
