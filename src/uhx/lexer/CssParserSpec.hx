@@ -168,7 +168,7 @@ class CssParserSpec {
 	
 	public function testIdDeclaration_child() {
 		var t = parse( '#a > #b { c: d; }' );
-		untyped console.log( t );
+		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
 		switch (t[0].token) {
