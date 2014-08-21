@@ -8,6 +8,7 @@ package ;
 import uhx.sys.EdeSpec;
 import uhx.sys.LiySpec;
 import uhx.sys.LodSpec;
+import uhx.tuli.plugins.AtomSpec;
 
 //import uhx.lexer.HaxeParserSpec;
 import uhx.lexer.CssParserSpec;
@@ -95,6 +96,11 @@ class AllTests {
 		runner.addCase( new LodSpec() );
 		runner.addCase( new LiySpec() );
 		runner.addCase( new EdeSpec() );
+		
+		#if sys
+		// Tuli Plugin Tests
+		runner.addCase( new AtomSpec() );
+		#end
 		
 		Report.create( runner );
 		
