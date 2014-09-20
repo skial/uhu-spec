@@ -5,10 +5,13 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
+#if sys
+import uhx.tuli.plugins.AtomSpec;
+#end
+
 import uhx.sys.EdeSpec;
 import uhx.sys.LiySpec;
 import uhx.sys.LodSpec;
-import uhx.tuli.plugins.AtomSpec;
 
 //import uhx.lexer.HaxeParserSpec;
 import uhx.lexer.CssParserSpec;
