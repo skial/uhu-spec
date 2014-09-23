@@ -10,7 +10,6 @@ import uhx.mo.Token;
 import utest.Assert;
 import haxe.Resource;
 import byte.ByteData;
-import uhx.mo.TokenDef;
 import hxparse.Position;
 import uhx.lexer.MarkdownLexer;
 import uhx.lexer.MarkdownParser;
@@ -78,9 +77,9 @@ class MarkdownParserSpec {
 		//trace( tokens.map( function(t) return parser.printString(t) ).join('') );
 		Assert.equals( 2, tokens.length );
 		
-		switch(tokens[1].token) {
+		switch(tokens[1]) {
 			case Keyword(Paragraph(toks)):
-				var filtered = toks.filter( function(t) return switch(t.token) {
+				var filtered = toks.filter( function(t) return switch(t) {
 					case Const(_), Space(_), Tab(_), Dot, Hyphen(_), Carriage, Newline: false;
 					case _: true;
 				} );
@@ -106,7 +105,7 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 7, tokens.length );
 		
-		var filtered = tokens.filter( function(t) return switch (t.token) {
+		var filtered = tokens.filter( function(t) return switch (t) {
 			case Keyword(Code(_, _, _)): true;
 			case _: false;
 		} );
@@ -127,13 +126,13 @@ class MarkdownParserSpec {
 		//trace( tokens );
 		
 		Assert.equals( 1, tokens.length );
-		Assert.isTrue( switch(tokens[0].token) {
+		Assert.isTrue( switch(tokens[0]) {
 			case Keyword(Blockquote(toks)):
 				Assert.equals( 1, toks.length );
 				
-				switch(toks[0].token) {
+				switch(toks[0]) {
 					case Keyword(Paragraph(toks)): 
-						var filtered = toks.filter( function(t) return switch(t.token) {
+						var filtered = toks.filter( function(t) return switch(t) {
 							case Const(CString(_)): true;
 							case _: false;
 						} );
@@ -161,11 +160,11 @@ class MarkdownParserSpec {
 		
 		//trace( tokens );
 		
-		switch (tokens[0].token) {
+		switch (tokens[0]) {
 			case Keyword(Blockquote(toks)):
 				Assert.equals( 4, toks.length );
 				
-				var filtered = toks.filter( function(t) return switch(t.token) {
+				var filtered = toks.filter( function(t) return switch(t) {
 					case Keyword(Code(_, _, _)): true;
 					case _: false;
 				} );
@@ -192,13 +191,13 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 1, tokens.length );
 		
-		switch (tokens[0].token) {
+		switch (tokens[0]) {
 			case Keyword(Blockquote(toks)):
 				Assert.equals( 3, toks.length );
 				
-				switch (toks[1].token) {
-					case Keyword(Blockquote([ { token:Keyword(Paragraph(toks)) } ])):
-						var filtered = toks.filter( function(t) return switch(t.token) {
+				switch (toks[1]) {
+					case Keyword(Blockquote([ Keyword(Paragraph(toks)) ])):
+						var filtered = toks.filter( function(t) return switch(t) {
 							case Const(CString(_)): true;
 							case _: false;
 						} );
@@ -226,18 +225,18 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 12, tokens.length );
 		
-		var filtered = tokens.filter( function(t) return switch (t.token) {
+		var filtered = tokens.filter( function(t) return switch (t) {
 			case Keyword(Collection(_, _)): true;
 			case _: false;
 		} );
 		
 		Assert.equals( 6, filtered.length );
 		
-		for (token in filtered) switch (token.token) {
+		for (token in filtered) switch (token) {
 			case Keyword(Collection(ordered, tokens)):
 				Assert.isFalse( ordered );
 				
-				var filtered = tokens.filter( function(t) return switch(t.token) {
+				var filtered = tokens.filter( function(t) return switch(t) {
 					case Keyword(Item(_, _)): true;
 					case _: false;
 				} );
@@ -263,7 +262,7 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 8, tokens.length );
 		
-		var filtered = tokens.filter( function(t) return switch (t.token) {
+		var filtered = tokens.filter( function(t) return switch (t) {
 			case Keyword(Collection(_, _)): true;
 			case _: false;
 		} );
@@ -272,11 +271,11 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 4, filtered.length );
 		
-		for (token in filtered) switch (token.token) {
+		for (token in filtered) switch (token) {
 			case Keyword(Collection(ordered, tokens)):
 				Assert.isTrue( ordered );
 				
-				var filtered = tokens.filter( function(t) return switch(t.token) {
+				var filtered = tokens.filter( function(t) return switch(t) {
 					case Keyword(Item(_, _)): true;
 					case _: false;
 				} );
@@ -305,12 +304,12 @@ class MarkdownParserSpec {
 		
 		var expected = [ { m:'1', tl:45 }, { m:'2', tl:7 }, { m:'3', tl:3 } ];
 		
-		for (token in tokens) switch (token.token) {
+		for (token in tokens) switch (token) {
 			case Keyword(Collection(ordered, tokens)):
 				Assert.isTrue( ordered );
 				Assert.equals( 3, tokens.length );
 				
-				for (i in 0...tokens.length) switch( tokens[i].token ) {
+				for (i in 0...tokens.length) switch( tokens[i] ) {
 					case Keyword(Item(mark, tokens)):
 						//untyped console.log( expected[i] );
 						//untyped console.log( tokens );
@@ -336,7 +335,7 @@ class MarkdownParserSpec {
 		//trace( tokens );
 		//untyped console.log( tokens );
 		
-		var filtered = tokens.filter( function(t) return switch (t.token) {
+		var filtered = tokens.filter( function(t) return switch (t) {
 			case Keyword(Header(_, _, _)): true;
 			case _: false;
 		} );
@@ -362,11 +361,11 @@ class MarkdownParserSpec {
 			{a:true, l:2, t: Const(CString('H2-alt')) }, 
 		];
 		
-		for (i in 0...filtered.length) switch (filtered[i].token) {
+		for (i in 0...filtered.length) switch (filtered[i]) {
 			case Keyword(Header(alt, len, text)):
 				Assert.equals( expected[i].a, alt );
 				Assert.equals( expected[i].l, len );
-				Assert.isTrue( haxe.EnumTools.EnumValueTools.equals(text[0].token, expected[i].t ) );
+				Assert.isTrue( haxe.EnumTools.EnumValueTools.equals(text[0], expected[i].t ) );
 				
 			case _:
 				
@@ -384,7 +383,7 @@ class MarkdownParserSpec {
 		//trace( tokens );
 		//untyped console.log( tokens );
 		
-		var filtered = tokens.filter( function(t) return switch (t.token) {
+		var filtered = tokens.filter( function(t) return switch (t) {
 			case Keyword(Horizontal(_)): true;
 			case _: false;
 		} );
@@ -393,7 +392,7 @@ class MarkdownParserSpec {
 		
 		var expected = ['* ', '*', '*', '- ', '-'];
 		
-		for (i in 0...filtered.length) switch (filtered[i].token) {
+		for (i in 0...filtered.length) switch (filtered[i]) {
 			case Keyword(Horizontal(character)):
 				Assert.equals( expected[i], character );
 				
@@ -424,18 +423,18 @@ class MarkdownParserSpec {
 			{ text:'Empty', url:'', title:'' },
 		];
 		
-		for (i in 0...tokens.length) switch (tokens[i].token) {
+		for (i in 0...tokens.length) switch (tokens[i]) {
 			case Keyword(Paragraph(tokens)):
 				//trace( tokens );
 				
-				var filtered = tokens.filter( function(t) return switch(t.token) {
+				var filtered = tokens.filter( function(t) return switch(t) {
 					case Keyword(Link(_, _, _, _)): true;
 					case _: false;
 				} );
 				
 				Assert.equals( 1, filtered.length );
 				
-				for (token in filtered) switch (token.token) {
+				for (token in filtered) switch (token) {
 					case Keyword(Link(ref, text, url, title)):
 						Assert.isFalse( ref );
 						Assert.equals( expected[i].text, text );
@@ -460,7 +459,7 @@ class MarkdownParserSpec {
 		//trace( tokens );
 		//untyped console.log( tokens );
 		
-		var filtered = tokens.filter( function(t) return switch (t.token) {
+		var filtered = tokens.filter( function(t) return switch (t) {
 			case Keyword(Paragraph(_)), Keyword(Code(_, _, _)): true;
 			case _: false;
 		} );
@@ -505,12 +504,12 @@ class MarkdownParserSpec {
 			{ ref:false, text:'id', url:'http://example.com/', title:'Optional Title Here' },
 		];
 		
-		for (i in 0...filtered.length) switch(filtered[i].token) {
+		for (i in 0...filtered.length) switch(filtered[i]) {
 			case Keyword(Paragraph(tokens)):
 				
 				//untyped console.log( tokens );
 				
-				var filtered = tokens.filter( function(t) return switch(t.token) {
+				var filtered = tokens.filter( function(t) return switch(t) {
 					case Keyword(Link(_, _, _, _)), Keyword(Resource(_, _, _)): true;
 					case _: false;
 				} );
@@ -519,7 +518,7 @@ class MarkdownParserSpec {
 				
 				//untyped console.log( filtered );
 				
-				switch (filtered[0].token) {
+				switch (filtered[0]) {
 					case Keyword(Link(ref, text, url, title)):
 						Assert.equals( e.ref, ref );
 						Assert.equals( e.text, text );
@@ -555,13 +554,13 @@ class MarkdownParserSpec {
 		
 		var expected = [ { a:108, b:2 }, { a:2, b:2 } ];
 		
-		for (i in 0...tokens.length) switch (tokens[i].token) {
+		for (i in 0...tokens.length) switch (tokens[i]) {
 			case Keyword(Paragraph(toks)):
 				//untyped console.log( expected[i] );
 				
 				Assert.equals( expected[i].a, toks.length );
 				
-				var filtered = toks.filter( function(t) return switch (t.token) {
+				var filtered = toks.filter( function(t) return switch (t) {
 					case Keyword(Link(_, _, _, _)), Keyword(Resource(_, _, _)): true;
 					case _: false;
 				} );
@@ -586,7 +585,7 @@ class MarkdownParserSpec {
 		//trace( tokens );
 		//untyped console.log( tokens );
 		
-		var filtered = tokens.filter( function(t) return switch(t.token) {
+		var filtered = tokens.filter( function(t) return switch(t) {
 			case Keyword(Header(_, _, _)): true;
 			case _: false;
 		} );
@@ -622,16 +621,16 @@ class MarkdownParserSpec {
 		
 		Assert.equals( 1, tokens.length );
 		
-		switch (tokens[0].token) {
+		switch (tokens[0]) {
 			case Keyword(Paragraph(tokens)):
-				var filtered = tokens.filter( function(t) return switch (t.token) {
+				var filtered = tokens.filter( function(t) return switch (t) {
 					case Const(_), Tilde: true;
 					case _: false;
 				} );
 				
 				Assert.equals( 32, filtered.length );
 				
-				filtered = tokens.filter( function(t) return switch (t.token) {
+				filtered = tokens.filter( function(t) return switch (t) {
 					case Tilde: true;
 					case _: false;
 				} );
@@ -652,7 +651,7 @@ class MarkdownParserSpec {
 		
 		//untyped console.log( tokens );
 		
-		var filtered = tokens.filter( function(t) return t.token.match( Keyword(Code(_, _, _)) ) );
+		var filtered = tokens.filter( function(t) return t.match( Keyword(Code(_, _, _)) ) );
 		
 		Assert.equals( 1, filtered.length );
 	}
@@ -665,9 +664,9 @@ class MarkdownParserSpec {
 		var parser = new MarkdownParser();
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue14' );
 		
-		switch (tokens[0].token) {
+		switch (tokens[0]) {
 			case Keyword(Paragraph(tokens)):
-				var filtered = tokens.filter( function(t) return t.token.match( Keyword(Image(_, _, _, _)) ) );
+				var filtered = tokens.filter( function(t) return t.match( Keyword(Image(_, _, _, _)) ) );
 				
 				//untyped console.log( filtered );
 				//untyped console.log( filtered.map( function(t) return parser.printHTML( t, ['' => {url:'', title:''}] ) ).join('\r\n') );

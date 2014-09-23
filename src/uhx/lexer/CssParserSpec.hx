@@ -40,12 +40,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( CssSelectors.Type( 'div' ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -67,13 +67,13 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
 					s.match( Group( [Type( 'div' ), Type( 'img' )] ) )
 				);
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -95,13 +95,13 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
 					s.match( Group( [Type( 'div' ), Type( 'img' )] ) )
 				);
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -123,12 +123,12 @@ class CssParserSpec {
 		//untyped console.log ( t );
 		Assert.equals( 1, t.length );
 		
-		switch ( t[0].token ) {
+		switch ( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( ID( 'a' ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'b', n );
 						Assert.equals( 'c', v );
@@ -147,12 +147,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch ( t[0].token ) {
+		switch ( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Group( [ID('a'), ID('b'), ID('c')] ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'd', n );
 						Assert.equals( 'e', v );
@@ -171,12 +171,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Combinator( ID( 'a' ), ID( 'b' ), Child ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'c', n );
 						Assert.equals( 'd', v );
@@ -195,14 +195,14 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch ( t[0].token ) {
+		switch ( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
 					s.match( CssSelectors.Class( ['class'] ) )
 				);
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -224,7 +224,7 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch( t[0].token ) {
+		switch( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
 					//s.match( Group( [CssSelectors.Class( ['class1'] ), CssSelectors.Class( ['class2'] )] ) )
@@ -232,7 +232,7 @@ class CssParserSpec {
 				);
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -254,7 +254,7 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch( t[0].token ) {
+		switch( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
 					//s.match( Group( [CssSelectors.Class( ['class1'] ), CssSelectors.Class( ['class2'] )] ) )
@@ -262,7 +262,7 @@ class CssParserSpec {
 				);
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -281,7 +281,7 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Comment( value ):
 				Assert.equals( 'div http://url.org/index.php?f=1&g=11#blob !@?&', value );
 				
@@ -295,7 +295,7 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Comment( value ):
 				Assert.equals( 'rgb(241,89,34) - http://www.colorhexa.com/f15922\r\ncomplementary colour \r\nrgb(34,186,241) - http://www.colorhexa.com/22baf1', value );
 				
@@ -309,7 +309,7 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Comment( value ):
 				Assert.equals( '*\r\n* something\r\n\t* else\r\n * again', value );
 				
@@ -322,15 +322,15 @@ class CssParserSpec {
 		var t = parse( '/* comment1 */\r\n\r\nimg,\r\n.class {\r\n\tdisplay: block;\r\n}/*comment2*/' );
 		////untyped console.log( t );
 		Assert.equals( 3, t.length );
-		Assert.isTrue( t[0].token.match( Comment( 'comment1' ) ) );
-		Assert.isTrue( t[2].token.match( Comment( 'comment2' ) ) );
+		Assert.isTrue( t[0].match( Comment( 'comment1' ) ) );
+		Assert.isTrue( t[2].match( Comment( 'comment2' ) ) );
 		
-		switch (t[1].token) {
+		switch (t[1]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Group( [CssSelectors.Type( 'img' ), CssSelectors.Class( ['class'] )] ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -355,12 +355,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Combinator( Type( 'a' ), Type( 'b' ), Child ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'display', n );
 						Assert.equals( 'block', v );
@@ -385,12 +385,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Type( 'a' ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'b', n );
 						Assert.equals( '1.1', v );
@@ -409,12 +409,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Type( 'a' ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'b', n );
 						Assert.equals( '"/unicode0123456789!?"£$"', v );
@@ -433,12 +433,12 @@ class CssParserSpec {
 		//untyped console.log( t );
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Type( 'a' ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'b', n );
 						Assert.equals( '1, 2, 3', v );
@@ -458,12 +458,12 @@ class CssParserSpec {
 		
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Group( [ Type( 'a' ), Attribute( 'b', Exact, '"/"' ) ] ) ) );
 				Assert.equals( 1, t.length );
 				
-				switch (t[0].token) {
+				switch (t[0]) {
 					case Keyword(Declaration(n, v)):
 						Assert.equals( 'c', n );
 						Assert.equals( 'd', v );
@@ -489,11 +489,11 @@ class CssParserSpec {
 		
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.equals( 3, t.length );
 				
-				for (i in 0...t.length) switch (t[0].token) {
+				for (i in 0...t.length) switch (t[0]) {
 					case Comment(v) if (i == 0 || i == 2):
 						Assert.contains( v, ['c1', 'c:2;']);
 						
@@ -516,7 +516,7 @@ class CssParserSpec {
 		
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Universal ) );
 				Assert.equals( 1, t.length );
@@ -533,7 +533,7 @@ class CssParserSpec {
 		
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( Group( [Universal, Pseudo( 'not', '[type]' )] ) ) );
 				Assert.equals( 1, t.length );
@@ -545,10 +545,10 @@ class CssParserSpec {
 	
 	public function testHaxeIoCss() {
 		var t = parser.toTokens( ByteData.ofString( haxe.Resource.getString('haxe.io.css') ), 'haxe.io.css' );
-		var comments = t.filter( function (t) return t.token.match( Comment(_) ) );
-		var media = t.filter( function(t) return t.token.match( Keyword( AtRule(_, _, _) ) ) );
-		var rules = t.filter( function(t) return t.token.match( Keyword( RuleSet(_, _) ) ) );
-		var remainder = t.filter( function(t) return switch (t.token) {
+		var comments = t.filter( function (t) return t.match( Comment(_) ) );
+		var media = t.filter( function(t) return t.match( Keyword( AtRule(_, _, _) ) ) );
+		var rules = t.filter( function(t) return t.match( Keyword( RuleSet(_, _) ) ) );
+		var remainder = t.filter( function(t) return switch (t) {
 			case Comment(_), Keyword( AtRule(_, _, _) ), Keyword( RuleSet(_, _) ): false;
 			case _: true;
 		} );
@@ -564,10 +564,10 @@ class CssParserSpec {
 	
 	public function testNormalizeCss() {
 		var t = parser.toTokens( ByteData.ofString( haxe.Resource.getString('normalize.css') ), 'normalize.css' );
-		var comments = t.filter( function (t) return t.token.match( Comment(_) ) );
-		var media = t.filter( function(t) return t.token.match( Keyword( AtRule(_, _, _) ) ) );
-		var rules = t.filter( function(t) return t.token.match( Keyword( RuleSet(_, _) ) ) );
-		var remainder = t.filter( function(t) return switch (t.token) {
+		var comments = t.filter( function (t) return t.match( Comment(_) ) );
+		var media = t.filter( function(t) return t.match( Keyword( AtRule(_, _, _) ) ) );
+		var rules = t.filter( function(t) return t.match( Keyword( RuleSet(_, _) ) ) );
+		var remainder = t.filter( function(t) return switch (t) {
 			case Comment(_), Keyword( AtRule(_, _, _) ), Keyword( RuleSet(_, _) ): false;
 			case _: true;
 		} );
@@ -587,12 +587,12 @@ class CssParserSpec {
 		
 		//untyped console.log( t );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue( s.match( CssSelectors.Class( ['class'] ) ) );
 				Assert.equals( 2, t.length );
-				Assert.isTrue( t[0].token.match( Keyword( Declaration( '--my-colour', 'red' ) ) ) );
-				Assert.isTrue( t[1].token.match( Keyword( Declaration( 'color', 'var(--my-colour)' ) ) ) );
+				Assert.isTrue( t[0].match( Keyword( Declaration( '--my-colour', 'red' ) ) ) );
+				Assert.isTrue( t[1].match( Keyword( Declaration( 'color', 'var(--my-colour)' ) ) ) );
 				
 			case _:
 				
@@ -606,7 +606,7 @@ class CssParserSpec {
 		
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword( RuleSet(s, t) ):
 				Assert.isTrue( s.match( Group( [Type('a'), Type('b')] ) ) );
 				
@@ -622,10 +622,10 @@ class CssParserSpec {
 		
 		Assert.equals( 1, t.length );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword( RuleSet(s, t) ):
 				Assert.isTrue( s.match( Type('a') ) );
-				Assert.isTrue( t[0].token.match( Keyword( Declaration('height', 'calc(100px - 2em)') ) ) );
+				Assert.isTrue( t[0].match( Keyword( Declaration('height', 'calc(100px - 2em)') ) ) );
 				
 			case _:
 				
@@ -637,7 +637,7 @@ class CssParserSpec {
 		
 		//untyped console.log( t );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword( AtRule(n, q, t) ):
 				Assert.equals( 'media', n );
 				Assert.equals( 
@@ -659,7 +659,7 @@ class CssParserSpec {
 		
 		//untyped console.log( t );
 		
-		switch (t[0].token) {
+		switch (t[0]) {
 			case Keyword( AtRule(n, q, t) ):
 				Assert.equals( 'media', n );
 				Assert.equals( 
@@ -687,7 +687,7 @@ class CssParserSpec {
 		
 		Assert.equals( 2, t.length );
 		
-		for (i in 0...t.length) switch (t[i].token) {
+		for (i in 0...t.length) switch (t[i]) {
 			case Keyword(RuleSet(s, t)) if (i == 0):
 				Assert.isTrue( s.match( Type('a') ) );
 				Assert.equals( 1, t.length );
