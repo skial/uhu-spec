@@ -193,7 +193,7 @@ class HtmlLexerSpec {
 		Assert.equals( 2, t.length );
 		
 		switch (t[1]) {
-			case Keyword(Tag('p', _, [1], t)):
+			case Keyword(Tag('p', _, [1], t, _)):
 				t = t.filter( whitespace );
 				
 				Assert.equals( 7, t.length );
@@ -224,7 +224,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Tag( 'a', _, [1,4,6], t ) ):
+			case Keyword( Tag( 'a', _, [1,4,6], t, _ ) ):
 				Assert.equals( 3, t.length );
 				Assert.isTrue( t[0].match(
 					Keyword( Tag( 'a', _, [1,4,6], _ ) )
@@ -243,7 +243,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		while (true) switch (t[0]) {
-			case Keyword( Tag( name, _, c, tokens ) ):
+			case Keyword( Tag( name, _, c, tokens, _ ) ):
 				t = tokens;
 				
 				if (name == 'b') {
@@ -273,12 +273,12 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		switch (t[0]) {
-			case Keyword( Tag( name, _, c, tokens ) ):
+			case Keyword( Tag( name, _, c, tokens, _ ) ):
 				Assert.equals( 'b', name );
 				Assert.equals( 1, tokens.length );
 				
 				switch (tokens[0]) {
-					case Keyword( Tag( name, _, c, tokens ) ):
+					case Keyword( Tag( name, _, c, tokens, _ ) ):
 						Assert.equals( 'i', name );
 						Assert.equals( 0, tokens.length );
 						
@@ -321,7 +321,7 @@ class HtmlLexerSpec {
 		Assert.isTrue( t.length == 1 );
 		
 		switch (t[0]) {
-			case Keyword( Tag(name, attributes, categories, tokens) ):
+			case Keyword( Tag(name, attributes, categories, tokens, _) ):
 				Assert.isTrue( tokens.length == 0 );
 				Assert.equals( 'a', name );
 				
@@ -348,7 +348,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Tag('a', attributes, categories, []) ):
+			case Keyword( Tag('a', attributes, categories, [], _) ):
 				Assert.isFalse( attributes.exists( 'b  =  ' ) );
 				Assert.equals( '  aaa bbb ccc  ', attributes.get('b') );
 				
@@ -369,7 +369,7 @@ class HtmlLexerSpec {
 		var t = parse( '<link /><style></style><div></div><nav></nav><h1></h1><script></script><em></em><svg></svg><details /><a></a><img /><skial />' );
 		
 		for (i in t) switch (i) {
-			case Keyword( Tag(n, _, c, _) ):
+			case Keyword( Tag(n, _, c, _, _) ):
 				switch ((n:HtmlTag)) {
 					case Link: Assert.equals( ''+[0], ''+c );
 					case Style: Assert.equals( ''+[0, 1], ''+c );
@@ -400,7 +400,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('script', _, [0, 1, 4, 8], tokens)):
+			case Keyword(Tag('script', _, [0, 1, 4, 8], tokens, _)):
 				Assert.isTrue( 
 					tokens[0].match( 
 						Const(CString( 'console.log( 1 <= 10 && 10 => 1 );' ))
@@ -421,7 +421,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('template', _, [0, 1, 4, 8], tokens)):
+			case Keyword(Tag('template', _, [0, 1, 4, 8], tokens, _)):
 				Assert.isTrue( 
 					tokens[0].match( 
 						Const(CString( '\r\n<img src="" alt="great image">\r\n <div class="comment"></div>\r\n' ))
@@ -441,14 +441,14 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		var template:Array<Token<HtmlKeywords>> = switch (t[0]) {
-			case Keyword(Tag('div', _, _, tokens)): tokens;
+			case Keyword(Tag('div', _, _, tokens, _)): tokens;
 			case _: [];
 		}
 		
 		//untyped console.log( template );
 		
 		switch (template[0]) {
-			case Keyword(Tag('template', _, [0, 1, 4, 8], tokens)):
+			case Keyword(Tag('template', _, [0, 1, 4, 8], tokens, _)):
 				Assert.isTrue( 
 					tokens[0].match( 
 						Const(CString( '<a/><b/>' ))
@@ -468,7 +468,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('a:namespace', _, [ -1], tokens)):
+			case Keyword(Tag('a:namespace', _, [ -1], tokens, _)):
 				Assert.equals( 1, tokens.length );
 				Assert.isTrue( tokens[0].match( Const(CString( 'Hello Namespaced World' )) ) );
 				
