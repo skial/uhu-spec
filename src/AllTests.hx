@@ -5,9 +5,11 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
-#if sys
+#if (sys && tuli)
 import uhx.tuli.plugins.AtomSpec;
 #end
+
+import dtx.*;
 
 import uhx.sys.EdeSpec;
 import uhx.sys.LiySpec;
@@ -20,17 +22,29 @@ import uhx.lexer.CssParserSpec;
 import uhx.lexer.HtmlLexerSpec;
 /*import uhx.select.Json;
 import uhx.select.JsonSelectSpec;
-import uhx.macro.YieldSpec;*/
+*/
 import uhx.lexer.MarkdownParserSpec;
-//import uhx.macro.WaitSpec;
-//import uhx.macro.NamedArgsSpec;
+
+#if klas
+	#if wait
+		import uhx.macro.WaitSpec;
+	#end
+	#if yield
+		import uhx.macro.YieldSpec;
+	#end
+	#if named
+		import uhx.macro.NamedArgsSpec;
+	#end
+	#if requests
+		import uhx.http.RequestSpec;
+	#end
+#end
 /*import uhx.mo.MoSpec;
 
 //import haxe.Utf8Spec;
 //import uhx.web.URISpec;
 //import uhx.fmt.ASCIISpec;
 //import uhx.oauth.GithubSpec;
-import uhx.http.RequestSpec;
 
 /*#if sys
 import uhx.oauth.OAuth10aSpec;
@@ -83,12 +97,8 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		//runner.addCase( new WaitSpec() );
-		/*runner.addCase( new YieldSpec() );
-		runner.addCase( new NamedArgsSpec() );
-		
 		// HTTP Request Tests
-		/*runner.addCase( new RequestSpec() );
+		/*
 		
 		// Lexer and Parser Tests
 		runner.addCase( new MoSpec() );*/
@@ -102,11 +112,41 @@ class AllTests {
 		runner.addCase( new LiySpec() );
 		runner.addCase( new EdeSpec() );
 		
-		runner.addCase( new TraitSpec() );
+		// Experimental Build Macros
+		#if klas
+			runner.addCase( new TraitSpec() );
+			
+			#if wait
+				runner.addCase( new WaitSpec() );
+			#end
+			
+			#if yield
+				runner.addCase( new YieldSpec() );
+			#end
+			
+			#if named
+				runner.addCase( new NamedArgsSpec() );
+			#end
+			
+			#if requests
+				runner.addCase( new RequestSpec() );
+			#end
+		#end
 		
-		#if sys
-		// Tuli Plugin Tests
-		runner.addCase( new AtomSpec() );
+		#if (sys && tuli)
+			// Tuli Plugin Tests
+			runner.addCase( new AtomSpec() );
+		#end
+		
+		#if detox
+			runner.addCase( new ElementManipulationSpec() );
+			runner.addCase( new CollectionSpec() );
+			runner.addCase( new TraversingSpec() );
+			runner.addCase( new DOMManipulationSpec() );
+			runner.addCase( new CollectionElementManipulationSpec() );
+			runner.addCase( new CollectionTraversingSpec() );
+			runner.addCase( new ToolsSpec() );
+			runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
 		Report.create( runner );
