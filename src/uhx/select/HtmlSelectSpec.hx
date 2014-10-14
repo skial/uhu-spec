@@ -214,4 +214,54 @@ class HtmlSelectSpec {
 		Assert.isTrue( mo[0].match( Keyword(Tag('pre', _, _, [Keyword(Tag('pre', _, _, [Const(CString('c'))], _))], _)) ) );
 	}
 	
+	public function testAttributes_Name() {
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 'div[a]' );
+		
+		//untyped console.log( mo );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag('div', a, _, [Const(CString('b'))], _)):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( '', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_ExactUnQuoted() {
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 'div[a=b]' );
+		
+		//untyped console.log( mo );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag('div', a, _, [Const(CString('b'))], _)):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'b', a.get('a') );
+				
+			case _:
+		}
+	}
+	
+	// currently failing
+	public function testAttributes_ExactQuoted() {
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 'div[a="b"]' );
+		
+		untyped console.log( mo );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag('div', a, _, [Const(CString('b'))], _)):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'b', a.get('a') );
+				
+			case _:
+		}
+	}
+	
 }
