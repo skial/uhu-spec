@@ -26,6 +26,8 @@ class RequestSpec implements Klas {
 	 * \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
 	 * 		Start a local server you idiot.
 	 * 			nekotools server -p 80
+	 * 			----------or----------
+	 * 			http-server -p 8080
 	 * / / / / / / / / / / / / / / / / / / / / /
 	 */
 	
