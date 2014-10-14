@@ -12,6 +12,7 @@ private class TraitA {
 		
 	}
 	
+	public var word:String = 'om nom nom';
 	public var counter:Int = 0;
 	
 	public function sayHelloWorld():String {
@@ -24,7 +25,9 @@ private class TraitA {
 	
 }
 
-private class Test implements Klas {
+private class TestA implements Klas {
+	
+	public var word:String = 'nik';
 	
 	@:use var traits = [TraitA];
 	
@@ -38,6 +41,16 @@ private class Test implements Klas {
 	
 }
 
+private class TestB implements Klas {
+	
+	@:use var traits = [TraitA];
+	
+	public function new() {
+		
+	}
+	
+}
+
 class TraitSpec {
 	
 	public function new() {
@@ -45,15 +58,18 @@ class TraitSpec {
 	}
 	
 	public function testTrait_forwarding() {
-		var t = new Test();
+		var a = new TestA();
+		var b = new TestB();
 		var o = new TraitA();
 		
-		Assert.equals( 'Hello World', t.sayHelloWorld() );
-		Assert.equals( 0, t.counter );
-		t.counter++;
-		Assert.equals( 1, t.counter );
+		Assert.equals( 'Hello World', a.sayHelloWorld() );
+		Assert.equals( 0, a.counter );
+		a.counter++;
+		Assert.equals( 1, a.counter );
 		Assert.equals( 0, o.counter );
-		Assert.equals( 'Hello Universe', Test.sayHelloUniverse() );
+		Assert.equals( 'Hello Universe', TestA.sayHelloUniverse() );
+		Assert.equals( 'nik', a.word );
+		Assert.equals( 'om nom nom', b.word );
 	}
 	
 }
