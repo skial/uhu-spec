@@ -5,25 +5,37 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
-#if (sys && tuli)
-import uhx.tuli.plugins.AtomSpec;
+#if uhu
+import uhx.select.HtmlSelectSpec;
 #end
 
-import dtx.*;
+#if (sys && tuli)
+	import uhx.tuli.plugins.AtomSpec;
+#end
 
-import uhx.sys.EdeSpec;
-import uhx.sys.LiySpec;
-import uhx.sys.LodSpec;
+#if detox
+	import dtx.*;
+#end
 
-import uhx.macro.TraitSpec;
+#if cmd
+	import uhx.sys.EdeSpec;
+	import uhx.sys.LiySpec;
+	import uhx.sys.LodSpec;
+#end
 
-//import uhx.lexer.HaxeParserSpec;
-import uhx.lexer.CssParserSpec;
-import uhx.lexer.HtmlLexerSpec;
-/*import uhx.select.Json;
-import uhx.select.JsonSelectSpec;
-*/
-import uhx.lexer.MarkdownParserSpec;
+#if (uhu && klas)
+	import uhx.macro.TraitSpec;
+#end
+
+#if mo
+	//import uhx.lexer.HaxeParserSpec;
+	import uhx.lexer.CssParserSpec;
+	import uhx.lexer.HtmlLexerSpec;
+	/*import uhx.select.Json;
+	import uhx.select.JsonSelectSpec;
+	*/
+	import uhx.lexer.MarkdownParserSpec;
+#end
 
 #if klas
 	#if wait
@@ -97,24 +109,32 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		// HTTP Request Tests
-		/*
+		#if uhu
+			runner.addCase( new HtmlSelectSpec() );
+		#end
 		
 		// Lexer and Parser Tests
-		runner.addCase( new MoSpec() );*/
-		//runner.addCase( new HaxeParserSpec() );
-		runner.addCase( new MarkdownParserSpec() );
-		runner.addCase( new CssParserSpec() );
-		runner.addCase( new HtmlLexerSpec() );
-		//runner.addCase( new JsonSelectSpec() );
+		#if mo
+			//runner.addCase( new MoSpec() );
+			//runner.addCase( new HaxeParserSpec() );
+			runner.addCase( new MarkdownParserSpec() );
+			runner.addCase( new CssParserSpec() );
+			runner.addCase( new HtmlLexerSpec() );
+			//runner.addCase( new JsonSelectSpec() );
+		#end
+		
 		// Commandline Tests
-		runner.addCase( new LodSpec() );
-		runner.addCase( new LiySpec() );
-		runner.addCase( new EdeSpec() );
+		#if cmd
+			runner.addCase( new LodSpec() );
+			runner.addCase( new LiySpec() );
+			runner.addCase( new EdeSpec() );
+		#end
 		
 		// Experimental Build Macros
 		#if klas
-			runner.addCase( new TraitSpec() );
+			#if uhu
+				runner.addCase( new TraitSpec() );
+			#end
 			
 			#if wait
 				runner.addCase( new WaitSpec() );
@@ -139,14 +159,14 @@ class AllTests {
 		#end
 		
 		#if detox
-			runner.addCase( new ElementManipulationSpec() );
+			/*runner.addCase( new ElementManipulationSpec() );
 			runner.addCase( new CollectionSpec() );
 			runner.addCase( new TraversingSpec() );
 			runner.addCase( new DOMManipulationSpec() );
 			runner.addCase( new CollectionElementManipulationSpec() );
 			runner.addCase( new CollectionTraversingSpec() );
 			runner.addCase( new ToolsSpec() );
-			runner.addCase( new CollectionDOMManipulationSpec() );
+			runner.addCase( new CollectionDOMManipulationSpec() );*/
 		#end
 		
 		Report.create( runner );
