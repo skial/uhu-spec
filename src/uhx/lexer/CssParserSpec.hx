@@ -460,7 +460,12 @@ class CssParserSpec {
 		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
-				Assert.isTrue( s.match( Group( [ Type( 'a' ), Attribute( 'b', Exact, '"/"' ) ] ) ) );
+				//Assert.isTrue( s.match( Group( [ Type( 'a' ), Attribute( 'b', Exact, '"/"' ) ] ) ) );
+				Assert.isTrue( s.match( Combinator(
+					CssSelectors.Type('a'),
+					Attribute('b', Exact, '"/"'),
+					None
+				) ) );
 				Assert.equals( 1, t.length );
 				
 				switch (t[0]) {
@@ -535,7 +540,12 @@ class CssParserSpec {
 		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
-				Assert.isTrue( s.match( Group( [Universal, Pseudo( 'not', '[type]' )] ) ) );
+				//Assert.isTrue( s.match( Group( [Universal, Pseudo( 'not', '[type]' )] ) ) );
+				Assert.isTrue( s.match( Combinator(
+					Universal,
+					Pseudo('not', '[type]'),
+					None
+				) ) );
 				Assert.equals( 1, t.length );
 				
 			case _:
@@ -702,6 +712,80 @@ class CssParserSpec {
 		
 		Assert.equals( 'a {\r\n\tb: c;\r\n}\r\nd {\r\n\te: f;\r\n}', [for (i in t) parser.printString( i )].join('\r\n') );
 		Assert.equals( 'a{b:c;}d{e:f;}', [for (i in t) parser.printString( i, true )].join('') );
+	}
+	
+	public function testClassDeclaration_SpacedRuleSet() {
+		var t = parse( '.a .b .c .d { c:d; }' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( Combinator(CssSelectors.Class(['a']), 
+					Combinator(CssSelectors.Class(['b']),
+						Combinator(CssSelectors.Class(['c']), CssSelectors.Class(['d']), Descendant),
+						Descendant
+					),
+					Descendant
+				) ) );
+				
+			case _:
+		}
+	}
+	
+	public function testClassDeclaration_ChainedRuleSet() {
+		var t = parse( '.a.b.c.d { c:d; }' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( CssSelectors.Class(['a', 'b', 'c', 'd']) ) );
+				
+			case _:
+		}
+	}
+	
+	public function testPseudo_JoinedRuleSet() {
+		var t = parse( 'a:first-child { b:c; }' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( Combinator(
+					CssSelectors.Type('a'),
+					Pseudo('first-child', ''),
+					None
+				) ) );
+				
+			case _:
+		}
+	}
+	
+	public function testAttribute_JoinedRuleSet() {
+		var t = parse( 'a[name] {b:c;}' );
+		
+		//untyped console.log( t );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( Combinator(
+					CssSelectors.Type('a'),
+					Attribute('name', AttributeType.Name('name'), ''),
+					None
+				) ) );
+				
+			case _:
+		}
 	}
 	
 }
