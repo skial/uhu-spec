@@ -24,6 +24,7 @@
 -cp ../taurine/src
 -cp ../../../haxe.io/src
 -debug
+#-D dump
 -D macro_times
 -main AllTests
 -resource resources/markdown/be_paragraph.html@be_paragraph.html
