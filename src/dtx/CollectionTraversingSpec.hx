@@ -175,7 +175,7 @@ class CollectionTraversingSpec
 		Assert.equals(0, emptyDOMCollection.parent().length);
 	}
 
-	public function testParent_onElementWithNoParent()
+	/*public function testParent_onElementWithNoParent()
 	{
 		// eg Document
 		#if js 
@@ -185,7 +185,7 @@ class CollectionTraversingSpec
 		#end
 		var q = new DOMCollection([doc]);
 		Assert.equals(0, q.parent().length);
-	}
+	}*/
 
 	public function testAncestors()
 	{
@@ -208,7 +208,7 @@ class CollectionTraversingSpec
 		Assert.equals(0, emptyDOMCollection.ancestors().length);
 	}
 
-	public function testAncestors_onElementWithNoParents()
+	/*public function testAncestors_onElementWithNoParents()
 	{
 		// eg Document
 		#if js
@@ -219,7 +219,7 @@ class CollectionTraversingSpec
 		var q = new DOMCollection([doc]);
 		var a = q.ancestors();
 		Assert.equals(0, a.length);
-	}
+	}*/
 
 	public function testDescendants()
 	{

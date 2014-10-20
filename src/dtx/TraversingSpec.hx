@@ -184,7 +184,7 @@ class TraversingSpec
 		Assert.isNull(nullNode.parents());
 	}
 
-	public function testParentOnParentNull()
+	/*public function testParentOnParentNull()
 	{
 		#if js
 		var doc:DOMNode = untyped __js__('document');
@@ -193,7 +193,7 @@ class TraversingSpec
 		#end
 		Assert.isNull(doc.parents());
 		Assert.isNull(sampleDocument.parents());
-	}
+	}*/
 
 	public function testAncestors()
 	{
@@ -214,7 +214,7 @@ class TraversingSpec
 		Assert.equals(0, nullNode.ancestors().length);
 	}
 
-	public function TestAncestorsOnParentNull()
+	/*public function TestAncestorsOnParentNull()
 	{
 		#if js 
 		var doc:DOMNode = untyped __js__('document');
@@ -223,7 +223,7 @@ class TraversingSpec
 		#end 
 		Assert.equals(0, doc.ancestors().length);
 		Assert.equals(0, sampleDocument.ancestors().length);
-	}
+	}*/
 
 	public function testDescendants()
 	{
