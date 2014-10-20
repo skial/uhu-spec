@@ -5,7 +5,7 @@ package ;
 //import uhx.tem.TemSpec;
 //#end
 
-#if uhu
+#if (uhu && mo)
 import uhx.select.HtmlSelectSpec;
 #end
 
@@ -109,7 +109,7 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		#if uhu
+		#if (uhu && mo)
 			runner.addCase( new HtmlSelectSpec() );
 		#end
 		
@@ -159,14 +159,14 @@ class AllTests {
 		#end
 		
 		#if detox
-			/*runner.addCase( new ElementManipulationSpec() );
+			runner.addCase( new ElementManipulationSpec() );
 			runner.addCase( new CollectionSpec() );
 			runner.addCase( new TraversingSpec() );
 			runner.addCase( new DOMManipulationSpec() );
 			runner.addCase( new CollectionElementManipulationSpec() );
 			runner.addCase( new CollectionTraversingSpec() );
 			runner.addCase( new ToolsSpec() );
-			runner.addCase( new CollectionDOMManipulationSpec() );*/
+			runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
 		Report.create( runner );
