@@ -1,3 +1,14 @@
+-lib uhu
+-lib klas
+-lib wait
+-lib yield
+-lib named
+-lib cmd
+-lib requests
+-lib ajou
+-lib mo
+-lib utest
+-lib detox
 -cp src
 -js bin/uhuspec.js
 -main Main
