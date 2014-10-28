@@ -454,16 +454,14 @@ class CssParserSpec {
 	
 	public function testAttributeSelector() {
 		var t = parse( 'a[b="/"] { c: d; }' );
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
-				//Assert.isTrue( s.match( Group( [ Type( 'a' ), Attribute( 'b', Exact, '"/"' ) ] ) ) );
 				Assert.isTrue( s.match( Combinator(
 					CssSelectors.Type('a'),
-					Attribute('b', Exact, '"/"'),
+					Attribute('b', Exact, '/'),
 					None
 				) ) );
 				Assert.equals( 1, t.length );
