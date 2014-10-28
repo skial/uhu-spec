@@ -41,7 +41,7 @@ class HtmlLexerSpec {
 	
 	private function whitespace(t:Token<HtmlKeywords>) {
 		return switch (t) {
-			case Const(_): false;
+			case Keyword(HtmlKeywords.Text(_)): false;
 			case _: true;
 		}
 	}
@@ -54,7 +54,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Instruction('doctype', attributes) ):
+			case Keyword( Instruction( { name:'doctype', tokens:attributes } ) ):
 				Assert.isTrue( attributes.indexOf( 'html' ) > -1 );
 				
 			case _:
@@ -70,7 +70,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Instruction('--', attributes) ):
+			case Keyword( Instruction( { name:'--', tokens:attributes } ) ):
 				Assert.isTrue( attributes.indexOf( '[if IE]' ) > -1 );
 				
 			case _:
@@ -86,7 +86,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Instruction( '', attributes ) ):
+			case Keyword( Instruction( { name:'', tokens:attributes } ) ):
 				Assert.isTrue( attributes.indexOf( '[abc 123]' ) > -1 );
 				
 			case _:
@@ -110,7 +110,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Instruction(_, attr)):
+			case Keyword(Instruction( { tokens:attr } )):
 				Assert.isTrue( attr.indexOf( 'BODY' ) > -1 );
 				Assert.isTrue( attr.indexOf( 'font-family:' ) > -1 );
 				Assert.isTrue( attr.indexOf( 'arial,verdana,helvetica,sans-serif;' ) > -1 );
@@ -133,7 +133,7 @@ class HtmlLexerSpec {
 	
 	public function testInstructions_commented_html() {
 		var t = parse( '<a/><!-- <commented/><html>with some text</html>--><b/>' );
-		var f = t.filter( function(a) return a.match( Keyword(Instruction(_, _)) ) );
+		var f = t.filter( function(a) return a.match( Keyword(Instruction(_)) ) );
 		
 		//untyped console.log( t );
 		
@@ -141,7 +141,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, f.length );
 		
 		switch (f[0]) {
-			case Keyword(Instruction('--', attrs)):
+			case Keyword(Instruction( { name:'--', tokens:attrs } )):
 				Assert.equals( '<commented/>', attrs[0] );
 				Assert.equals( '<html>', attrs[1] );
 				Assert.equals( 'with', attrs[2] );
@@ -162,9 +162,9 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		Assert.equals( 4, t.length );
-		Assert.isTrue( t[0].match( Keyword(Instruction('--', ['<a>'])) ) );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { name:'--', tokens:['<a>'] } )) ) );
 		Assert.isTrue( t[1].match( GreaterThan ) );
-		Assert.isTrue( t[2].match( Const(CString(' --')) ) );
+		Assert.isTrue( t[2].match( Keyword(HtmlKeywords.Text( { tokens:' --' } )) ) );
 		Assert.isTrue( t[3].match( GreaterThan ) );
 	}
 	
@@ -176,7 +176,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('link', m, [0], _)):
+			case Keyword(Tag({ name:'link', attributes:m, categories:[0] })):
 				Assert.equals( 2, Lambda.count(m) );
 				
 			case _:
@@ -193,17 +193,17 @@ class HtmlLexerSpec {
 		Assert.equals( 2, t.length );
 		
 		switch (t[1]) {
-			case Keyword(Tag('p', _, [1], t, _)):
+			case Keyword(Tag({ name:'p', categories:[1], tokens:t })):
 				t = t.filter( whitespace );
 				
 				Assert.equals( 7, t.length );
-				Assert.isTrue( t[0].match( Keyword(Tag('em', _, [1, 4], _)) ));
-				Assert.isTrue( t[1].match( Keyword(Tag('em', _, [1, 4], _)) ));
-				Assert.isTrue( t[2].match( Keyword(Tag('code', _, [1, 4], _)) ));
-				Assert.isTrue( t[3].match( Keyword(Tag('code', _, [1, 4], _)) ));
-				Assert.isTrue( t[4].match( Keyword(Tag('code', _, [1, 4], _)) ));
-				Assert.isTrue( t[5].match( Keyword(Tag('code', _, [1, 4], _)) ));
-				Assert.isTrue( t[6].match( Keyword(Tag('code', _, [1, 4], _)) ));
+				Assert.isTrue( t[0].match( Keyword(Tag({ name:'em', categories:[1, 4] })) ));
+				Assert.isTrue( t[1].match( Keyword(Tag({ name:'em', categories:[1, 4] })) ));
+				Assert.isTrue( t[2].match( Keyword(Tag({ name:'code', categories:[1, 4] })) ));
+				Assert.isTrue( t[3].match( Keyword(Tag({ name:'code', categories:[1, 4] })) ));
+				Assert.isTrue( t[4].match( Keyword(Tag({ name:'code', categories:[1, 4] })) ));
+				Assert.isTrue( t[5].match( Keyword(Tag({ name:'code', categories:[1, 4] })) ));
+				Assert.isTrue( t[6].match( Keyword(Tag({ name:'code', categories:[1, 4] })) ));
 				
 			case _:
 		}
@@ -215,7 +215,7 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
-		Assert.isTrue( t[0].match( Keyword( Ref( _ ) ) ) );
+		Assert.isTrue( t[0].match( Keyword( Tag( _ ) ) ) );
 	}
 	
 	public function testTags_mismatch() {
@@ -224,10 +224,10 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Tag( 'a', _, [1,4,6], t, _ ) ):
+			case Keyword( Tag( { name:'a', categories:[1,4,6], tokens:t } ) ):
 				Assert.equals( 3, t.length );
 				Assert.isTrue( t[0].match(
-					Keyword( Tag( 'a', _, [1,4,6], _ ) )
+					Keyword( Tag( { name:'a', categories:[1,4,6] } ) )
 				) );
 				Assert.isTrue( t[1].match( Keyword( End( 'b' ) ) ) );
 				Assert.isTrue( t[2].match( Keyword( End( 'c' ) ) ) );
@@ -243,17 +243,19 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		while (true) switch (t[0]) {
-			case Keyword( Tag( name, _, c, tokens, _ ) ):
+			case Keyword( Tag( { name:name, categories:c, tokens:tokens } ) ):
 				t = tokens;
 				
 				if (name == 'b') {
-					Assert.equals( 2, tokens.length );
-					Assert.isTrue( tokens[0].match(
+					//Assert.equals( 2, tokens.length );
+					Assert.equals( 1, tokens.length );
+					/*Assert.isTrue( tokens[0].match(
 						Const( CString('<') )
 					) );
 					Assert.isTrue( tokens[1].match(
 						Const( CString('c') )
-					) );
+					) );*/
+					Assert.isTrue( tokens[0].match( Keyword(Tag( { name:'c', complete:false, tokens:[] } )) ) );
 					
 					break;
 					
@@ -273,12 +275,12 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		switch (t[0]) {
-			case Keyword( Tag( name, _, c, tokens, _ ) ):
+			case Keyword( Tag( { name:name, categories:c, tokens:tokens } ) ):
 				Assert.equals( 'b', name );
 				Assert.equals( 1, tokens.length );
 				
 				switch (tokens[0]) {
-					case Keyword( Tag( name, _, c, tokens, _ ) ):
+					case Keyword( Tag( { name:name, categories:c, tokens:tokens } ) ):
 						Assert.equals( 'i', name );
 						Assert.equals( 0, tokens.length );
 						
@@ -301,7 +303,7 @@ class HtmlLexerSpec {
 		Assert.equals( 7, t.length );
 		
 		for (token in t) switch (token) {
-			case Keyword( Tag(name, _, _, _) ):
+			case Keyword( Tag( { name:name } ) ):
 				Assert.isTrue( ['a', 'b', 'c', 'd'].indexOf( name ) > -1 );
 				
 			case Space(1):
@@ -321,7 +323,7 @@ class HtmlLexerSpec {
 		Assert.isTrue( t.length == 1 );
 		
 		switch (t[0]) {
-			case Keyword( Tag(name, attributes, categories, tokens, _) ):
+			case Keyword( Tag( { name:name, attributes:attributes, categories:categories, tokens:tokens } ) ):
 				Assert.isTrue( tokens.length == 0 );
 				Assert.equals( 'a', name );
 				
@@ -348,7 +350,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Tag('a', attributes, categories, [], _) ):
+			case Keyword( Tag( { name:'a', attributes:attributes, categories:categories, tokens:[] } ) ):
 				Assert.isFalse( attributes.exists( 'b  =  ' ) );
 				Assert.equals( '  aaa bbb ccc  ', attributes.get('b') );
 				
@@ -369,7 +371,7 @@ class HtmlLexerSpec {
 		var t = parse( '<link /><style></style><div></div><nav></nav><h1></h1><script></script><em></em><svg></svg><details /><a></a><img /><skial />' );
 		
 		for (i in t) switch (i) {
-			case Keyword( Tag(n, _, c, _, _) ):
+			case Keyword( Tag( { name:n, categories:c } ) ):
 				switch ((n:HtmlTag)) {
 					case Link: Assert.equals( ''+[0], ''+c );
 					case Style: Assert.equals( ''+[0, 1], ''+c );
@@ -400,10 +402,10 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('script', _, [0, 1, 4, 8], tokens, _)):
+			case Keyword(Tag( { name:'script', categories:[0, 1, 4, 8], tokens:tokens } )):
 				Assert.isTrue( 
 					tokens[0].match( 
-						Const(CString( 'console.log( 1 <= 10 && 10 => 1 );' ))
+						Keyword(HtmlKeywords.Text( { tokens:'console.log( 1 <= 10 && 10 => 1 );' } ))
 					)
 				);
 				
@@ -421,10 +423,10 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('template', _, [0, 1, 4, 8], tokens, _)):
+			case Keyword(Tag( { name:'template', categories:[0, 1, 4, 8], tokens:tokens } )):
 				Assert.isTrue( 
 					tokens[0].match( 
-						Const(CString( '\r\n<img src="" alt="great image">\r\n <div class="comment"></div>\r\n' ))
+						Keyword(HtmlKeywords.Text( { tokens:'\r\n<img src="" alt="great image">\r\n <div class="comment"></div>\r\n' } ))
 					)
 				);
 				
@@ -441,17 +443,17 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		var template:Array<Token<HtmlKeywords>> = switch (t[0]) {
-			case Keyword(Tag('div', _, _, tokens, _)): tokens;
+			case Keyword(Tag( { name:'div', tokens:tokens } )): tokens;
 			case _: [];
 		}
 		
 		//untyped console.log( template );
 		
 		switch (template[0]) {
-			case Keyword(Tag('template', _, [0, 1, 4, 8], tokens, _)):
+			case Keyword(Tag( { name:'template', categories:[0, 1, 4, 8], tokens:tokens } )):
 				Assert.isTrue( 
 					tokens[0].match( 
-						Const(CString( '<a/><b/>' ))
+						Keyword(HtmlKeywords.Text( { tokens:'<a/><b/>' } ))
 					)
 				);
 				
@@ -468,9 +470,9 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Tag('a:namespace', _, [ -1], tokens, _)):
+			case Keyword(Tag( { name:'a:namespace', categories:[ -1], tokens:tokens } )):
 				Assert.equals( 1, tokens.length );
-				Assert.isTrue( tokens[0].match( Const(CString( 'Hello Namespaced World' )) ) );
+				Assert.isTrue( tokens[0].match( Keyword(HtmlKeywords.Text( { tokens:'Hello Namespaced World' } )) ) );
 				
 			case _:
 				
@@ -485,7 +487,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Instruction('DOCTYPE', attrs)):
+			case Keyword(Instruction({ name:'DOCTYPE', tokens:attrs })):
 				Assert.equals( 'html', attrs[0] );
 				Assert.equals( 'TEXT IN QUOTES!', attrs[1] );
 				Assert.equals( 'SEPARATED BY THE GREAT DIVIDE!?!', attrs[2] );
@@ -503,14 +505,14 @@ class HtmlLexerSpec {
 		Assert.equals( 3, t.length );
 		
 		var filtered = t.filter( function(t) return switch(t) {
-			case Const(_): false;
+			case Keyword(HtmlKeywords.Text(_)): false;
 			case _: true;
 		} );
 		
 		Assert.equals( 2, filtered.length );
 		
 		switch (filtered[0]) {
-			case Keyword(Instruction('DOCTYPE', attr)):
+			case Keyword(Instruction({ name:'DOCTYPE', tokens:attr })):
 				Assert.equals( 'html', attr[0] );
 				Assert.equals( 'PUBLIC', attr[1] );
 				Assert.equals( '-//W3C//DTD XHTML 1.0 Transitional//EN', attr[2] );
@@ -521,11 +523,40 @@ class HtmlLexerSpec {
 		}
 	}
 	
+	public function testText_parent() {
+		var t = parse( '<a><b><c><div class="parent">Some Text</div><c/></b></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var text:Token<HtmlKeywords> = null;
+		
+		while (true) switch (t[0]) {
+			case Keyword(Tag( { name:'div', attributes:attr, tokens:token } )) if (attr.exists('class') && attr.get('class') == 'parent'):
+				text = token[0];
+				break;
+				
+			case Keyword(Tag( { tokens:tokens } )):
+				t = tokens;
+				
+			case _:
+				
+		}
+		
+		Assert.isFalse( text == null );
+		Assert.isTrue( text.match( Keyword(Text( { tokens:'Some Text' } )) ) );
+		
+		var dom:dtx.mo.DOMNode = text;
+		
+		Assert.equals( 'div', dom.parentNode.nodeName );
+		#if !js
+		Assert.isTrue( dom.parentNode.childNodes[0].token().equals( text ) );
+		#end
+	}
+	
 	/*public function testAmazon_03_09_2014() {
 		var t = parse( haxe.Resource.getString('amazon.html') );
 		
 		//untyped console.log( t );
-	}*/
-	
+	}*/	
 	
 }
