@@ -53,21 +53,21 @@ class HtmlSelectSpec {
 		Assert.equals( 1, mo.length );
 		
 		switch (mo[0]) {
-			case Keyword(Tag('d', _, _, _, p)): 
-				Assert.isTrue( p().match( Keyword(Tag('c', _, _, _, _)) ) );
+			case Keyword(Tag( { name:'d', parent:p } )): 
+				Assert.isTrue( p().match( Keyword(Tag( { name:'c' } )) ) );
 				
 				switch (p()) {
-					case Keyword(Tag('c', _, _, _, p)):
-						Assert.isTrue( p().match( Keyword(Tag('b', _, _, _, _)) ) );
+					case Keyword(Tag( { name:'c', parent:p } )):
+						Assert.isTrue( p().match( Keyword(Tag( { name:'b' } )) ) );
 						
 						switch (p()) {
-							case Keyword(Tag('b', _, _, _, p)):
-								Assert.isTrue( p().match( Keyword(Tag('a', _, _, _, _)) ) );
+							case Keyword(Tag( { name:'b', parent:p } )):
+								Assert.isTrue( p().match( Keyword(Tag( { name:'a' } )) ) );
 								
 								// Here I am checking that `<a></a>` parent is itself, which it should be.
 								switch (p()) {
-									case Keyword(Tag('a', _, _, _, p)):
-										Assert.isTrue( p().match( Keyword(Tag('a', _, _, _, _)) ) );
+									case Keyword(Tag( { name:'a', parent:p } )):
+										Assert.isTrue( p().match( Keyword(Tag( { name:'a' } )) ) );
 										
 									case _:
 								}
@@ -88,7 +88,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('div', _, _, [], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
 	}
 	
 	public function testMultiID() {
@@ -97,8 +97,14 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 2, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('div', _, _, [], _)) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag('span', _, _, [], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
+	}
+	
+	public function testSingleID_deep() {
+		var mo = HtmlSelector.find( parse( '<a><b><c><d><div id="A">Some Text</div></d></c></b></a>' ), '#A' );
+		
+		//trace(
 	}
 	
 	public function testSingleClass() {
@@ -107,9 +113,9 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 3, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('div', _, _, [], _)) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag('span', _, _, [], _)) ) );
-		Assert.isTrue( mo[2].match( Keyword(Tag('pre', _, _, [], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
+		Assert.isTrue( mo[2].match( Keyword(Tag( { name:'pre' } )) ) );
 	}
 	
 	// Css Parser problem
@@ -124,8 +130,8 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 2, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('div', _, _, [], _)) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag('span', _, _, [], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
 	}
 	
 	public function testUniversal() {
@@ -134,9 +140,9 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 3, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('html', _, _, _, _)) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag('div', _, _, [], _)) ) );
-		Assert.isTrue( mo[2].match( Keyword(Tag('span', _, _, [], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'html' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[2].match( Keyword(Tag( { name:'span' } )) ) );
 	}
 	
 	public function testPseudo_firstChild() {
@@ -145,7 +151,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('code', _, _, [Const(CString('abc'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
 	}
 	
 	public function testPseudo_lastChild() {
@@ -154,7 +160,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('span', _, _, [Const(CString('def'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testPseudo_NthChild1() {
@@ -164,7 +170,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('code', _, _, [Const(CString('abc'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
 	}
 	
 	public function testPseudo_NthChild2() {
@@ -174,8 +180,8 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 2, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('code', _, _, [Const(CString('abc'))], _)) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag('span', _, _, [Const(CString('def'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testCombinator_General() {
@@ -184,7 +190,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('span', _, _, [Const(CString('def'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Adjacent() {
@@ -193,7 +199,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('pre', _, _, [Const(CString('c'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Descendant() {
@@ -202,7 +208,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('pre', _, _, [Const(CString('c'))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Child() {
@@ -211,7 +217,7 @@ class HtmlSelectSpec {
 		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag('pre', _, _, [Keyword(Tag('pre', _, _, [Const(CString('c'))], _))], _)) ) );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } ))] } )) ) );
 	}
 	
 	public function testAttributes_Name() {
@@ -222,7 +228,7 @@ class HtmlSelectSpec {
 		Assert.equals( 1, mo.length );
 		
 		switch (mo[0]) {
-			case Keyword(Tag('div', a, _, [Const(CString('b'))], _)):
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
 				Assert.isTrue( a.exists('a') );
 				Assert.equals( '', a.get('a') );
 				
@@ -239,7 +245,7 @@ class HtmlSelectSpec {
 		Assert.equals( 1, mo.length );
 		
 		switch (mo[0]) {
-			case Keyword(Tag('div', a, _, [Const(CString('b'))], _)):
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
 				Assert.isTrue( a.exists('a') );
 				Assert.equals( 'b', a.get('a') );
 				
@@ -251,12 +257,12 @@ class HtmlSelectSpec {
 	public function testAttributes_ExactQuoted() {
 		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 'div[a="b"]' );
 		
-		untyped console.log( mo );
+		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
 		
 		switch (mo[0]) {
-			case Keyword(Tag('div', a, _, [Const(CString('b'))], _)):
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
 				Assert.isTrue( a.exists('a') );
 				Assert.equals( 'b', a.get('a') );
 				
