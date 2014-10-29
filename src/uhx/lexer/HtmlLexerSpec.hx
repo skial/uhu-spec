@@ -6,6 +6,7 @@ import uhx.mo.Token;
 import utest.Assert;
 import byte.ByteData;
 import uhx.lexer.HtmlLexer;
+import dtx.mo.DOMNode;
 
 using Lambda;
 
@@ -551,6 +552,39 @@ class HtmlLexerSpec {
 		#if !js
 		Assert.isTrue( dom.parentNode.childNodes[0].token().equals( text ) );
 		#end
+	}
+	
+	public function testDOMNode_clone() {
+		var t = parse( '<a><b><c>Hello</c></b></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var expected = ['a', 'b', 'c'];
+		var original:DOMNode = null;
+		var clone:DOMNode = null;
+		
+		while (true) switch (t[0]) {
+			case Keyword(Tag( { name:n, tokens:tokens } )):
+				Assert.equals( expected.shift(), n );
+				t = tokens;
+				
+			case Keyword(Text( { tokens:token } )):
+				Assert.equals( 'Hello', token );
+				original = (t[0]:DOMNode);
+				clone = (t[0]:DOMNode).cloneNode( true );
+				break;
+				
+			case _:
+				Assert.fail( 'Wrong! ' + (t[0]:DOMNode).toString() );
+				
+		}
+		
+		Assert.equals( 0, expected.length );
+		Assert.equals( original.textContent, clone.textContent );
+		clone.textContent = 'Goodbye';
+		Assert.isFalse( original.textContent == clone.textContent );
+		Assert.equals( 'Goodbye', clone.textContent );
+		
 	}
 	
 	/*public function testAmazon_03_09_2014() {

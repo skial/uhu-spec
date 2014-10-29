@@ -102,9 +102,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testSingleID_deep() {
-		var mo = HtmlSelector.find( parse( '<a><b><c><d><div id="A">Some Text</div></d></c></b></a>' ), '#A' );
+		var mo = HtmlSelector.find( parse( '<a><b><c><d><div></div><div id="A">Some Text</div><div></div></d></c></b></a>' ), '#A' );
 		
-		//trace(
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Some Text' } ))] } )) ) );
 	}
 	
 	public function testSingleClass() {
