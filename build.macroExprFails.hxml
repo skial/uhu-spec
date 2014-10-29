@@ -1,0 +1,10 @@
+-D debug
+#-D dump=pretty
+
+-cp src
+-cp ../
+
+-main example.macroExprFails.Main
+-js bin/example.macroExprFails.js
+
+#-dce full

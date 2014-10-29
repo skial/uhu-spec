@@ -1,0 +1,7 @@
+-cp src/example/extended_gadt/
+-main Main
+-js src/example/extended_gadt/test.js
+
+--next
+
+-cmd node src/example/extended_gadt/test.js

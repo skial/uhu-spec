@@ -1,0 +1,7 @@
+-cp src/example/macro_collection/
+-main Main
+-js src/example/macro_collection/test.js
+
+--next
+
+-cmd node src/example/macro_collection/test.js

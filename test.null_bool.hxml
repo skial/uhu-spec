@@ -1,0 +1,7 @@
+-cp src/example/null_bool/
+-main Main
+-js src/example/null_bool/test.js
+
+--next
+
+-cmd node src/example/null_bool/test.js
