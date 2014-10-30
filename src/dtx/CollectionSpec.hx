@@ -238,6 +238,8 @@ class CollectionSpec
 		var q3 = new DOMCollection();
 		#if js
 		var nodeList = ("table".find().getNode():js.html.Node).childNodes;
+		#elseif mo
+		var nodeList = 'table'.find().getNode().childNodes;
 		#else 
 		var nodeList = "table".find().getNode();
 		#end
@@ -273,6 +275,8 @@ class CollectionSpec
 
 		#if js
 		var nodeList = ("table".find().getNode():js.html.Node).childNodes;
+		#elseif mo
+		var nodeList = 'table'.find().getNode().childNodes;
 		#else 
 		var nodeList = "table".find().getNode();
 		#end
