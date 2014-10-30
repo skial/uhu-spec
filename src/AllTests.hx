@@ -160,8 +160,8 @@ class AllTests {
 		
 		#if detox
 			runner.addCase( new ElementManipulationSpec() );
-			/*runner.addCase( new CollectionSpec() );
-			runner.addCase( new TraversingSpec() );
+			runner.addCase( new CollectionSpec() );
+			/*runner.addCase( new TraversingSpec() );
 			runner.addCase( new DOMManipulationSpec() );
 			runner.addCase( new CollectionElementManipulationSpec() );
 			runner.addCase( new CollectionTraversingSpec() );
