@@ -581,10 +581,46 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 0, expected.length );
 		Assert.equals( original.textContent, clone.textContent );
+		
 		clone.textContent = 'Goodbye';
+		
 		Assert.isFalse( original.textContent == clone.textContent );
+		Assert.equals( 'Hello', original.textContent );
 		Assert.equals( 'Goodbye', clone.textContent );
 		
+		// Test clone of an Processing Instruction Node (comment)
+		var t = parse( '<!-- Hello -->' );
+		
+		Assert.equals( 1, t.length );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['Hello', '--'] } )) ) );
+		
+		original = t[0];
+		clone = original.cloneNode( true );
+		
+		Assert.equals( original.nodeValue, clone.nodeValue );
+		
+		clone.nodeValue = 'World';
+		
+		Assert.isFalse( original.nodeValue == clone.nodeValue );
+		
+		// Test clone of an element and all its children
+		var t = parse( '<a><b><c><div>Hello</div><p>World</p></c></b></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		original = t[0];
+		clone = original.cloneNode( true );
+		
+		var origDiv1 = original.childNodes[0].childNodes[0].childNodes[0];
+		var origDiv2 = original.childNodes[0].childNodes[0].childNodes[1];
+		var cloneDiv1 = clone.childNodes[0].childNodes[0].childNodes[0];
+		var cloneDiv2 = clone.childNodes[0].childNodes[0].childNodes[1];
+		
+		Assert.equals( origDiv1.textContent, cloneDiv1.textContent );
+		
+		cloneDiv1.textContent = 'Goodbye';
+		
+		Assert.isFalse( origDiv1.textContent == cloneDiv1.textContent );
 	}
 	
 	/*public function testAmazon_03_09_2014() {
