@@ -623,6 +623,120 @@ class HtmlLexerSpec {
 		Assert.isFalse( origDiv1.textContent == cloneDiv1.textContent );
 	}
 	
+	public function testDOMNode_removeChild() {
+		var t = parse( '<a><b>Hello</b></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var node:DOMNode = t[0];
+		var old = node.removeChild( node.childNodes[0] );
+		
+		Assert.equals( 0, node.childNodes.length );
+		Assert.equals( 1, old.childNodes.length );
+	}
+	
+	public function testDOMNode_insertBefore() {
+		var t = parse( '<a><c>World</c></a>' );
+		var c = parse( '<b>Hello</b>' );
+		
+		Assert.equals( 1, t.length );
+		Assert.equals( 1, c.length );
+		
+		var parent:DOMNode = t[0];
+		var newNode:DOMNode = c[0];
+		
+		Assert.equals( 1, parent.childNodes.length );
+		Assert.isTrue( parent.childNodes[0].token().match( Keyword(Tag( { name:'c', tokens:[Keyword(HtmlKeywords.Text( { tokens:'World' } ))] } )) ) );
+		
+		parent.insertBefore( newNode, parent.childNodes[0] );
+		
+		Assert.equals( 2, parent.childNodes.length );
+		Assert.isTrue( parent.childNodes[0].token().match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Hello' } ))] } )) ) );
+		Assert.isTrue( parent.childNodes[1].token().match( Keyword(Tag( { name:'c', tokens:[Keyword(HtmlKeywords.Text( { tokens:'World' } ))] } )) ) );
+	}
+	
+	public function testDOMNode_insertChild() {
+		var t = parse( '<a><b></b><d></d></a>' );
+		var c = parse( '<c></c>' );
+		
+		Assert.equals( 1, t.length );
+		Assert.equals( 1, c.length );
+		
+		var parent:DOMNode = t[0];
+		var newNode:DOMNode = c[0];
+		
+		Assert.equals( 2, parent.childNodes.length );
+		Assert.isTrue( parent.childNodes[0].token().match( Keyword(Tag( { name:'b', tokens:[] } )) ) );
+		Assert.isTrue( parent.childNodes[1].token().match( Keyword(Tag( { name:'d', tokens:[] } )) ) );
+		
+		parent.insertChild( newNode, 1 );
+		
+		Assert.equals( 3, parent.childNodes.length );
+		Assert.isTrue( parent.childNodes[0].token().match( Keyword(Tag( { name:'b', tokens:[] } )) ) );
+		Assert.isTrue( parent.childNodes[1].token().match( Keyword(Tag( { name:'c', tokens:[] } )) ) );
+		Assert.isTrue( parent.childNodes[2].token().match( Keyword(Tag( { name:'d', tokens:[] } )) ) );
+	}
+	
+	public function testDOMNode_appendChild() {
+		var t = parse( '<a><b>Hello</b></a>' );
+		var c = parse( '<c>World</c>' );
+		
+		Assert.equals( 1, t.length );
+		Assert.equals( 1, c.length );
+		
+		var parent:DOMNode = t[0];
+		var newNode:DOMNode = c[0];
+		
+		Assert.equals( 1, parent.childNodes.length );
+		Assert.isTrue( parent.childNodes[0].token().match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Hello' } ))] } )) ) );
+		
+		parent.appendChild( newNode );
+		
+		Assert.equals( 2, parent.childNodes.length );
+		Assert.isTrue( parent.childNodes[0].token().match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Hello' } ))] } )) ) );
+		Assert.isTrue( parent.childNodes[1].token().match( Keyword(Tag( { name:'c', tokens:[Keyword(HtmlKeywords.Text( { tokens:'World' } ))] } )) ) );
+	}
+	
+	public function testDOMNode_getAttribute() {
+		var t = parse( '<a b="1" data-c="bob"></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( '1', dom.getAttribute('b') );
+		Assert.equals( 'bob', dom.getAttribute('data-c') );
+	}
+	
+	public function testDOMNode_getAttribute_Unquoted() {
+		var t = parse( '<a b="1" data-c=bob></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( '1', dom.getAttribute('b') );
+		Assert.equals( 'bob', dom.getAttribute('data-c') );
+	}
+	
+	public function testDOMNode_setAttribute() {
+		var t = parse( '<a></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		dom.setAttribute('data-a', 'hello');
+		dom.setAttribute('b', 'world');
+		
+		var attributes = [for (a in dom.attributes.array()) a.name => a.value];
+		Assert.isTrue( attributes.exists('data-a') );
+		Assert.isTrue( attributes.exists('b') );
+		Assert.equals( 'hello', attributes.get( 'data-a' ) );
+		Assert.equals( 'world', attributes.get( 'b' ) );
+		Assert.equals( 'hello', dom.getAttribute('data-a') );
+		Assert.equals( 'world', dom.getAttribute('b') );
+	}
+	
 	/*public function testAmazon_03_09_2014() {
 		var t = parse( haxe.Resource.getString('amazon.html') );
 		
