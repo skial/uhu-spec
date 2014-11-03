@@ -55,7 +55,8 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Instruction( { name:'doctype', tokens:attributes } ) ):
+			case Keyword( Instruction( { tokens:attributes } ) ):
+				Assert.isTrue( attributes.indexOf( 'doctype' ) > -1 );
 				Assert.isTrue( attributes.indexOf( 'html' ) > -1 );
 				
 			case _:
@@ -71,7 +72,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Instruction( { name:'--', tokens:attributes } ) ):
+			case Keyword( Instruction( { tokens:attributes } ) ):
 				Assert.isTrue( attributes.indexOf( '[if IE]' ) > -1 );
 				
 			case _:
@@ -87,7 +88,7 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword( Instruction( { name:'', tokens:attributes } ) ):
+			case Keyword( Instruction( { tokens:attributes } ) ):
 				Assert.isTrue( attributes.indexOf( '[abc 123]' ) > -1 );
 				
 			case _:
@@ -142,14 +143,15 @@ class HtmlLexerSpec {
 		Assert.equals( 1, f.length );
 		
 		switch (f[0]) {
-			case Keyword(Instruction( { name:'--', tokens:attrs } )):
-				Assert.equals( '<commented/>', attrs[0] );
-				Assert.equals( '<html>', attrs[1] );
-				Assert.equals( 'with', attrs[2] );
-				Assert.equals( 'some', attrs[3] );
-				Assert.equals( 'text', attrs[4] );
-				Assert.equals( '</html>', attrs[5] );
-				Assert.equals( '--', attrs[6] );
+			case Keyword(Instruction( { tokens:attrs } )):
+				Assert.equals( '--', attrs[0] );
+				Assert.equals( '<commented/>', attrs[1] );
+				Assert.equals( '<html>', attrs[2] );
+				Assert.equals( 'with', attrs[3] );
+				Assert.equals( 'some', attrs[4] );
+				Assert.equals( 'text', attrs[5] );
+				Assert.equals( '</html>', attrs[6] );
+				Assert.equals( '--', attrs[7] );
 				
 			case _:
 				
@@ -163,10 +165,17 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		Assert.equals( 4, t.length );
-		Assert.isTrue( t[0].match( Keyword(Instruction( { name:'--', tokens:['<a>'] } )) ) );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', '<a>'] } )) ) );
 		Assert.isTrue( t[1].match( GreaterThan ) );
 		Assert.isTrue( t[2].match( Keyword(HtmlKeywords.Text( { tokens:' --' } )) ) );
 		Assert.isTrue( t[3].match( GreaterThan ) );
+	}
+	
+	public function testInstructions_comment_spaceless() {
+		var t = parse( '<!--comment-->' );
+		
+		Assert.equals( 1, t.length );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', 'comment', '--'] } )) ) );
 	}
 	
 	public function testSelfClosingTag() {
@@ -488,10 +497,11 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
-			case Keyword(Instruction({ name:'DOCTYPE', tokens:attrs })):
-				Assert.equals( 'html', attrs[0] );
-				Assert.equals( 'TEXT IN QUOTES!', attrs[1] );
-				Assert.equals( 'SEPARATED BY THE GREAT DIVIDE!?!', attrs[2] );
+			case Keyword(Instruction( { tokens:attrs } )):
+				Assert.equals( 'DOCTYPE', attrs[0] );
+				Assert.equals( 'html', attrs[1] );
+				Assert.equals( 'TEXT IN QUOTES!', attrs[2] );
+				Assert.equals( 'SEPARATED BY THE GREAT DIVIDE!?!', attrs[3] );
 				
 			case _:
 				
@@ -513,11 +523,12 @@ class HtmlLexerSpec {
 		Assert.equals( 2, filtered.length );
 		
 		switch (filtered[0]) {
-			case Keyword(Instruction({ name:'DOCTYPE', tokens:attr })):
-				Assert.equals( 'html', attr[0] );
-				Assert.equals( 'PUBLIC', attr[1] );
-				Assert.equals( '-//W3C//DTD XHTML 1.0 Transitional//EN', attr[2] );
-				Assert.equals( 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd', attr[3] );
+			case Keyword(Instruction({ tokens:attr })):
+				Assert.equals( 'DOCTYPE', attr[0] );
+				Assert.equals( 'html', attr[1] );
+				Assert.equals( 'PUBLIC', attr[2] );
+				Assert.equals( '-//W3C//DTD XHTML 1.0 Transitional//EN', attr[3] );
+				Assert.equals( 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd', attr[4] );
 				
 			case _:
 				
@@ -592,7 +603,7 @@ class HtmlLexerSpec {
 		var t = parse( '<!-- Hello -->' );
 		
 		Assert.equals( 1, t.length );
-		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['Hello', '--'] } )) ) );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', 'Hello', '--'] } )) ) );
 		
 		original = t[0];
 		clone = original.cloneNode( true );
@@ -735,6 +746,49 @@ class HtmlLexerSpec {
 		Assert.equals( 'world', attributes.get( 'b' ) );
 		Assert.equals( 'hello', dom.getAttribute('data-a') );
 		Assert.equals( 'world', dom.getAttribute('b') );
+	}
+	
+	public function testInstruction_content() {
+		var t = parse( '<!-- hello world -->' );
+		var values = [];
+		
+		Assert.equals( 1, t.length );
+		Assert.isTrue( switch (t[0]) {
+			case Keyword(Instruction( { tokens:tokens } )):
+				values = tokens;
+				tokens.length == 4;
+				
+			case _:
+				false;
+				
+		} );
+		
+		Assert.equals( '--', values[0] );
+		Assert.equals( 'hello', values[1] );
+		Assert.equals( 'world', values[2] );
+		Assert.equals( '--', values[3] );
+		
+		var dom:DOMNode = t[0];
+		Assert.equals( 'hello world', dom.nodeValue );
+		
+		dom.nodeValue = 'goodbye world';
+		
+		Assert.equals( 'goodbye world', dom.nodeValue );
+		
+		Assert.isTrue( switch (dom.token()) {
+			case Keyword(Instruction( { tokens:tokens } )):
+				values = tokens;
+				tokens.length == 4;
+				
+			case _:
+				false;
+				
+		} );
+		
+		Assert.equals( '--', values[0] );
+		Assert.equals( 'goodbye', values[1] );
+		Assert.equals( 'world', values[2] );
+		Assert.equals( '--', values[3] );
 	}
 	
 	/*public function testAmazon_03_09_2014() {
