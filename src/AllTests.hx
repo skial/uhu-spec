@@ -161,12 +161,12 @@ class AllTests {
 		#if detox
 			runner.addCase( new ElementManipulationSpec() );
 			runner.addCase( new CollectionSpec() );
-			/*runner.addCase( new TraversingSpec() );
-			runner.addCase( new DOMManipulationSpec() );
 			runner.addCase( new CollectionElementManipulationSpec() );
-			runner.addCase( new CollectionTraversingSpec() );
 			runner.addCase( new ToolsSpec() );
-			runner.addCase( new CollectionDOMManipulationSpec() );*/
+			runner.addCase( new TraversingSpec() );
+			runner.addCase( new CollectionTraversingSpec() );
+			runner.addCase( new DOMManipulationSpec() );
+			//runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
 		Report.create( runner );
