@@ -1,5 +1,6 @@
 package uhx.lexer;
 
+import dtx.Tools;
 import haxe.io.Eof;
 import hxparse.UnexpectedChar;
 import uhx.mo.Token;
@@ -789,6 +790,201 @@ class HtmlLexerSpec {
 		Assert.equals( 'goodbye', values[1] );
 		Assert.equals( 'world', values[2] );
 		Assert.equals( '--', values[3] );
+	}
+	
+	public function testDOMNode_nextSibling() {
+		var t = parse( '<a><b></b><c></c><d></d></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var a:DOMNode = t[0];
+		var children = a.childNodes;
+		var b = children[0];
+		var bt = b.token();
+		
+		var c = children[1];
+		var ct = c.token();
+		
+		var d = children[2];
+		var dt = d.token();
+		
+		Assert.isTrue( bt.match( Keyword(Tag( { name:'b', tokens:[] } )) ) );
+		Assert.isTrue( ct.match( Keyword(Tag( { name:'c', tokens:[] } )) ) );
+		Assert.isTrue( dt.match( Keyword(Tag( { name:'d', tokens:[] } )) ) );
+		
+		Assert.isTrue( a == b.parentNode );
+		Assert.isTrue( a == c.parentNode );
+		Assert.isTrue( a == d.parentNode );
+		
+		Assert.isTrue( b.nextSibling == c );
+		Assert.isTrue( c.nextSibling == d );
+		Assert.isNull( d.nextSibling );
+	}
+	
+	public function testDOMNode_nextSibling_whitespace() {
+		var t = parse( '<a>
+			<b></b>
+			<c></c>
+			<d></d>
+		</a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var a:DOMNode = t[0];
+		var children = a.childNodes;
+		var b = children[1];
+		var bt = b.token();
+		
+		var c = children[3];
+		var ct = c.token();
+		
+		var d = children[5];
+		var dt = d.token();
+		
+		Assert.isTrue( bt.match( Keyword(Tag( { name:'b', tokens:[] } )) ) );
+		Assert.isTrue( ct.match( Keyword(Tag( { name:'c', tokens:[] } )) ) );
+		Assert.isTrue( dt.match( Keyword(Tag( { name:'d', tokens:[] } )) ) );
+		
+		Assert.isTrue( a == b.parentNode );
+		Assert.isTrue( a == c.parentNode );
+		Assert.isTrue( a == d.parentNode );
+		
+		Assert.isTrue( b.nextSibling.nextSibling == c );
+		Assert.isTrue( c.nextSibling.nextSibling == d );
+		Assert.isNull( d.nextSibling.nextSibling );
+	}
+	
+	public function testDOMNode_previousSibling() {
+		var t = parse( '<a><b></b><c></c><d></d></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var a:DOMNode = t[0];
+		var children = a.childNodes;
+		var b = children[0];
+		var bt = b.token();
+		
+		var c = children[1];
+		var ct = c.token();
+		
+		var d = children[2];
+		var dt = d.token();
+		
+		Assert.isTrue( bt.match( Keyword(Tag( { name:'b', tokens:[] } )) ) );
+		Assert.isTrue( ct.match( Keyword(Tag( { name:'c', tokens:[] } )) ) );
+		Assert.isTrue( dt.match( Keyword(Tag( { name:'d', tokens:[] } )) ) );
+		
+		Assert.isTrue( a == b.parentNode );
+		Assert.isTrue( a == c.parentNode );
+		Assert.isTrue( a == d.parentNode );
+		
+		Assert.isTrue( d.previousSibling == c );
+		Assert.isTrue( c.previousSibling == b );
+		Assert.isNull( b.previousSibling );
+	}
+	
+	public function testDOMNode_navigation() {
+		var t = parse( "<myxml>
+			<h1>Title</h1>
+			<ul id='a'>
+				<li id='a1'>1</li>
+				<li id='a2' class='pickme'>2</li>
+				<li id='a3'>3</li>
+				<li id='a4'>4</li>
+			</ul>
+			<ul id='b'>
+				<li id='b1'>1</li>
+				<li id='b2' class='pickme'>2</li>
+				<li id='b3'>3</li>
+				<li id='b4'>4</li>
+			</ul>
+			<div id='empty1' class='empty'></div>
+			<div id='empty2' class='empty'></div>
+			<div id='nonElements'>Before<!--Comment-->After</div>
+			<div id='recursive' class='level1'>
+				<div class='level2'>
+					<div class='level3'>
+						<div class='level4'>
+						</div>
+					</div>
+				</div>
+			</div>
+		</myxml>" );
+		
+		Assert.equals( 1, t.length );
+		
+		var result = '';
+		var func:DOMNode->String->Void = null;
+		func = function(dom:DOMNode, tab:String) {
+			result += tab + dom.nodeName + ':';
+			result += [for (a in dom.attributes) a.name + '=>' + a.value].join('!');
+			for (child in dom.childNodes) {
+				result += '\n';
+				func( child, '$tab\t' );
+			}
+		}
+		
+		var dom:DOMNode = t[0];
+		
+		// This includes the whitespace between elements.
+		Assert.equals( 14, dom.childNodes.length );
+		
+		var elementsOnly = dom.childNodes.filter( function(c) return c.nodeType != dtx.DOMType.TEXT_NODE );
+		
+		Assert.equals( 7, elementsOnly.length );
+		
+		Assert.equals( 1, elementsOnly[0].parentNode.childNodes.indexOf( elementsOnly[0] ) );
+		Assert.equals( 3, elementsOnly[1].parentNode.childNodes.indexOf( elementsOnly[1] ) );
+		Assert.equals( 3, elementsOnly[1].parentNode.childNodes.lastIndexOf( elementsOnly[1] ) );
+		
+		Assert.equals( 'ul', elementsOnly[1].nodeName );
+		Assert.equals( 'id', elementsOnly[1].attributes.array()[0].name );
+		Assert.equals( 'a', elementsOnly[1].attributes.array()[0].value );
+		
+		Assert.isTrue( elementsOnly[1].nextSibling.token().match( Keyword(HtmlKeywords.Text( { tokens:'
+			' } )) ) );
+		Assert.equals( 4, dom.childNodes.indexOf( elementsOnly[1].nextSibling ) );
+		
+		Assert.equals( 'li', elementsOnly[1].childNodes[1].nodeName );
+		Assert.equals( 'id', elementsOnly[1].childNodes[1].attributes.array()[0].name );
+		Assert.equals( 'a1', elementsOnly[1].childNodes[1].attributes.array()[0].value );
+		
+		Assert.isTrue( elementsOnly[1].childNodes[1].lastChild.token().match( Keyword(HtmlKeywords.Text( { tokens:'1' } )) ) );
+		
+		Assert.equals( 'li', elementsOnly[1].childNodes[1].lastChild.parentNode.nodeName );
+		Assert.equals( 'id', elementsOnly[1].childNodes[1].lastChild.parentNode.attributes.array()[0].name );
+		Assert.equals( 'a1', elementsOnly[1].childNodes[1].lastChild.parentNode.attributes.array()[0].value );
+		
+		Assert.equals( 'ul', elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nodeName );
+		Assert.equals( 'id', elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.attributes.array()[0].name );
+		Assert.equals( 'a', elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.attributes.array()[0].value );
+		
+		Assert.isTrue( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling.token().match( Keyword(HtmlKeywords.Text( { tokens:'
+			' } )) ) );
+		Assert.isTrue( elementsOnly[1] == elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode );
+		Assert.equals( 4, elementsOnly[1].parentNode.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
+		Assert.equals( 4, dom.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
+	}
+	
+	public function testMacro_parse() {
+		Assert.equals('<ul>OneTwo</ul>', macroValue());
+	}
+	
+	private static macro function macroValue() {
+		HtmlLexer.openTags = [];
+		var bytes = ByteData.ofString( "<doc><ul><li>One</li><li class='special'>Two</li></ul></doc>" );
+		var lexer = new HtmlLexer( bytes, 'macro-html' );
+		var tokens:Array<DOMNode> = [];
+		
+		try while ( true ) {
+			var token = lexer.token( HtmlLexer.root );
+			tokens.push( token );
+		} catch (_e:Eof) { } catch (_e:Dynamic) {
+			haxe.macro.Context.fatalError( '$_e', haxe.macro.Context.currentPos() );
+		}
+		
+		var value = [for (t in tokens) t.toString()].join(' ');
+		return macro $v{ value };
 	}
 	
 	/*public function testAmazon_03_09_2014() {
