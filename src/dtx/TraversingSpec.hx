@@ -10,6 +10,8 @@ import dtx.DOMNode;
 	import haxe.macro.Expr;
 #end
 
+using StringTools;
+
 class TraversingSpec 
 {
 	public function new() 

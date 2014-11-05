@@ -67,7 +67,8 @@ class HtmlSelectSpec {
 								// Here I am checking that `<a></a>` parent is itself, which it should be.
 								switch (p()) {
 									case Keyword(Tag( { name:'a', parent:p } )):
-										Assert.isTrue( p().match( Keyword(Tag( { name:'a' } )) ) );
+										//Assert.isTrue( p().match( Keyword(Tag( { name:'a' } )) ) );
+										Assert.isNull( p() );
 										
 									case _:
 								}
