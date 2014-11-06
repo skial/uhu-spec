@@ -155,7 +155,6 @@ class DOMManipulationSpec
 		Assert.equals(1, emptyNode.find("i").length);
 
 		emptyNode.prepend(sampleDOMCollection);
-
 		Assert.equals(3, emptyNode.children().length);
 		Assert.equals(2, emptyNode.find("p").length);
 		Assert.isTrue(sampleDOMCollection.getNode(0) == emptyNode.children().getNode(0));
