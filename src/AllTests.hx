@@ -166,7 +166,7 @@ class AllTests {
 			runner.addCase( new TraversingSpec() );
 			runner.addCase( new CollectionTraversingSpec() );
 			runner.addCase( new DOMManipulationSpec() );
-			//runner.addCase( new CollectionDOMManipulationSpec() );
+			runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
 		Report.create( runner );
