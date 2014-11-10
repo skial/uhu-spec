@@ -970,7 +970,7 @@ class HtmlLexerSpec {
 		// This includes the whitespace between elements.
 		Assert.equals( 15, dom.childNodes.length );
 		
-		var elementsOnly = dom.childNodes.filter( function(c) return c.nodeType != dtx.DOMType.TEXT_NODE );
+		var elementsOnly = dom.childNodes.filter( function(c) return c.nodeType != NodeType.Text );
 		
 		Assert.equals( 7, elementsOnly.length );
 		
