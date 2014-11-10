@@ -76,9 +76,9 @@
 
 -js bin/spec.js
 
-#--next
+--next
 
-#-neko bin/spec.n
+-neko bin/spec.n
 
 #--next
 
