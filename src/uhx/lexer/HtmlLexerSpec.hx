@@ -1,5 +1,6 @@
 package uhx.lexer;
 
+import dtx.DOMType;
 import dtx.Tools;
 import haxe.io.Eof;
 import hxparse.UnexpectedChar;
@@ -514,14 +515,14 @@ class HtmlLexerSpec {
 		
 		//untyped console.log( t );
 		
-		Assert.equals( 3, t.length );
+		Assert.equals( 7, t.length );
 		
 		var filtered = t.filter( function(t) return switch(t) {
 			case Keyword(HtmlKeywords.Text(_)): false;
 			case _: true;
 		} );
 		
-		Assert.equals( 2, filtered.length );
+		Assert.equals( 4, filtered.length );
 		
 		switch (filtered[0]) {
 			case Keyword(Instruction({ tokens:attr })):
@@ -534,6 +535,29 @@ class HtmlLexerSpec {
 			case _:
 				
 		}
+	}
+	
+	public function testType() {
+		var t = parse( '<a>Hello\r\n\t <p>Empty</p> \r\n\tWorld</a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( 3, dom.childNodes.length );
+		Assert.equals( uhx.lexer.HtmlLexer.NodeType.Text, dom.childNodes[0].nodeType );
+		Assert.equals( uhx.lexer.HtmlLexer.NodeType.Element, dom.childNodes[1].nodeType );
+		Assert.equals( uhx.lexer.HtmlLexer.NodeType.Text, dom.childNodes[2].nodeType );
+	}
+	
+	public function testTextAndSameTags() {
+		var t = parse( '<a>123<a>456<a>Blah</a>def</a>abc</a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( 3, dom.childNodes.length );
 	}
 	
 	public function testText_parent() {
@@ -927,7 +951,7 @@ class HtmlLexerSpec {
 		var dom:DOMNode = t[0];
 		
 		// This includes the whitespace between elements.
-		Assert.equals( 14, dom.childNodes.length );
+		Assert.equals( 15, dom.childNodes.length );
 		
 		var elementsOnly = dom.childNodes.filter( function(c) return c.nodeType != dtx.DOMType.TEXT_NODE );
 		
@@ -965,6 +989,34 @@ class HtmlLexerSpec {
 		Assert.equals( 4, elementsOnly[1].parentNode.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
 		Assert.equals( 4, dom.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
 	}
+	
+	/*public function testElementCount() {
+		var t = parse( "<myxml>
+			<div id='recursive' class='level1'>
+				<div class='level2'>
+					<div class='level3'>
+						<div class='level4'>
+						</div>
+					</div>
+				</div>
+			</div>
+		</myxml>" );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( 3, dom.childNodes.length );
+		Assert.isTrue( dom.childNodes[0].token().match( Keyword(Text( { tokens:'
+			' } )) ) );
+		Assert.isTrue( dom.childNodes[1].token().match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( dom.childNodes[2].token().match( Keyword(Text( { tokens:'
+			' } )) ) );
+		
+		Assert.equals( 3, dom.childNodes[1].childNodes.length );
+		Assert.equals( 3, dom.childNodes[1].childNodes[1].childNodes.length );
+		Assert.equals( 1, dom.childNodes[1].childNodes[1].childNodes[1].childNodes.length );
+	}*/
 	
 	public function testMacro_parse() {
 		Assert.equals('<ul>OneTwo</ul>', macroValue());
