@@ -318,7 +318,7 @@ class HtmlLexerSpec {
 			case Keyword( Tag( { name:name } ) ):
 				Assert.isTrue( ['a', 'b', 'c', 'd'].indexOf( name ) > -1 );
 				
-			case Space(1):
+			case Keyword(HtmlKeywords.Text( { tokens:' ' } )):
 				Assert.isTrue( true );
 				
 			case _:
@@ -377,6 +377,23 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		Assert.equals( 0, t.length );
+	}
+	
+	public function testWhitespace() {
+		var t = parse( '<a></a> \r\n\t <a> \r\n\t <b></b> \r\n\t </a>' );
+		
+		Assert.equals( 3, t.length );
+		Assert.isTrue( t[0].match( Keyword(Tag( { name:'a' } )) ) );
+		Assert.isTrue( t[1].match( Keyword(Text( { tokens:' \r\n\t ' } )) ) );
+		Assert.isTrue( t[2].match( Keyword(Tag( { name:'a' } )) ) );
+		
+		var collection:dtx.DOMCollection = new dtx.DOMCollection( cast t );
+		var a:DOMNode = cast collection.getNode(2);
+		
+		Assert.equals( 3, a.childNodes.length );
+		Assert.isTrue( a.childNodes[0].token().match( Keyword(Text( { tokens:' \r\n\t ' } )) ) );
+		Assert.isTrue( a.childNodes[1].token().match( Keyword(Tag( { name:'b' } )) ) );
+		Assert.isTrue( a.childNodes[2].token().match( Keyword(Text( { tokens:' \r\n\t ' } )) ) );
 	}
 	
 	public function testHtmlCategories() {
