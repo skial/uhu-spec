@@ -146,6 +146,7 @@ class HtmlLexerSpec {
 		
 		switch (f[0]) {
 			case Keyword(Instruction( { tokens:attrs } )):
+				attrs = attrs.filter( function(s) return StringTools.trim(s) != '' );
 				Assert.equals( '--', attrs[0] );
 				Assert.equals( '<commented/>', attrs[1] );
 				Assert.equals( '<html>', attrs[2] );
@@ -167,7 +168,7 @@ class HtmlLexerSpec {
 		//untyped console.log( t );
 		
 		Assert.equals( 4, t.length );
-		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', '<a>'] } )) ) );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', ' ', '<a>',  ' '] } )) ) );
 		Assert.isTrue( t[1].match( GreaterThan ) );
 		Assert.isTrue( t[2].match( Keyword(HtmlKeywords.Text( { tokens:' --' } )) ) );
 		Assert.isTrue( t[3].match( GreaterThan ) );
@@ -517,6 +518,7 @@ class HtmlLexerSpec {
 		
 		switch (t[0]) {
 			case Keyword(Instruction( { tokens:attrs } )):
+				attrs = attrs.filter( function(s) return StringTools.trim(s) != '' );
 				Assert.equals( 'DOCTYPE', attrs[0] );
 				Assert.equals( 'html', attrs[1] );
 				Assert.equals( 'TEXT IN QUOTES!', attrs[2] );
@@ -542,7 +544,8 @@ class HtmlLexerSpec {
 		Assert.equals( 4, filtered.length );
 		
 		switch (filtered[0]) {
-			case Keyword(Instruction({ tokens:attr })):
+			case Keyword(Instruction( { tokens:attr } )):
+				attr = attr.filter( function(s) return StringTools.trim(s) != '' );
 				Assert.equals( 'DOCTYPE', attr[0] );
 				Assert.equals( 'html', attr[1] );
 				Assert.equals( 'PUBLIC', attr[2] );
@@ -645,7 +648,7 @@ class HtmlLexerSpec {
 		var t = parse( '<!-- Hello -->' );
 		
 		Assert.equals( 1, t.length );
-		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', 'Hello', '--'] } )) ) );
+		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', ' ', 'Hello', ' ', '--'] } )) ) );
 		
 		original = t[0];
 		clone = original.cloneNode( true );
@@ -797,8 +800,8 @@ class HtmlLexerSpec {
 		Assert.equals( 1, t.length );
 		Assert.isTrue( switch (t[0]) {
 			case Keyword(Instruction( { tokens:tokens } )):
-				values = tokens;
-				tokens.length == 4;
+				values = tokens.filter( function(s) return StringTools.trim(s) != '' );
+				tokens.length == 7;
 				
 			case _:
 				false;
@@ -811,7 +814,7 @@ class HtmlLexerSpec {
 		Assert.equals( '--', values[3] );
 		
 		var dom:DOMNode = t[0];
-		Assert.equals( 'hello world', dom.nodeValue );
+		Assert.equals( ' hello world ', dom.nodeValue );
 		
 		dom.nodeValue = 'goodbye world';
 		
@@ -820,7 +823,7 @@ class HtmlLexerSpec {
 		Assert.isTrue( switch (dom.token()) {
 			case Keyword(Instruction( { tokens:tokens } )):
 				values = tokens;
-				tokens.length == 4;
+				tokens.length == 5;
 				
 			case _:
 				false;
@@ -829,8 +832,9 @@ class HtmlLexerSpec {
 		
 		Assert.equals( '--', values[0] );
 		Assert.equals( 'goodbye', values[1] );
-		Assert.equals( 'world', values[2] );
-		Assert.equals( '--', values[3] );
+		Assert.equals( ' ', values[2] );
+		Assert.equals( 'world', values[3] );
+		Assert.equals( '--', values[4] );
 	}
 	
 	public function testDOMNode_nextSibling() {

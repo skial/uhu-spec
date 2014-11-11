@@ -297,11 +297,11 @@ class ElementManipulationSpec
 
 	public function testValOnComment():Void 
 	{
-		#if sys
+		/*#if sys
 		Assert.equals("A comment", comment.val());
-		#else
+		#else*/
 		Assert.equals(" A comment ", comment.val());
-		#end
+		//#end
 	}
 
 	public function testValOnTextNode():Void 
@@ -394,11 +394,11 @@ class ElementManipulationSpec
 
 	public function testInnerHTMLOnNonElements():Void 
 	{
-		#if sys
+		/*#if sys
 		Assert.equals("A comment", comment.innerHTML());
-		#else
+		#else*/
 		Assert.equals(" A comment ", comment.innerHTML());
-		#end
+		//#end
 		Assert.equals("Text", text.innerHTML());
 	}
 
@@ -466,11 +466,11 @@ class ElementManipulationSpec
 
 	public function testHtmlOnNonElements():Void 
 	{
-		#if sys
+		/*#if sys
 		Assert.equals("<!--A comment-->", comment.html());
-		#else
+		#else*/
 		Assert.equals("<!-- A comment -->", comment.html());
-		#end
+		//#end
 		Assert.equals("Text", text.html());
 	}
 
