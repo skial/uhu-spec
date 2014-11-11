@@ -29,15 +29,11 @@ class HtmlLexerSpec {
 		var lexer = new HtmlLexer( ByteData.ofString( html ), 'html' );
 		var tokens = [];
 		
-		//untyped console.log( html );
-		
 		try while ( true ) {
 			tokens.push( lexer.token( HtmlLexer.root ) );
 		} catch (_e:Eof) { } catch (_e:Dynamic) {
-			//untyped console.log(_e);
+			
 		}
-		
-		//untyped console.log( tokens );
 		
 		return tokens;
 	}
@@ -51,8 +47,6 @@ class HtmlLexerSpec {
 	
 	public function testInstruction() {
 		var t = parse( '<!doctype html>' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -69,8 +63,6 @@ class HtmlLexerSpec {
 	public function testInstruction_IE() {
 		var t = parse( '<!--[if IE]>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -84,8 +76,6 @@ class HtmlLexerSpec {
 	
 	public function testInstructions_unnamed() {
 		var t = parse( '<![abc 123]>' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -101,15 +91,11 @@ class HtmlLexerSpec {
 	public function testInstructions_newline_carriage_tab() {
 		var t = parse( '<!\n\r\t\n>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 	}
 	
 	public function testInstructions_commented_css() {
 		var t = parse( '<!--\n\r\tBODY { font-family: arial,verdana,helvetica,sans-serif; font-size: 13px; background-color: #FFFFFF; color: #000000; margin-top: 0px; } -->' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -139,8 +125,6 @@ class HtmlLexerSpec {
 		var t = parse( '<a/><!-- <commented/><html>with some text</html>--><b/>' );
 		var f = t.filter( function(a) return a.match( Keyword(Instruction(_)) ) );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 3, t.length );
 		Assert.equals( 1, f.length );
 		
@@ -165,8 +149,6 @@ class HtmlLexerSpec {
 		// This does not parse as you would expect :/.
 		var t = parse( '<!-- <a> >> -->' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 4, t.length );
 		Assert.isTrue( t[0].match( Keyword(Instruction( { tokens:['--', ' ', '<a>',  ' '] } )) ) );
 		Assert.isTrue( t[1].match( GreaterThan ) );
@@ -184,8 +166,6 @@ class HtmlLexerSpec {
 	public function testSelfClosingTag() {
 		var t = parse( '<link a="1" b="2" />' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -200,8 +180,6 @@ class HtmlLexerSpec {
 	
 	public function testParagraphs() {
 		var t = parse( paragraphs ).filter( whitespace );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 2, t.length );
 		
@@ -224,8 +202,6 @@ class HtmlLexerSpec {
 	
 	public function testTags_unending() {
 		var t = parse( '<a><b><c><d><e><f>' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		Assert.isTrue( t[0].match( Keyword( Tag( _ ) ) ) );
@@ -260,14 +236,7 @@ class HtmlLexerSpec {
 				t = tokens;
 				
 				if (name == 'b') {
-					//Assert.equals( 2, tokens.length );
 					Assert.equals( 1, tokens.length );
-					/*Assert.isTrue( tokens[0].match(
-						Const( CString('<') )
-					) );
-					Assert.isTrue( tokens[1].match(
-						Const( CString('c') )
-					) );*/
 					Assert.isTrue( tokens[0].match( Keyword(Tag( { name:'c', complete:false, tokens:[] } )) ) );
 					
 					break;
@@ -284,8 +253,6 @@ class HtmlLexerSpec {
 		var t = parse( '<b><i></b></i>' );
 		
 		Assert.equals( 1, t.length );
-		
-		//untyped console.log( t );
 		
 		switch (t[0]) {
 			case Keyword( Tag( { name:name, categories:c, tokens:tokens } ) ):
@@ -311,8 +278,6 @@ class HtmlLexerSpec {
 	public function testTags_voidSpaced() {
 		var t = parse( '<a/> <b/> <c/> <d/>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 7, t.length );
 		
 		for (token in t) switch (token) {
@@ -330,8 +295,6 @@ class HtmlLexerSpec {
 	
 	public function testAttributes() {
 		var t = parse( '<a z="aaa \'bbb\' ccc" x="1" y=2 onclick="alert(\'<a></a>\')"></a>' );
-		
-		//untyped console.log( t );
 		
 		Assert.isTrue( t.length == 1 );
 		
@@ -358,8 +321,6 @@ class HtmlLexerSpec {
 	public function testAttributes_spaces() {
 		var t = parse( '<a b  =  "  aaa bbb ccc  " / >' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -374,8 +335,6 @@ class HtmlLexerSpec {
 	
 	public function testEmpty() {
 		var t = parse( '' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 0, t.length );
 	}
@@ -427,8 +386,6 @@ class HtmlLexerSpec {
 	public function testScript_content() {
 		var t = parse( '<script>console.log( 1 <= 10 && 10 => 1 );</script>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -448,8 +405,6 @@ class HtmlLexerSpec {
 		// From http://www.html5rocks.com/en/tutorials/webcomponents/template/
 		var t = parse( '<template id="mytemplate">\r\n<img src="" alt="great image">\r\n <div class="comment"></div>\r\n</template>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -468,16 +423,12 @@ class HtmlLexerSpec {
 	public function testTemplateNested_content() {
 		var t = parse( '<div><template><a/><b/></template></div>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		var template:Array<Token<HtmlKeywords>> = switch (t[0]) {
 			case Keyword(Tag( { name:'div', tokens:tokens } )): tokens;
 			case _: [];
 		}
-		
-		//untyped console.log( template );
 		
 		switch (template[0]) {
 			case Keyword(Tag( { name:'template', categories:[0, 1, 4, 8], tokens:tokens } )):
@@ -495,8 +446,6 @@ class HtmlLexerSpec {
 	public function testTag_namespace() {
 		var t = parse( '<a:namespace>Hello Namespaced World</a:namespace>' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -511,8 +460,6 @@ class HtmlLexerSpec {
 	
 	public function testInstruction_quotes() {
 		var t = parse( '<!DOCTYPE html "TEXT IN QUOTES!" "SEPARATED BY THE GREAT DIVIDE!?!">' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -531,8 +478,6 @@ class HtmlLexerSpec {
 	
 	public function testInput_fromYar3333_haxeHtmlparser() {
 		var t = parse( haxe.Resource.getString('input.html') );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 7, t.length );
 		
@@ -1011,7 +956,7 @@ class HtmlLexerSpec {
 		Assert.equals( 4, dom.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
 	}
 	
-	/*public function testElementCount() {
+	public function testElementCount() {
 		var t = parse( "<myxml>
 			<div id='recursive' class='level1'>
 				<div class='level2'>
@@ -1037,7 +982,7 @@ class HtmlLexerSpec {
 		Assert.equals( 3, dom.childNodes[1].childNodes.length );
 		Assert.equals( 3, dom.childNodes[1].childNodes[1].childNodes.length );
 		Assert.equals( 1, dom.childNodes[1].childNodes[1].childNodes[1].childNodes.length );
-	}*/
+	}
 	
 	public function testMacro_parse() {
 		Assert.equals('<ul>OneTwo</ul>', macroValue());

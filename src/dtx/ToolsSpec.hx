@@ -120,33 +120,20 @@ class ToolsSpec {
 		var q1 = Detox.parse("<!-- Just 1 comment -->");
 
 		Assert.isTrue(q1.getNode().isComment());
-		//#if !sys
 		Assert.equals(" Just 1 comment ", q1.getNode().nodeValue);
-		/*#else
-		Assert.equals("Just 1 comment", q1.getNode().nodeValue);
-		#end*/
 		Assert.equals(1, q1.length);
 
 		var q2 = Detox.parse("<!-- Comment --> Text Node");
 
 		Assert.isTrue(q2.getNode().isComment());
-		//#if !sys
 		Assert.equals(" Comment ", q2.getNode().nodeValue);
-		/*#else
-		Assert.equals("Comment", q2.getNode().nodeValue);
-		#end*/
 		Assert.equals(2, q2.length);
 
 		var q3 = Detox.parse("<!-- Comment1 --><!-- Comment2 -->");
 
 		Assert.isTrue(q3.getNode().isComment());
-		//#if !sys
 		Assert.equals(" Comment1 ", q3.getNode(0).nodeValue);
 		Assert.equals(" Comment2 ", q3.getNode(1).nodeValue);
-		/*#else
-		Assert.equals("Comment1", q3.getNode(0).nodeValue);
-		Assert.equals("Comment2", q3.getNode(1).nodeValue);
-		#end*/
 		Assert.equals(2, q3.length);
 	}
 
