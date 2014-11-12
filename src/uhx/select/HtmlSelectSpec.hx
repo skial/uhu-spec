@@ -225,8 +225,6 @@ class HtmlSelectSpec {
 	public function testAttributes_Name() {
 		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 'div[a]' );
 		
-		//untyped console.log( mo );
-		
 		Assert.equals( 1, mo.length );
 		
 		switch (mo[0]) {
@@ -252,14 +250,12 @@ class HtmlSelectSpec {
 				Assert.equals( 'b', a.get('a') );
 				
 			case _:
+				Assert.fail();
 		}
 	}
 	
-	// currently failing
 	public function testAttributes_ExactQuoted() {
 		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 'div[a="b"]' );
-		
-		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
 		
@@ -269,6 +265,99 @@ class HtmlSelectSpec {
 				Assert.equals( 'b', a.get('a') );
 				
 			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_Contains() {
+		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a*="b"]' );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'xxxaaasssdddbxxxcccvvvyeyq', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_Prefix() {
+		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a^="xxx"]' );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'xxxaaasssdddbxxxcccvvvyeyq', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_Suffix() {
+		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a$="eyq"]' );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'xxxaaasssdddbxxxcccvvvyeyq', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_List() {
+		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' ), 'div[a~="a3"]' );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'a1 a2 a3 a4 a5 a6', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_DashedList() {
+		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' ), 'div[a|="a4"]' );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( 'a1-a2-a3-a4-a5-a6', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testAttributes_Multiple() {
+		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' ), 'div[a|="a4"][b*="abc"]' );
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.isTrue( a.exists('b') );
+				Assert.equals( 'a1-a2-a3-a4-a5-a6', a.get('a') );
+				Assert.equals( '123abc456', a.get('b') );
+				
+			case _:
+				Assert.fail();
 		}
 	}
 	
