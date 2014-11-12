@@ -770,19 +770,37 @@ class CssParserSpec {
 	public function testAttribute_JoinedRuleSet() {
 		var t = parse( 'a[name] {b:c;}' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, _)):
 				Assert.isTrue( s.match( Combinator(
 					CssSelectors.Type('a'),
-					Attribute('name', AttributeType.Name('name'), ''),
+					Attribute('name', -1, ''),
 					None
 				) ) );
 				
 			case _:
+		}
+	}
+	
+	public function testAttribute_Multiple() {
+		var t = parse( 'a[one=hello][two*="bob"][three|="123"] { a:b; }' );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( Combinator(
+					CssSelectors.Type('a'),
+					Combinator( 
+						Attribute('one', AttributeType.Exact, 'hello'),
+						Combinator( Attribute('two', AttributeType.Contains, 'bob'), Attribute('three', AttributeType.DashList, '123'), None ),
+						None
+					),
+					None
+				) ) );
+				
+			case _:
+				Assert.fail();
 		}
 	}
 	
