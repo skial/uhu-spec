@@ -975,13 +975,29 @@ class HtmlLexerSpec {
 		Assert.equals( 3, dom.childNodes.length );
 		Assert.isTrue( dom.childNodes[0].token().match( Keyword(Text( { tokens:'
 			' } )) ) );
+		// div.class=level1#id=recursive
 		Assert.isTrue( dom.childNodes[1].token().match( Keyword(Tag( { name:'div' } )) ) );
 		Assert.isTrue( dom.childNodes[2].token().match( Keyword(Text( { tokens:'
-			' } )) ) );
+		' } )) ) );
 		
 		Assert.equals( 3, dom.childNodes[1].childNodes.length );
+		// div.class=level2
 		Assert.equals( 3, dom.childNodes[1].childNodes[1].childNodes.length );
-		Assert.equals( 1, dom.childNodes[1].childNodes[1].childNodes[1].childNodes.length );
+		
+		switch (dom.childNodes[1].childNodes[1].token()) {
+			case Keyword(Tag( { name:'div', tokens:t, attributes:a } )):
+				Assert.isTrue( a.exists('class') );
+				Assert.equals( 'level2', a.get('class') );
+				Assert.equals( 3, t.length );
+				
+			case _:
+				Assert.fail();
+		}
+		
+		// div.class=level3
+		Assert.equals( 3, dom.childNodes[1].childNodes[1].childNodes[1].childNodes.length );
+		Assert.equals( 'level4', dom.childNodes[1].childNodes[1].childNodes[1].childNodes[1].getAttribute('class') );
+		Assert.equals( 1, dom.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes.length );
 	}
 	
 	public function testMacro_parse() {

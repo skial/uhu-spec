@@ -2,7 +2,7 @@ package uhx.lexer;
 
 import utest.Assert;
 import byte.ByteData;
-import uhx.mo.TokenDef;
+import uhx.mo.Token;
 import uhx.lexer.HaxeLexer;
 import uhx.lexer.HaxeParser;
 
@@ -22,11 +22,11 @@ class HaxeParserSpec {
 		var t = p.toTokens( ByteData.ofString( reg ), 'ereg_test' );
 		var i = t.iterator();
 		
-		Assert.isTrue( Keyword(New).equals( i.next().token ) );
-		Assert.isTrue( Space(1).equals( i.next().token ) );
-		Assert.isTrue( Const(CIdent('EReg')).equals( i.next().token ) );
-		Assert.isTrue( ParenthesesOpen.equals( i.next().token ) );
-		Assert.isTrue( Const(CString('\t(};?</pre>)')).equals( i.next().token ) );
+		Assert.isTrue( Keyword(New).equals( i.next() ) );
+		Assert.isTrue( Space(1).equals( i.next() ) );
+		Assert.isTrue( Const(CIdent('EReg')).equals( i.next() ) );
+		Assert.isTrue( ParenthesesOpen.equals( i.next() ) );
+		Assert.isTrue( Const(CString('\t(};?</pre>)')).equals( i.next() ) );
 	}
 	
 	public function testEReg_html() {

@@ -204,6 +204,7 @@ class TraversingSpec
 		var level2 = ".level2".find().getNode();
 		var level1 = ".level1".find().getNode();
 		var textNode = h1.children(false).getNode();
+
 		Assert.equals(4, level4.ancestors().length);
 		Assert.equals(3, level3.ancestors().length);
 		Assert.equals(2, level2.ancestors().length);
