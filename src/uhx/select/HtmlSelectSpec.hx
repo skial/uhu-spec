@@ -270,7 +270,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Contains() {
-		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a*="b"]' );
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a*="b"]' );
 		
 		Assert.equals( 1, mo.length );
 		
@@ -285,7 +285,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Prefix() {
-		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a^="xxx"]' );
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a^="xxx"]' );
 		
 		Assert.equals( 1, mo.length );
 		
@@ -315,7 +315,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_List() {
-		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' ), 'div[a~="a3"]' );
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' ), 'div[a~="a3"]' );
 		
 		Assert.equals( 1, mo.length );
 		
@@ -330,7 +330,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_DashedList() {
-		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' ), 'div[a|="a4"]' );
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' ), 'div[a|="a4"]' );
 		
 		Assert.equals( 1, mo.length );
 		
@@ -345,7 +345,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Multiple() {
-		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' ), 'div[a|="a4"][b*="abc"]' );
+		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' ), 'div[a|="a4"][b*="abc"]' );
 		
 		Assert.equals( 1, mo.length );
 		
@@ -359,6 +359,27 @@ class HtmlSelectSpec {
 			case _:
 				Assert.fail();
 		}
+	}
+	
+	public function testFirstofType() {
+		var mo = HtmlSelector.find( 
+			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' ), 
+			'ABC:first-of-type' 
+		);
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:n, tokens:[Keyword(HtmlKeywords.Text( { tokens:'CORRECT' } ))] } )):
+				Assert.equals( 'ABC', n );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testLastofType() {
+		
 	}
 	
 }
