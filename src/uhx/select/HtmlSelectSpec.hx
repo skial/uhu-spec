@@ -379,7 +379,20 @@ class HtmlSelectSpec {
 	}
 	
 	public function testLastofType() {
+		var mo = HtmlSelector.find( 
+			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' ), 
+			'ABC:last-of-type' 
+		);
 		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:n, tokens:[Keyword(HtmlKeywords.Text( { tokens:'WRONG' } ))] } )):
+				Assert.equals( 'ABC', n );
+				
+			case _:
+				Assert.fail();
+		}
 	}
 	
 }
