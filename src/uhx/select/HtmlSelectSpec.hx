@@ -43,9 +43,59 @@ class HtmlSelectSpec {
 		return new SelectorParser().toTokens( ByteData.ofString( value ), 'html-css-selector' );
 	}
 	
-	// Even thought this is testing the html token structure,
+	public function testUniversal() {
+		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span id="B"></span></html>' ), '*' );
+		
+		//untyped console.log( mo );
+		
+		Assert.equals( 3, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'html' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[2].match( Keyword(Tag( { name:'span' } )) ) );
+	}
+	
+	
+	public function testSingleID() {
+		var mo = HtmlSelector.find( parse( '<html><div id="A"></div></html>' ), '#A' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
+	}
+	
+	public function testMultiID() {
+		var mo = HtmlSelector.find( parse( '<html><div id="A"></div><span id="A"></span></html>' ), '#A' );
+		
+		Assert.equals( 2, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
+	}
+	
+	public function testSingleID_deep() {
+		var mo = HtmlSelector.find( parse( '<a><b><c><d><div></div><div id="A">Some Text</div><div></div></d></c></b></a>' ), '#A' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Some Text' } ))] } )) ) );
+	}
+	
+	
+	public function testSingleClass() {
+		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span class="A"></span><pre class="A"></pre></html>' ), '.A' );
+		
+		Assert.equals( 3, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
+		Assert.isTrue( mo[2].match( Keyword(Tag( { name:'pre' } )) ) );
+	}
+	
+	// Css Parser problem
+	/*public function testMultiClass() {
+		untyped console.log( cssParse( '.A.B.C' ) ); // Find an element that has all these class name
+		untyped console.log( cssParse( '.A .B .C' ) ); // Find an ele w/ `C` class name inside an ele w/ class `B` inside ele w/ class name `A`
+	}*/
+	
+	// Even though this is testing the html token structure,
 	// it is easier with a css processor.
-	public function testAncestorChain() {
+	public function testTagName() {
 		var mo = HtmlSelector.find( parse( '<a><b><c><d></d></c></b></a>' ), 'd' );
 		
 		//untyped console.log( mo );
@@ -83,49 +133,6 @@ class HtmlSelectSpec {
 		}
 	}
 	
-	public function testSingleID() {
-		var mo = HtmlSelector.find( parse( '<html><div id="A"></div></html>' ), '#A' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
-	}
-	
-	public function testMultiID() {
-		var mo = HtmlSelector.find( parse( '<html><div id="A"></div><span id="A"></span></html>' ), '#A' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 2, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
-	}
-	
-	public function testSingleID_deep() {
-		var mo = HtmlSelector.find( parse( '<a><b><c><d><div></div><div id="A">Some Text</div><div></div></d></c></b></a>' ), '#A' );
-		
-		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Some Text' } ))] } )) ) );
-	}
-	
-	public function testSingleClass() {
-		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span class="A"></span><pre class="A"></pre></html>' ), '.A' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 3, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
-		Assert.isTrue( mo[2].match( Keyword(Tag( { name:'pre' } )) ) );
-	}
-	
-	// Css Parser problem
-	/*public function testMultiClass() {
-		untyped console.log( cssParse( '.A.B.C' ) ); // Find an element that has all these class name
-		untyped console.log( cssParse( '.A .B .C' ) ); // Find an ele w/ `C` class name inside an ele w/ class `B` inside ele w/ class name `A`
-	}*/
-	
 	public function testGrouping() {
 		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span id="B"></span></html>' ), '.A, #B' );
 		
@@ -136,60 +143,8 @@ class HtmlSelectSpec {
 		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
 	}
 	
-	public function testUniversal() {
-		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span id="B"></span></html>' ), '*' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 3, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'html' } )) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'div' } )) ) );
-		Assert.isTrue( mo[2].match( Keyword(Tag( { name:'span' } )) ) );
-	}
-	
-	public function testPseudo_firstChild() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :first-child' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
-	}
-	
-	public function testPseudo_lastChild() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :last-child' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
-	}
-	
-	public function testPseudo_NthChild1() {
-		// `:nth-child(odd)` selects every odd element.
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :nth-child(odd)' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 1, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
-	}
-	
-	public function testPseudo_NthChild2() {
-		// `:nth-child(-n+2)` selects the first two elements.
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :nth-child(-n+2)' );
-		
-		//untyped console.log( mo );
-		
-		Assert.equals( 2, mo.length );
-		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
-		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
-	}
-	
 	public function testCombinator_General() {
 		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'code ~ span' );
-		
-		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
@@ -198,16 +153,12 @@ class HtmlSelectSpec {
 	public function testCombinator_Adjacent() {
 		var mo = HtmlSelector.find( parse( '<html><code>a</code><span>b</span><pre>c</pre></html>' ), 'span + pre' );
 		
-		//untyped console.log( mo );
-		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Descendant() {
 		var mo = HtmlSelector.find( parse( '<html><code>a</code><span>b</span><pre><pre>c</pre></pre></html>' ), 'pre pre' );
-		
-		//untyped console.log( mo );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } )) ) );
@@ -216,14 +167,15 @@ class HtmlSelectSpec {
 	public function testCombinator_Child() {
 		var mo = HtmlSelector.find( parse( '<html><code>a</code><span>b</span><pre><pre>c</pre></pre></html>' ), 'html > pre' );
 		
-		//untyped console.log( mo );
-		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } ))] } )) ) );
 	}
 	
 	public function testAttributes_Name() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 'div[a]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 
+			'div[a]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -238,7 +190,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_ExactUnQuoted() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 'div[a=b]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 
+			'div[a=b]' 
+		);
 		
 		//untyped console.log( mo );
 		
@@ -255,7 +210,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_ExactQuoted() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 'div[a="b"]' );
+		var mo = HtmlSelector.find(
+			parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 
+			'div[a="b"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -270,7 +228,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Contains() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a*="b"]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 
+			'div[a*="b"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -285,7 +246,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Prefix() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a^="xxx"]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 
+			'div[a^="xxx"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -300,7 +264,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Suffix() {
-		var mo = HtmlSelector.find( parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 'div[a$="eyq"]' );
+		var mo = HtmlSelector.find( 
+			parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 
+			'div[a$="eyq"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -315,7 +282,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_List() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' ), 'div[a~="a3"]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' ), 
+			'div[a~="a3"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -330,7 +300,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_DashedList() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' ), 'div[a|="a4"]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' ), 
+			'div[a|="a4"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -345,7 +318,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Multiple() {
-		var mo = HtmlSelector.find( parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' ), 'div[a|="a4"][b*="abc"]' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' ), 
+			'div[a|="a4"][b*="abc"]' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		
@@ -359,6 +335,80 @@ class HtmlSelectSpec {
 			case _:
 				Assert.fail();
 		}
+	}
+	
+	/*
+	 * LEVEL 2 CSS SELECTORS
+	 */
+	
+	public function testPseudo_firstChild() {
+		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :first-child' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
+	}
+	
+	public function testPseudo_link() {
+		var mo = HtmlSelector.find( parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' ), ':link' );
+		
+		Assert.equals( 4, mo.length );
+		for (i in 0...mo.length) switch (mo[i]) {
+			case Keyword(Tag( { name:'a', attributes:a, tokens:t } )):
+				switch (i) {
+					case 0, 1, 2, 3:
+						Assert.isTrue( a.exists('href') );
+						Assert.equals( '${i+1}', a.get('href') );
+						
+					case _:
+						Assert.fail();
+				}
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_typedLink() {
+		var mo = HtmlSelector.find( parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' ), 'a:link' );
+		
+		Assert.equals( 4, mo.length );
+		for (i in 0...mo.length) switch (mo[i]) {
+			case Keyword(Tag( { name:'a', attributes:a, tokens:t } )):
+				switch (i) {
+					case 0, 1, 2, 3:
+						Assert.isTrue( a.exists('href') );
+						Assert.equals( '${i+1}', a.get('href') );
+						
+					case _:
+						Assert.fail();
+				}
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_lastChild() {
+		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :last-child' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
+	}
+	
+	public function testPseudo_NthChild_Odd() {
+		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :nth-child(odd)' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
+	}
+	
+	public function testPseudo_NthChild2() {
+		// `:nth-child(-n+2)` selects the first two elements.
+		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :nth-child(-n+2)' );
+		
+		Assert.equals( 2, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testFirstofType() {
