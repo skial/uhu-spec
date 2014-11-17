@@ -35,11 +35,11 @@ class HaxeParserSpec {
 		var p = new HaxeParser();
 		var t = p.toTokens( ByteData.ofString( reg ), 'ereg_test' );
 		var i = t.iterator();
-		
+		trace( i );
 		for (x in 0...4) i.next();
 		
 		var h = p.printHTML( i.next() );
-		
+		trace( h );
 		Assert.isTrue( h.indexOf( '&#34;&#92;&#116;' ) > -1 );
 	}
 	
