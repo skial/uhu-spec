@@ -1,10 +1,5 @@
 package ;
 
-// Target specific imports first
-//#if js
-//import uhx.tem.TemSpec;
-//#end
-
 #if (uhu && mo)
 	import uhx.select.HtmlSelectSpec;
 #end
@@ -31,9 +26,8 @@ package ;
 	//import uhx.lexer.HaxeParserSpec;
 	import uhx.lexer.CssParserSpec;
 	import uhx.lexer.HtmlLexerSpec;
-	/*import uhx.select.Json;
+	//import uhx.select.Json;
 	import uhx.select.JsonSelectSpec;
-	*/
 	import uhx.lexer.MarkdownParserSpec;
 #end
 
@@ -120,7 +114,9 @@ class AllTests {
 			runner.addCase( new MarkdownParserSpec() );
 			runner.addCase( new CssParserSpec() );
 			runner.addCase( new HtmlLexerSpec() );
-			//runner.addCase( new JsonSelectSpec() );
+			#if js
+				runner.addCase( new JsonSelectSpec() );
+			#end
 		#end
 		
 		// Commandline Tests
