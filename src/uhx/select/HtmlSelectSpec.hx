@@ -26,15 +26,11 @@ class HtmlSelectSpec {
 		var lexer = new HtmlLexer( ByteData.ofString( html ), 'html' );
 		var tokens = [];
 		
-		//untyped console.log( html );
-		
 		try while ( true ) {
 			tokens.push( lexer.token( HtmlLexer.root ) );
 		} catch (_e:Eof) { } catch (_e:Dynamic) {
-			//untyped console.log(_e);
+			
 		}
-		
-		//untyped console.log( tokens );
 		
 		return tokens;
 	}
@@ -136,8 +132,6 @@ class HtmlSelectSpec {
 	public function testGrouping() {
 		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span id="B"></span></html>' ), '.A, #B' );
 		
-		//untyped console.log( mo );
-		
 		Assert.equals( 2, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
 		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span' } )) ) );
@@ -170,6 +164,25 @@ class HtmlSelectSpec {
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } ))] } )) ) );
 	}
+	
+	public function testAttributes_Name_Typeless() {
+		var mo = HtmlSelector.find( 
+			parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 
+			'[a]' 
+		);
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', attributes:a, tokens:[Keyword(HtmlKeywords.Text( { tokens:'b' } ))] } )):
+				Assert.isTrue( a.exists('a') );
+				Assert.equals( '', a.get('a') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
 	
 	public function testAttributes_Name() {
 		var mo = HtmlSelector.find( 
@@ -369,7 +382,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_typedLink() {
-		var mo = HtmlSelector.find( parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' ), 'a:link' );
+		var mo = HtmlSelector.find( 
+			parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' ), 
+			'a:link' 
+		);
 		
 		Assert.equals( 4, mo.length );
 		for (i in 0...mo.length) switch (mo[i]) {
@@ -388,15 +404,74 @@ class HtmlSelectSpec {
 		}
 	}
 	
+	// LEVEL 3 CSS SELECTORS
+	
+	public function testPseudo_enabled() {
+		var mo = HtmlSelector.find( 
+			parse( '<a enabled=enabled></a><b disabled="disabled"></b>' ),
+			':enabled'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'a', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('enabled') );
+				Assert.equals( 'enabled', a.get('enabled') );
+				
+			case _:	
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_disabled() {
+		var mo = HtmlSelector.find( 
+			parse( '<a enabled=enabled></a><b disabled="disabled"></b>' ),
+			':disabled'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'b', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('disabled') );
+				Assert.equals( 'disabled', a.get('disabled') );
+				
+			case _:	
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_root() {
+		var mo = HtmlSelector.find(
+			parse( '<a><b><c><d><e></e></d></c></b></a>' ),
+			':root'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'a', tokens:t, parent:p } )):
+				Assert.equals( 1, t.length );
+				Assert.isNull( p() );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
 	public function testPseudo_lastChild() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :last-child' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><code>abc</code><span>def</span></html>' ), 
+			'html :last-child' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testPseudo_NthChild_Odd() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :nth-child(odd)' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><code>abc</code><span>def</span></html>' ), 
+			'html :nth-child(odd)'
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
@@ -404,14 +479,95 @@ class HtmlSelectSpec {
 	
 	public function testPseudo_NthChild2() {
 		// `:nth-child(-n+2)` selects the first two elements.
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :nth-child(-n+2)' );
+		var mo = HtmlSelector.find( 
+			parse( '<html><code>abc</code><span>def</span></html>' ), 
+			'html :nth-child(-n+2)' 
+		);
 		
 		Assert.equals( 2, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
 		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
-	public function testFirstofType() {
+	public function testPseudo_NthLastChild_single() {
+		var mo = HtmlSelector.find( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+			'a :nth-last-child(2)' 
+		);
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'3', tokens:[] } )) ) );
+	}
+	
+	public function testPseudo_NthLastChild_multiple() {
+		// `:nth-last-child(-n+2)` selects the last two elements.
+		var mo = HtmlSelector.find( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+			'a :nth-last-child(-n+2)' 
+		);
+		
+		Assert.equals( 2, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'4', tokens:[] } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'3', tokens:[] } )) ) );
+	}
+	
+	public function testPseudo_NthLastChild_odd() {
+		var mo = HtmlSelector.find( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+			'a :nth-last-child(odd)' 
+		);
+		
+		Assert.equals( 2, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'4', tokens:[] } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'2', tokens:[] } )) ) );
+	}
+	
+	public function testPseudo_NthLastChild_even() {
+		var mo = HtmlSelector.find( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+			'a :nth-last-child(even)' 
+		);
+		
+		Assert.equals( 2, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'3', tokens:[] } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'1', tokens:[] } )) ) );
+	}
+	
+	public function testPseudo_NthOftype_single() {
+		var mo = HtmlSelector.find( 
+			parse( '<a id=1></a><b id=1></b><a id=2></a><b id=2></b><a id=3></a><b id=3></b><a id=4></a><b id=4></b>' ), 
+			'a:nth-of-type(2)' 
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'a', tokens:[], attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_NthLastOfType() {
+		var mo = HtmlSelector.find( 
+			parse( '<ul><li>First Item</li><li>Second Item</li><li>Third Item</li><li>Fourth Item</li><li>Fifth Item</li></ul>' ),
+			'li:nth-last-of-type(2)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'li', tokens:[Keyword(Text( { tokens:'Fourth Item' } ))] } ) ):
+				Assert.isTrue( true );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_FirstofType() {
 		var mo = HtmlSelector.find( 
 			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' ), 
 			'ABC:first-of-type' 
@@ -428,7 +584,7 @@ class HtmlSelectSpec {
 		}
 	}
 	
-	public function testLastofType() {
+	public function testPseudo_LastofType() {
 		var mo = HtmlSelector.find( 
 			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' ), 
 			'ABC:last-of-type' 
@@ -443,6 +599,93 @@ class HtmlSelectSpec {
 			case _:
 				Assert.fail();
 		}
+	}
+	
+	public function testPseudo_OnlyChild() {
+		var mo = HtmlSelector.find(
+			parse( '<div><p>This paragraph is the only child of its parent</p></div><div><p>This paragraph is the first child of its parent</p><p>This paragraph is the second child of its parent</p></div>' ),
+			'p:only-child'
+		);
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'p', tokens:t, parent:p } )):
+				Assert.equals( 1, t.length );
+				Assert.isTrue( t[0].match( Keyword(Text( { tokens:'This paragraph is the only child of its parent' } )) ) );
+				Assert.isTrue( p().match( Keyword(Tag( { name:'div' } )) ) );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_OnlyOfType() {
+		var mo = HtmlSelector.find(
+			parse( "<ul><li>I'm all alone!</li></ul><ul><li>We are together.</li><li>We are together.</li><li>We are together.</li></ul>" ),
+			'li:only-of-type'
+		);
+		
+		Assert.equals( 1, mo.length );
+		
+		switch(mo[0]) {
+			case Keyword(Tag( { name:'li', tokens:[Keyword(Text( { tokens:"I'm all alone!" } ))] } )):
+				Assert.isTrue( true );
+				
+			case _:
+				Assert.fail();
+		}
+	}
+	
+	public function testPseudo_Empty() {
+		var mo = HtmlSelector.find(
+			parse( "<div> </div><div><!-- test --></div><div>\r\n</div><div><div>" ),
+			'div:empty'
+		);
+		
+		Assert.equals( 2, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div', tokens:[Keyword(Instruction( { tokens:['--', ' ', 'test', ' ', '--'] } ))] } )) ) );
+		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'div', tokens:[] } )) ) );
+	}
+	
+	public function testPseudo_Not() {
+		var mo = HtmlSelector.find(
+			parse( '<ul><li id=1></li><li class="different"></li><li id=2></li></ul>' ),
+			'li:not(.different)'
+		);
+		
+		Assert.equals( 2, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'li', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		switch (mo[1]) {
+			case Keyword(Tag( { name:'li', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	// LEVEL 4 CSS SELECTORS
+	
+	public function testPseudo_Scope_Stupid() {
+		trace( 'scoped' );
+		var mo = HtmlSelector.find(
+			parse( '<ul><li id="scope"><a>abc</a></li><li>def</li><li><a>efg</a></li></ul>' ),
+			':scope #scope'
+		);
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'li', tokens:[Keyword(Tag( { name:'a', tokens:[Keyword(Text( { tokens:'abc' } ))] } ))] } )) ) );
 	}
 	
 }
