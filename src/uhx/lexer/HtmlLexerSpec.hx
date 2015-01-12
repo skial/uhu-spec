@@ -1045,6 +1045,7 @@ class HtmlLexerSpec {
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 'a:namespace', dom.nodeName );
+		Assert.equals( 1, dom.childNodes.length );
 	}
 	
 	public function testMacro_parse() {
