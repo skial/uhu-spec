@@ -20,6 +20,10 @@
 #-lib requests
 #-lib ajou
 
+## Experimental libraries.
+
+#-D trait
+
 -cp src
 -cp ../taurine/src
 -cp ../../../haxe.io/src

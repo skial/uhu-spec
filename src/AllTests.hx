@@ -19,7 +19,7 @@ package ;
 #end
 
 #if (uhu && klas)
-	import uhx.macro.TraitSpec;
+	//import uhx.macro.TraitSpec;
 #end
 
 #if mo
@@ -115,7 +115,7 @@ class AllTests {
 			runner.addCase( new CssParserSpec() );
 			runner.addCase( new HtmlLexerSpec() );
 			#if js
-				runner.addCase( new JsonSelectSpec() );
+				//runner.addCase( new JsonSelectSpec() );
 			#end
 		#end
 		
@@ -128,7 +128,7 @@ class AllTests {
 		
 		// Experimental Build Macros
 		#if klas
-			#if uhu
+			#if trait
 				runner.addCase( new TraitSpec() );
 			#end
 			
@@ -154,7 +154,7 @@ class AllTests {
 			runner.addCase( new AtomSpec() );
 		#end
 		
-		#if detox
+		#if (mo && detox)
 			runner.addCase( new ElementManipulationSpec() );
 			runner.addCase( new CollectionSpec() );
 			runner.addCase( new CollectionElementManipulationSpec() );
