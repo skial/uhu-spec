@@ -1015,6 +1015,38 @@ class HtmlLexerSpec {
 		Assert.equals( 1, head.childNodes.length );
 	}
 	
+	public function testNamespace_Attributes() {
+		var t = parse( '<a att="1" att:namespace="2"></a>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		for (attribute in dom.attributes) switch (attribute.name) {
+			case 'att':
+				Assert.equals( 'att', attribute.name );
+				Assert.equals( '1', attribute.value );
+				
+			case 'att:namespace':
+				Assert.equals( 'att:namespace', attribute.name );
+				Assert.equals( '2', attribute.value );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testNamespace_Tag() {
+		var t = parse( '<a:namespace><b></b></a:namespace>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( 'a:namespace', dom.nodeName );
+	}
+	
 	public function testMacro_parse() {
 		Assert.equals('<ul>OneTwo</ul>', macroValue());
 	}
