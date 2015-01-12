@@ -20,7 +20,7 @@ class JsonSelectSpec {
 		level3 = haxe.Json.parse( haxe.Resource.getString('l3basic.json') );
 	}
 	
-	/*public function testLevel1_id() {
+	public function testLevel1_id() {
 		var m = level1.find('.favoriteColor');
 		
 		Assert.equals( 1, m.length );
@@ -192,11 +192,11 @@ class JsonSelectSpec {
 		Assert.equals( 1, m.length );
 		Assert.equals( 'Lloyd', m[0].first );
 		Assert.equals( 'Hilaiel', m[0].last );
-	}*/
+	}
 	
-	public function testLevel3_hasComma() {
+	/*public function testLevel3_hasComma() {
 		var m = level3.find(':has(:root > .language, :root > .last)');
 		//untyped console.log( m );
-	}
+	}*/
 	
 }
