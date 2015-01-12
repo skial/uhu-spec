@@ -3,8 +3,10 @@ package uhx.http;
 import haxe.Json;
 import haxe.Timer;
 import utest.Assert;
-import uhx.http.impl.e.EStatus;
-import uhx.http.impl.e.EMethod;
+//import uhx.http.impl.e.EStatus;
+//import uhx.http.impl.e.EMethod;
+import uhx.http.Status;
+import uhx.http.Header;
 import taurine.io.Uri;
 import uhx.http.Message;
 
