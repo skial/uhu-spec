@@ -1000,6 +1000,21 @@ class HtmlLexerSpec {
 		Assert.equals( 1, dom.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes.length );
 	}
 	
+	public function testTitleContentTags() {
+		var t = parse( '<html><head><title><content select=""></content></title></head><body><div></div></body></html>' );
+		
+		Assert.equals( 1, t.length );
+		
+		var dom:DOMNode = t[0];
+		
+		Assert.equals( 2, dom.childNodes.length );
+		
+		var head = dom.childNodes[0];
+		trace( head.childNodes );
+		Assert.equals( 'head', head.nodeName );
+		Assert.equals( 1, head.childNodes.length );
+	}
+	
 	public function testMacro_parse() {
 		Assert.equals('<ul>OneTwo</ul>', macroValue());
 	}
