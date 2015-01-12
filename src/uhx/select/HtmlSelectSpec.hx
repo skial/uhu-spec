@@ -678,7 +678,6 @@ class HtmlSelectSpec {
 	// LEVEL 4 CSS SELECTORS
 	
 	public function testPseudo_Scope_Stupid() {
-		trace( 'scoped' );
 		var mo = HtmlSelector.find(
 			parse( '<ul><li id="scope"><a>abc</a></li><li>def</li><li><a>efg</a></li></ul>' ),
 			':scope #scope'
@@ -686,6 +685,60 @@ class HtmlSelectSpec {
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'li', tokens:[Keyword(Tag( { name:'a', tokens:[Keyword(Text( { tokens:'abc' } ))] } ))] } )) ) );
+	}
+	
+	public function testPseudo_Has_Child() {
+		var mo = HtmlSelector.find(
+			parse( '<a><div><b><div><c>WIN</c></div></b></div></a>' ),
+			'div:has(> c)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'div', tokens:[Keyword(Tag( { name:'c', tokens:[Keyword(Text( { tokens:'WIN' } ))] } ))] } )):
+				Assert.isTrue( true );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_Has_Adjacent() {
+		var mo = HtmlSelector.find(
+			parse( '<a><b>WIN</b><c></c></a>' ),
+			'b:has(+ c)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'b', tokens:[Keyword(Text( { tokens:'WIN' } ))] } )):
+				Assert.isTrue( true );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_Not_Has() {
+		trace( 'has' );
+		var mo = HtmlSelector.find(
+			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' ),
+			'b:not(:has(h1, h4))'
+		);
+		trace( cssParse( 'b:not(:has(h1, h4))' ) );
+		for (m in mo) trace( m );
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'b', attributes:a, tokens:[Keyword(Text( { tokens:'WIN' } ))] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
 	}
 	
 }
