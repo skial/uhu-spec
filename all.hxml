@@ -19,6 +19,7 @@
 #-lib cmd
 #-lib requests
 #-lib ajou
+-lib fisel
 
 ## Experimental libraries.
 
