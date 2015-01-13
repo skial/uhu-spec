@@ -1,5 +1,9 @@
 package ;
 
+#if uhu
+	import uhx.io.UriSpec;
+#end
+
 #if (uhu && mo)
 	import uhx.select.HtmlSelectSpec;
 #end
@@ -29,6 +33,10 @@ package ;
 	//import uhx.select.Json;
 	import uhx.select.JsonSelectSpec;
 	import uhx.lexer.MarkdownParserSpec;
+#end
+
+#if (uhu && mo && detox && fisel)
+	import uhx.fisel.FiselSpec;
 #end
 
 #if klas
@@ -103,8 +111,8 @@ class AllTests {
 		//runner.addCase( new TemSpec() );
 		#end
 		
-		#if (uhu && mo)
-			runner.addCase( new HtmlSelectSpec() );
+		#if uhu
+			runner.addCase( new UriSpec() );
 		#end
 		
 		// Lexer and Parser Tests
@@ -117,6 +125,25 @@ class AllTests {
 			#if js
 				//runner.addCase( new JsonSelectSpec() );
 			#end
+		#end
+		
+		#if (uhu && mo)
+			runner.addCase( new HtmlSelectSpec() );
+		#end
+		
+		#if (mo && detox)
+			runner.addCase( new ElementManipulationSpec() );
+			runner.addCase( new CollectionSpec() );
+			runner.addCase( new CollectionElementManipulationSpec() );
+			runner.addCase( new ToolsSpec() );
+			runner.addCase( new TraversingSpec() );
+			runner.addCase( new CollectionTraversingSpec() );
+			runner.addCase( new DOMManipulationSpec() );
+			runner.addCase( new CollectionDOMManipulationSpec() );
+		#end
+		
+		#if (uhu && mo && detox && fisel)
+			runner.addCase( new FiselSpec() );
 		#end
 		
 		// Commandline Tests
@@ -152,17 +179,6 @@ class AllTests {
 		#if (sys && tuli)
 			// Tuli Plugin Tests
 			runner.addCase( new AtomSpec() );
-		#end
-		
-		#if (mo && detox)
-			runner.addCase( new ElementManipulationSpec() );
-			runner.addCase( new CollectionSpec() );
-			runner.addCase( new CollectionElementManipulationSpec() );
-			runner.addCase( new ToolsSpec() );
-			runner.addCase( new TraversingSpec() );
-			runner.addCase( new CollectionTraversingSpec() );
-			runner.addCase( new DOMManipulationSpec() );
-			runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
 		Report.create( runner );
