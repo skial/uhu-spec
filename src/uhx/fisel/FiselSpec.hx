@@ -1,5 +1,7 @@
 package uhx.fisel;
 
+using Detox;
+
 /**
  * ...
  * @author Skial Bainn
@@ -11,24 +13,28 @@ class FiselSpec {
 	}
 	
 	private function parse(html:String) {
-		var fisel = new Fisel( html );
+		return new Fisel( html );
 	}
 	
 	private function testThing() {
-		parse( 
+		var f = parse( 
 '<html>
 	<head>
 		<base href="../templates/html" />
 		<link id="customID" rel="import" href="escaped.html" />
 		<link rel="import" href="methods.html" />
 		<link rel="import" href="script.js" />
-		<title>Hello World from <content select="1" /></title>
+		<title>Hello World from <content select="h1:first-child" /></title>
 	</head>
 	<body>
-		<content select="2" />
+		<h1>Fisel</h1>
+		<content select="#customID" />
 	</body>
 </html>' 
 		);
+		
+		f.build();
+		trace( f.document.html() );
 	}
 	
 }
