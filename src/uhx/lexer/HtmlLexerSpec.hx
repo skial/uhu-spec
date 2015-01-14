@@ -1010,7 +1010,6 @@ class HtmlLexerSpec {
 		Assert.equals( 2, dom.childNodes.length );
 		
 		var head = dom.childNodes[0];
-		trace( head.childNodes );
 		Assert.equals( 'head', head.nodeName );
 		Assert.equals( 1, head.childNodes.length );
 	}
