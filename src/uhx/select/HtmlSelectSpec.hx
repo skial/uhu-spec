@@ -354,11 +354,23 @@ class HtmlSelectSpec {
 	 * LEVEL 2 CSS SELECTORS
 	 */
 	
-	public function testPseudo_firstChild() {
+	public function testPseudo_firstChild_None() {
+		var mo = HtmlSelector.find( parse( '<a><b>WIN</b><b>FAIL</b><b>FAIL AGAIN</b></a>' ), 'b:first-child' );
+		
+		Assert.equals( 1, mo.length );
+	}
+	
+	public function testPseudo_firstChild_Descendant() {
 		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :first-child' );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
+	}
+	
+	public function testPseudo_firstChild_Adjacent() {
+		var mo = HtmlSelector.find( parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' ), 'b + :first-child' );
+		
+		Assert.equals( 0, mo.length );
 	}
 	
 	public function testPseudo_link() {
@@ -722,13 +734,13 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Not_Has() {
-		trace( 'has' );
+		//trace( 'has' );
 		var mo = HtmlSelector.find(
 			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' ),
 			'b:not(:has(h1, h4))'
 		);
-		trace( cssParse( 'b:not(:has(h1, h4))' ) );
-		for (m in mo) trace( m );
+		//trace( cssParse( 'b:not(:has(h1, h4))' ) );
+		//for (m in mo) trace( m );
 		Assert.equals( 1, mo.length );
 		switch (mo[0]) {
 			case Keyword(Tag( { name:'b', attributes:a, tokens:[Keyword(Text( { tokens:'WIN' } ))] } )):
