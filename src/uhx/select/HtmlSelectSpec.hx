@@ -367,8 +367,21 @@ class HtmlSelectSpec {
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
 	}
 	
+	public function testPseudo_firstChild_Descendant_Deep() {
+		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span><div><p>def</p><div></span></html>' ), 'div :first-child' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'p', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
+	}
+	
 	public function testPseudo_firstChild_Adjacent() {
 		var mo = HtmlSelector.find( parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' ), 'b + :first-child' );
+		
+		Assert.equals( 0, mo.length );
+	}
+	
+	public function testPseudo_firstChild_General() {
+		var mo = HtmlSelector.find( parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' ), 'b ~ :first-child' );
 		
 		Assert.equals( 0, mo.length );
 	}
