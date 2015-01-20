@@ -358,6 +358,14 @@ class HtmlSelectSpec {
 		var mo = HtmlSelector.find( parse( '<a><b>WIN</b><b>FAIL</b><b>FAIL AGAIN</b></a>' ), 'b:first-child' );
 		
 		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'WIN' } ))] } )) ) );
+	}
+	
+	public function testPseudo_firstChild_Child() {
+		var mo = HtmlSelector.find( parse( '<a><b><c>WIN</c></b><b>FAIL</b><b>FAIL AGAIN</b></a>' ), 'b > :first-child' );
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'c', tokens:[Keyword(HtmlKeywords.Text( { tokens:'WIN' } ))] } )) ) );
 	}
 	
 	public function testPseudo_firstChild_Descendant() {
@@ -482,7 +490,27 @@ class HtmlSelectSpec {
 		}
 	}
 	
-	public function testPseudo_lastChild() {
+	public function testPseudo_lastChild_None() {
+		var mo = HtmlSelector.find( 
+			parse( '<a><b>FAIL</b><b>WIN</b></a>' ), 
+			'b:last-child' 
+		);
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'WIN' } ))] } )) ) );
+	}
+	
+	/*public function testPseudo_lastChild_Child() {
+		var mo = HtmlSelector.find(
+			parse( '<a><b>FAIL</b><b>WIN</b></a>' ),
+			':last-child > :last-child'
+		);
+		
+		Assert.equals( 1, mo.length );
+		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'WIN' } ))] } )) ) );
+	}*/
+	
+	public function testPseudo_lastChild_Descendant() {
 		var mo = HtmlSelector.find( 
 			parse( '<html><code>abc</code><span>def</span></html>' ), 
 			'html :last-child' 
@@ -491,6 +519,8 @@ class HtmlSelectSpec {
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
+	
+	
 	
 	public function testPseudo_NthChild_Odd() {
 		var mo = HtmlSelector.find( 
