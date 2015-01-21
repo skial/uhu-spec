@@ -1,6 +1,16 @@
 package uhx.fisel;
 
+import utest.Assert;
+
+#if sys
+import sys.io.File;
+#end
+
 using Detox;
+
+#if sys
+using sys.FileSystem;
+#end
 
 /**
  * ...
@@ -8,33 +18,39 @@ using Detox;
  */
 class FiselSpec {
 	
+	public var path:String;
+	public var fisel:Fisel;
+	
 	public function new() {
+		path = '../templates/fisel/';
 		
-	}
-	
-	private function parse(html:String) {
-		return new Fisel( html );
-	}
-	
-	private function testThing() {
-		var f = parse( 
-'<html>
-	<head>
-		<base href="../templates/html" />
-		<link id="customID" rel="import" href="escaped.html" />
-		<link rel="import" href="methods.html" />
-		<link rel="import" href="script.js" />
-		<title>Hello World from <content select="h1:first-child" /></title>
-	</head>
-	<body>
-		<h1>Fisel</h1>
-		<content select="#customID" />
-	</body>
-</html>' 
+		fisel = new Fisel( 
+			#if sys
+				File.getContent( '$path/index.html'.fullPath() ).parse(), path.fullPath()
+			#else
+				''.parse()
+			#end
 		);
 		
-		f.build();
-		trace( f.document.html() );
+		fisel.load();
+	}
+	
+	public function testBuild_Before() {
+		var imports = fisel.document.find( 'link[rel="import"]' );
+		var content = fisel.document.find( 'content[select]' );
+		
+		Assert.equals( 2, imports.length );
+		Assert.equals( 3, content.length );
+	}
+	
+	public function testBuild_After() {
+		fisel.build();
+		
+		var imports = fisel.document.find( 'link[rel="import"]' );
+		var content = fisel.document.find( 'content[select]' );
+		
+		Assert.equals( 0, imports.length );
+		Assert.equals( 0, content.length );
 	}
 	
 }
