@@ -19,18 +19,23 @@
 #-lib cmd
 #-lib requests
 #-lib ajou
--lib fisel
+## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
+#-lib fisel	
 
 ## Experimental libraries.
-
 #-D trait
 
+## Enable analyzer optimizations
+#-D analyzer
+
+## Include extra projects
 -cp src
 -cp ../taurine/src
 -cp ../../../haxe.io/src
 -debug
+#-dce full
 #-D dump
--D macro_times
+#-D macro_times
 -main AllTests
 -resource resources/markdown/be_paragraph.html@be_paragraph.html
 -resource resources/markdown/be_paragraph.md@be_paragraph.md
