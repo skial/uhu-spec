@@ -7,9 +7,13 @@ import byte.ByteData;
 import dtx.mo.DOMNode;
 import uhx.lexer.CssLexer;
 import uhx.lexer.HtmlLexer;
+import uhx.select.html.Impl;
 import uhx.lexer.SelectorParser;
 
 import uhx.select.Html in HtmlSelector;
+import uhx.select.Html.ElementSelector;
+import uhx.select.Html.DocumentSelector;
+import uhx.select.Html.CollectionSelector;
 
 #if detox
 using Detox;
@@ -44,7 +48,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testUniversal() {
-		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span id="B"></span></html>' ), '*' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><div class="A"></div><span id="B"></span></html>' )[0], '*' );
 		
 		//untyped console.log( mo );
 		
@@ -56,14 +60,14 @@ class HtmlSelectSpec {
 	
 	
 	public function testSingleID() {
-		var mo = HtmlSelector.find( parse( '<html><div id="A"></div></html>' ), '#A' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><div id="A"></div></html>' )[0], '#A' );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
 	}
 	
 	public function testMultiID() {
-		var mo = HtmlSelector.find( parse( '<html><div id="A"></div><span id="A"></span></html>' ), '#A' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><div id="A"></div><span id="A"></span></html>' )[0], '#A' );
 		
 		Assert.equals( 2, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
@@ -71,7 +75,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testSingleID_deep() {
-		var mo = HtmlSelector.find( parse( '<a><b><c><d><div></div><div id="A">Some Text</div><div></div></d></c></b></a>' ), '#A' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<a><b><c><d><div></div><div id="A">Some Text</div><div></div></d></c></b></a>' )[0], '#A' );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div', tokens:[Keyword(HtmlKeywords.Text( { tokens:'Some Text' } ))] } )) ) );
@@ -79,7 +83,7 @@ class HtmlSelectSpec {
 	
 	
 	public function testSingleClass() {
-		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span class="A"></span><pre class="A"></pre></html>' ), '.A' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><div class="A"></div><span class="A"></span><pre class="A"></pre></html>' )[0], '.A' );
 		
 		Assert.equals( 3, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
@@ -96,7 +100,7 @@ class HtmlSelectSpec {
 	// Even though this is testing the html token structure,
 	// it is easier with a css processor.
 	public function testTagName() {
-		var mo = HtmlSelector.find( parse( '<a><b><c><d></d></c></b></a>' ), 'd' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<a><b><c><d></d></c></b></a>' )[0], 'd' );
 		
 		//untyped console.log( mo );
 		
@@ -134,7 +138,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testGrouping() {
-		var mo = HtmlSelector.find( parse( '<html><div class="A"></div><span id="B"></span></html>' ), '.A, #B' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><div class="A"></div><span id="B"></span></html>' )[0], '.A, #B' );
 		
 		Assert.equals( 2, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'div' } )) ) );
@@ -142,36 +146,39 @@ class HtmlSelectSpec {
 	}
 	
 	public function testCombinator_General() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'code ~ span' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><code>abc</code><span>def</span></html>' )[0], 'code ~ span' );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'span', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Adjacent() {
-		var mo = HtmlSelector.find( parse( '<html><code>a</code><span>b</span><pre>c</pre></html>' ), 'span + pre' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><code>a</code><span>b</span><pre>c</pre></html>' )[0], 'span + pre' );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Descendant() {
-		var mo = HtmlSelector.find( parse( '<html><code>a</code><span>b</span><pre><pre>c</pre></pre></html>' ), 'pre pre' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( parse( '<html><code>a</code><span>b</span><pre><pre>c</pre></pre></html>' )[0], 'pre pre' );
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } )) ) );
 	}
 	
 	public function testCombinator_Child() {
-		var mo = HtmlSelector.find( parse( '<html><code>a</code><span>b</span><pre><pre>c</pre></pre></html>' ), 'html > pre' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><code>a</code><span>b</span><pre><pre>c</pre></pre></html>' )[0], 
+			'html > pre' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'pre', tokens:[Keyword(Tag( { name:'pre', tokens:[Keyword(HtmlKeywords.Text( { tokens:'c' } ))] } ))] } )) ) );
 	}
 	
 	public function testAttributes_Name_Typeless() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a>b</div><div>c</div></html>' )[0], 
 			'[a]' 
 		);
 		
@@ -189,8 +196,8 @@ class HtmlSelectSpec {
 	
 	
 	public function testAttributes_Name() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a>b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a>b</div><div>c</div></html>' )[0], 
 			'div[a]' 
 		);
 		
@@ -207,8 +214,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_ExactUnQuoted() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' )[0], 
 			'div[a=b]' 
 		);
 		
@@ -227,8 +234,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_ExactQuoted() {
-		var mo = HtmlSelector.find(
-			parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<html><div>a</div><div a="b">b</div><div>c</div></html>' )[0], 
 			'div[a="b"]' 
 		);
 		
@@ -245,8 +252,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Contains() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' )[0], 
 			'div[a*="b"]' 
 		);
 		
@@ -263,8 +270,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Prefix() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' )[0], 
 			'div[a^="xxx"]' 
 		);
 		
@@ -281,8 +288,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Suffix() {
-		var mo = HtmlSelector.find( 
-			parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse ( '<html><div>a</div><div a="xxxaaasssdddbxxxcccvvvyeyq">b</div><div>c</div></html>' )[0], 
 			'div[a$="eyq"]' 
 		);
 		
@@ -299,8 +306,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_List() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a="a1 a2 a3 a4 a5 a6">b</div><div>c</div></html>' )[0], 
 			'div[a~="a3"]' 
 		);
 		
@@ -317,8 +324,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_DashedList() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6">b</div><div>c</div></html>' )[0], 
 			'div[a|="a4"]' 
 		);
 		
@@ -335,8 +342,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testAttributes_Multiple() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><div>a</div><div a="a1-a2-a3-a4-a5-a6" b="123abc456">b</div><div>c</div></html>' )[0], 
 			'div[a|="a4"][b*="abc"]' 
 		);
 		
@@ -359,47 +366,68 @@ class HtmlSelectSpec {
 	 */
 	
 	public function testPseudo_firstChild_None() {
-		var mo = HtmlSelector.find( parse( '<a><b>WIN</b><b>FAIL</b><b>FAIL AGAIN</b></a>' ), 'b:first-child' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><b>WIN</b><b>FAIL</b><b>FAIL AGAIN</b></a>' )[0], 
+			'b:first-child' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'b', tokens:[Keyword(HtmlKeywords.Text( { tokens:'WIN' } ))] } )) ) );
 	}
 	
 	public function testPseudo_firstChild_Child() {
-		var mo = HtmlSelector.find( parse( '<a><b><c>WIN</c></b><b>FAIL</b><b>FAIL AGAIN</b></a>' ), 'b > :first-child' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><b><c>WIN</c></b><b>FAIL</b><b>FAIL AGAIN</b></a>' )[0], 
+			'b > :first-child' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'c', tokens:[Keyword(HtmlKeywords.Text( { tokens:'WIN' } ))] } )) ) );
 	}
 	
 	public function testPseudo_firstChild_Descendant() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span>def</span></html>' ), 'html :first-child' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><code>abc</code><span>def</span></html>' )[0], 
+			'html :first-child' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'code', tokens:[Keyword(HtmlKeywords.Text( { tokens:'abc' } ))] } )) ) );
 	}
 	
 	public function testPseudo_firstChild_Descendant_Deep() {
-		var mo = HtmlSelector.find( parse( '<html><code>abc</code><span><div><p>def</p><div></span></html>' ), 'div :first-child' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><code>abc</code><span><div><p>def</p><div></span></html>' )[0], 
+			'div :first-child' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'p', tokens:[Keyword(HtmlKeywords.Text( { tokens:'def' } ))] } )) ) );
 	}
 	
 	public function testPseudo_firstChild_Adjacent() {
-		var mo = HtmlSelector.find( parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' ), 'b + :first-child' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' )[0], 
+			'b + :first-child' 
+		);
 		
 		Assert.equals( 0, mo.length );
 	}
 	
 	public function testPseudo_firstChild_General() {
-		var mo = HtmlSelector.find( parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' ), 'b ~ :first-child' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><b>FAIL</b><b>FAIL AGAIN</b><b>REALLY?</b></a>' )[0], 
+			'b ~ :first-child' 
+		);
 		
 		Assert.equals( 0, mo.length );
 	}
 	
 	public function testPseudo_link() {
-		var mo = HtmlSelector.find( parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' ), ':link' );
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' )[0], 
+			':link' 
+		);
 		
 		Assert.equals( 4, mo.length );
 		for (i in 0...mo.length) switch (mo[i]) {
@@ -419,8 +447,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_typedLink() {
-		var mo = HtmlSelector.find( 
-			parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a href="1"><a href="2"><a href="3"><a href="4"></a></a></a></a>' )[0], 
 			'a:link' 
 		);
 		
@@ -444,7 +472,7 @@ class HtmlSelectSpec {
 	// LEVEL 3 CSS SELECTORS
 	
 	public function testPseudo_enabled() {
-		var mo = HtmlSelector.find( 
+		var mo:Tokens = CollectionSelector.querySelectorAll( 
 			parse( '<a enabled=enabled></a><b disabled="disabled"></b>' ),
 			':enabled'
 		);
@@ -461,7 +489,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_disabled() {
-		var mo = HtmlSelector.find( 
+		var mo:Tokens = CollectionSelector.querySelectorAll( 
 			parse( '<a enabled=enabled></a><b disabled="disabled"></b>' ),
 			':disabled'
 		);
@@ -478,8 +506,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_root() {
-		var mo = HtmlSelector.find(
-			parse( '<a><b><c><d><e></e></d></c></b></a>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><b><c><d><e></e></d></c></b></a>' )[0],
 			':root'
 		);
 		
@@ -495,8 +523,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_lastChild_None() {
-		var mo = HtmlSelector.find( 
-			parse( '<a><b>FAIL</b><b>WIN</b></a>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><b>FAIL</b><b>WIN</b></a>' )[0], 
 			'b:last-child' 
 		);
 		
@@ -515,8 +543,8 @@ class HtmlSelectSpec {
 	}*/
 	
 	public function testPseudo_lastChild_Descendant() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><code>abc</code><span>def</span></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><code>abc</code><span>def</span></html>' )[0], 
 			'html :last-child' 
 		);
 		
@@ -527,8 +555,8 @@ class HtmlSelectSpec {
 	
 	
 	public function testPseudo_NthChild_Odd() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><code>abc</code><span>def</span></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><code>abc</code><span>def</span></html>' )[0], 
 			'html :nth-child(odd)'
 		);
 		
@@ -538,8 +566,8 @@ class HtmlSelectSpec {
 	
 	public function testPseudo_NthChild2() {
 		// `:nth-child(-n+2)` selects the first two elements.
-		var mo = HtmlSelector.find( 
-			parse( '<html><code>abc</code><span>def</span></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><code>abc</code><span>def</span></html>' )[0], 
 			'html :nth-child(-n+2)' 
 		);
 		
@@ -549,8 +577,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_NthLastChild_single() {
-		var mo = HtmlSelector.find( 
-			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' )[0], 
 			'a :nth-last-child(2)' 
 		);
 		
@@ -560,8 +588,8 @@ class HtmlSelectSpec {
 	
 	public function testPseudo_NthLastChild_multiple() {
 		// `:nth-last-child(-n+2)` selects the last two elements.
-		var mo = HtmlSelector.find( 
-			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' )[0], 
 			'a :nth-last-child(-n+2)' 
 		);
 		
@@ -571,8 +599,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_NthLastChild_odd() {
-		var mo = HtmlSelector.find( 
-			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' )[0], 
 			'a :nth-last-child(odd)' 
 		);
 		
@@ -582,8 +610,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_NthLastChild_even() {
-		var mo = HtmlSelector.find( 
-			parse( '<a><1></1><2></2><3></3><4></4></a>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<a><1></1><2></2><3></3><4></4></a>' )[0], 
 			'a :nth-last-child(even)' 
 		);
 		
@@ -593,7 +621,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_NthOftype_single() {
-		var mo = HtmlSelector.find( 
+		var mo:Tokens = CollectionSelector.querySelectorAll( 
 			parse( '<a id=1></a><b id=1></b><a id=2></a><b id=2></b><a id=3></a><b id=3></b><a id=4></a><b id=4></b>' ), 
 			'a:nth-of-type(2)' 
 		);
@@ -610,8 +638,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_NthLastOfType() {
-		var mo = HtmlSelector.find( 
-			parse( '<ul><li>First Item</li><li>Second Item</li><li>Third Item</li><li>Fourth Item</li><li>Fifth Item</li></ul>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<ul><li>First Item</li><li>Second Item</li><li>Third Item</li><li>Fourth Item</li><li>Fifth Item</li></ul>' )[0],
 			'li:nth-last-of-type(2)'
 		);
 		
@@ -627,8 +655,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_FirstofType() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' )[0], 
 			'ABC:first-of-type' 
 		);
 		
@@ -644,8 +672,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_LastofType() {
-		var mo = HtmlSelector.find( 
-			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' ), 
+		var mo:Tokens = DocumentSelector.querySelectorAll( 
+			parse( '<html><a>wrong</a><a>wrong</a><ABC>CORRECT</ABC><a>wrong</a><ABC>WRONG</ABC><a>wrong</a></html>' )[0], 
 			'ABC:last-of-type' 
 		);
 		
@@ -661,8 +689,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_OnlyChild() {
-		var mo = HtmlSelector.find(
-			parse( '<div><p>This paragraph is the only child of its parent</p></div><div><p>This paragraph is the first child of its parent</p><p>This paragraph is the second child of its parent</p></div>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<div><p>This paragraph is the only child of its parent</p></div><div><p>This paragraph is the first child of its parent</p><p>This paragraph is the second child of its parent</p></div>' )[0],
 			'p:only-child'
 		);
 		
@@ -680,8 +708,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_OnlyOfType() {
-		var mo = HtmlSelector.find(
-			parse( "<ul><li>I'm all alone!</li></ul><ul><li>We are together.</li><li>We are together.</li><li>We are together.</li></ul>" ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( "<ul><li>I'm all alone!</li></ul><ul><li>We are together.</li><li>We are together.</li><li>We are together.</li></ul>" )[0],
 			'li:only-of-type'
 		);
 		
@@ -697,7 +725,7 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Empty() {
-		var mo = HtmlSelector.find(
+		var mo:Tokens = CollectionSelector.querySelectorAll(
 			parse( "<div> </div><div><!-- test --></div><div>\r\n</div><div><div>" ),
 			'div:empty'
 		);
@@ -708,8 +736,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Not() {
-		var mo = HtmlSelector.find(
-			parse( '<ul><li id=1></li><li class="different"></li><li id=2></li></ul>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<ul><li id=1></li><li class="different"></li><li id=2></li></ul>' )[0],
 			'li:not(.different)'
 		);
 		
@@ -737,8 +765,8 @@ class HtmlSelectSpec {
 	// LEVEL 4 CSS SELECTORS
 	
 	public function testPseudo_Scope_Stupid() {
-		var mo = HtmlSelector.find(
-			parse( '<ul><li id="scope"><a>abc</a></li><li>def</li><li><a>efg</a></li></ul>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<ul><li id="scope"><a>abc</a></li><li>def</li><li><a>efg</a></li></ul>' )[0],
 			':scope #scope'
 		);
 		
@@ -747,8 +775,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Has_Child() {
-		var mo = HtmlSelector.find(
-			parse( '<a><div><b><div><c>WIN</c></div></b></div></a>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><div><b><div><c>WIN</c></div></b></div></a>' )[0],
 			'div:has(> c)'
 		);
 		
@@ -764,8 +792,8 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Has_Adjacent() {
-		var mo = HtmlSelector.find(
-			parse( '<a><b>WIN</b><c></c></a>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><b>WIN</b><c></c></a>' )[0],
 			'b:has(+ c)'
 		);
 		
@@ -782,8 +810,8 @@ class HtmlSelectSpec {
 	
 	public function testPseudo_Not_Has() {
 		//trace( 'has' );
-		var mo = HtmlSelector.find(
-			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' ),
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' )[0],
 			'b:not(:has(h1, h4))'
 		);
 		//trace( cssParse( 'b:not(:has(h1, h4))' ) );
@@ -803,7 +831,10 @@ class HtmlSelectSpec {
 	// Extras - non spec specific
 	
 	public function testParentless_Simple() {
-		var mo = HtmlSelector.find( parse( '<a n=1></a><b n=1></b><c n=1></c><d n=1></d><a n=2></a><b n=2></b><c n=2></c><d n=2></d>' ), 'c' );
+		var mo:Tokens = CollectionSelector.querySelectorAll( 
+			parse( '<a n=1></a><b n=1></b><c n=1></c><d n=1></d><a n=2></a><b n=2></b><c n=2></c><d n=2></d>' ), 
+			'c' 
+		);
 		
 		Assert.equals( 2, mo.length );
 		for (m in mo) switch (m) {
@@ -818,7 +849,10 @@ class HtmlSelectSpec {
 	}
 	
 	public function testParentless_SemiComplex() {
-		var mo = HtmlSelector.find( parse( '<head><meta name="og:description" content="Under Construction" /><link rel="import" href="D.html" /></head><body></body>' ), 'head' );
+		var mo:Tokens = CollectionSelector.querySelectorAll( 
+			parse( '<head><meta name="og:description" content="Under Construction" /><link rel="import" href="D.html" /></head><body></body>' ), 
+			'head' 
+		);
 		
 		Assert.equals( 1, mo.length );
 		switch (mo[0]) {
