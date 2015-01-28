@@ -11,6 +11,10 @@ import uhx.lexer.SelectorParser;
 
 import uhx.select.Html in HtmlSelector;
 
+#if detox
+using Detox;
+#end
+
 /**
  * ...
  * @author Skial Bainn
@@ -795,5 +799,54 @@ class HtmlSelectSpec {
 				
 		}
 	}
+	
+	// Extras - non spec specific
+	
+	public function testParentless_Simple() {
+		var mo = HtmlSelector.find( parse( '<a n=1></a><b n=1></b><c n=1></c><d n=1></d><a n=2></a><b n=2></b><c n=2></c><d n=2></d>' ), 'c' );
+		
+		Assert.equals( 2, mo.length );
+		for (m in mo) switch (m) {
+			case Keyword(Tag( { name:'c', tokens:[], attributes:a } )):
+				Assert.isTrue( a.exists( 'n' ) );
+				Assert.contains( a.get( 'n' ), ['1', '2'] );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testParentless_SemiComplex() {
+		var mo = HtmlSelector.find( parse( '<head><meta name="og:description" content="Under Construction" /><link rel="import" href="D.html" /></head><body></body>' ), 'head' );
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'head', tokens:t } )):
+				Assert.equals( 2, t.length );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	#if (detox && sys)
+	public function testParentless_UsingDetox() {
+		var tokens:Array<dtx.mo.DOMNode> = parse( '<head><meta name="og:description" content="Under Construction" /><link rel="import" href="D.html" /></head><body></body>' );
+		var collection = new DOMCollection( cast tokens );
+		var mo = collection.find( 'head' );
+		
+		Assert.equals( 1, mo.length );
+		switch ((mo.getNode():Token<HtmlKeywords>)) {
+			case Keyword(Tag( { name:'head', tokens:t } )):
+				Assert.equals( 2, t.length );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	#end
 	
 }
