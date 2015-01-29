@@ -22,6 +22,9 @@
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
 #-lib fisel	
 
+## Flags to silent third party libraries without exluding them
+-D disable_detox
+
 ## Experimental libraries.
 #-D trait
 
