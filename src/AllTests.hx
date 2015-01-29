@@ -6,6 +6,7 @@ package ;
 
 #if (uhu && mo)
 	import uhx.select.HtmlSelectSpec;
+	import uhx.select.JsonSelectSpec;
 #end
 
 #if (sys && tuli)
@@ -31,7 +32,6 @@ package ;
 	import uhx.lexer.CssParserSpec;
 	import uhx.lexer.HtmlLexerSpec;
 	//import uhx.select.Json;
-	import uhx.select.JsonSelectSpec;
 	import uhx.lexer.MarkdownParserSpec;
 #end
 
@@ -122,16 +122,14 @@ class AllTests {
 			runner.addCase( new MarkdownParserSpec() );
 			runner.addCase( new CssParserSpec() );
 			runner.addCase( new HtmlLexerSpec() );
-			#if js
-				//runner.addCase( new JsonSelectSpec() );
-			#end
 		#end
 		
 		#if (uhu && mo)
 			runner.addCase( new HtmlSelectSpec() );
+			//runner.addCase( new JsonSelectSpec() );
 		#end
 		
-		#if (mo && detox)
+		#if (mo && detox && !disable_detox)
 			runner.addCase( new ElementManipulationSpec() );
 			runner.addCase( new CollectionSpec() );
 			runner.addCase( new CollectionElementManipulationSpec() );
