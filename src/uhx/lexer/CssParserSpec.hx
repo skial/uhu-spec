@@ -804,4 +804,76 @@ class CssParserSpec {
 		}
 	}
 	
+	public function testPseudo_ExprInExpr() {
+		var t = parse( 'a:not(:has(ab, ac, ad)) { a:b; }' );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( Combinator(
+					CssSelectors.Type('a'),
+					Pseudo('not', ':has(ab, ac, ad)'),
+					None
+				) ) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_ExprInExpr_Silly() {
+		var t = parse( 'a:not(:has(ab, ac, :not(bb, bc:has(cb cc, cd), bd))) { a:b; }' );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( Combinator(
+					CssSelectors.Type('a'),
+					Pseudo('not', ':has(ab, ac, :not(bb, bc:has(cb cc, cd), bd))'),
+					None
+				) ) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	/*public function testPseudo_UniversalFix() {
+		var t = parse( ':a :b :c { d:e; }' );	// Should be *:a *:b *:c { d:e; }
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				trace( s );
+				Assert.isTrue( s.match( Combinator(
+					Universal, 
+					Combinator(
+						Pseudo('a', _), 
+						Combinator(
+							Universal,
+							Combinator(
+								Pseudo('b', _),
+								Combinator(
+									Universal,
+									Pseudo('c', _),
+									None
+								),
+								Descendant
+							),
+							None
+						),
+						Descendant
+					),
+					None
+				) ) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}*/
+	
 }
