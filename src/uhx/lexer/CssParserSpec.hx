@@ -842,6 +842,25 @@ class CssParserSpec {
 		}
 	}
 	
+	public function testRelativeSelector_Simple() {
+		var t = parse( '> #ID { a:b; }' );
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match(
+					Combinator( Universal, Combinator(
+						Pseudo('scope', ''), ID('ID'), Child
+					), None)
+				) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
 	/*public function testPseudo_UniversalFix() {
 		var t = parse( ':a :b :c { d:e; }' );	// Should be *:a *:b *:c { d:e; }
 		
