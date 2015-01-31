@@ -842,8 +842,13 @@ class CssParserSpec {
 		}
 	}
 	
-	public function testRelativeSelector_Simple() {
+	public function testRelativeSelector_Single() {
+		// Manually tell `CssLexer` that the selector is scoped or not, it has no way of knowing by itself.
+		CssLexer.scoped = true;
+		// This is invalid css. Relative selectors are only used via javascript.
 		var t = parse( '> #ID { a:b; }' );
+		// Set back to `false` so it doesnt screw which other lexer instances.
+		CssLexer.scoped = false;
 		
 		Assert.equals( 1, t.length );
 		
@@ -853,6 +858,32 @@ class CssParserSpec {
 					Combinator( Universal, Combinator(
 						Pseudo('scope', ''), ID('ID'), Child
 					), None)
+				) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testRelativeSelector_Group() {
+		CssLexer.scoped = true;
+		// Again, invalid css.
+		var t = parse( '> #ID, + .class { a:b; }' );
+		CssLexer.scoped = false;
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match(
+					Group( [
+						// Currently parentless pseudo selectors dont always get prepended by Universal, but they should and will.
+						/*Combinator( Universal, Combinator(Pseudo('scope', ''), ID('ID'), Child), None ),
+						Combinator( Universal, Combinator(Pseudo('scope', ''), Class(['class']), Adjacent), None )*/
+						Combinator(Pseudo('scope', ''), ID('ID'), Child),
+						Combinator(Pseudo('scope', ''), Class(['class']), Adjacent)
+					] )
 				) );
 				
 			case _:
