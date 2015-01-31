@@ -774,6 +774,24 @@ class HtmlSelectSpec {
 		Assert.isTrue( mo[0].match( Keyword(Tag( { name:'li', tokens:[Keyword(Tag( { name:'a', tokens:[Keyword(Text( { tokens:'abc' } ))] } ))] } )) ) );
 	}
 	
+	public function testPseudo_Has_Simple() {
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><b>F</b><b id=1><c>WIN</c></b><b>F</b></a>' )[0],
+			'b:has(c)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'b', tokens:[Keyword(Tag( { name:'c', tokens:[Keyword(Text( { tokens:'WIN' } ))] } ))], attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
 	public function testPseudo_Has_Child() {
 		var mo:Tokens = DocumentSelector.querySelectorAll(
 			parse( '<a><div><b><div><c>WIN</c></div></b></div></a>' )[0],
@@ -809,13 +827,11 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Not_Has() {
-		//trace( 'has' );
 		var mo:Tokens = DocumentSelector.querySelectorAll(
 			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' )[0],
 			'b:not(:has(h1, h4))'
 		);
-		//trace( cssParse( 'b:not(:has(h1, h4))' ) );
-		//for (m in mo) trace( m );
+		
 		Assert.equals( 1, mo.length );
 		switch (mo[0]) {
 			case Keyword(Tag( { name:'b', attributes:a, tokens:[Keyword(Text( { tokens:'WIN' } ))] } )):
