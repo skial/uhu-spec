@@ -37,7 +37,7 @@ class CssParserSpec {
 	
 	public function testTypeDeclaration() {
 		var t = parse( 'div { display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -64,7 +64,7 @@ class CssParserSpec {
 	
 	public function testTypeDeclaration_Newline() {
 		var t = parse( 'div,\nimg { display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -92,7 +92,7 @@ class CssParserSpec {
 	
 	public function testTypeDeclaration_NewlineCarriageTab() {
 		var t = parse( 'div,\r\nimg\t{ display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -120,7 +120,7 @@ class CssParserSpec {
 	
 	public function testIdDeclaration() {
 		var t = parse( '#a { b: c; }' );
-		//untyped console.log ( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch ( t[0] ) {
@@ -144,7 +144,7 @@ class CssParserSpec {
 	
 	public function testIdDeclaration_multi() {
 		var t = parse( '#a, #b, #c { d: e; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch ( t[0] ) {
@@ -168,7 +168,7 @@ class CssParserSpec {
 	
 	public function testIdDeclaration_child() {
 		var t = parse( '#a > #b { c: d; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -192,7 +192,7 @@ class CssParserSpec {
 	
 	public function testClassDeclaration() {
 		var t = parse( '.class { display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch ( t[0] ) {
@@ -221,13 +221,12 @@ class CssParserSpec {
 	
 	public function testClassDeclaration_Newline() {
 		var t = parse( '.class1\n.class2 { display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
-					//s.match( Group( [CssSelectors.Class( ['class1'] ), CssSelectors.Class( ['class2'] )] ) )
 					s.match( CssSelectors.Class( ['class1', 'class2'] ) )
 				);
 				Assert.equals( 1, t.length );
@@ -251,13 +250,12 @@ class CssParserSpec {
 	
 	public function testClassDeclaration_NewlineCarriageTab() {
 		var t = parse( '.class1\r\n\t.class2 { display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch( t[0] ) {
 			case Keyword(RuleSet(s, t)):
 				Assert.isTrue(
-					//s.match( Group( [CssSelectors.Class( ['class1'] ), CssSelectors.Class( ['class2'] )] ) )
 					s.match( CssSelectors.Class( ['class1', 'class2'] ) )
 				);
 				Assert.equals( 1, t.length );
@@ -278,7 +276,7 @@ class CssParserSpec {
 	
 	public function testComment() {
 		var t = parse( '/* div http://url.org/index.php?f=1&g=11#blob !@?& */' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -292,7 +290,7 @@ class CssParserSpec {
 	
 	public function testComment_Multiline() {
 		var t = parse( '/*\r\nrgb(241,89,34) - http://www.colorhexa.com/f15922\r\ncomplementary colour \r\nrgb(34,186,241) - http://www.colorhexa.com/22baf1\r\n*/' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -306,7 +304,7 @@ class CssParserSpec {
 	
 	public function testComment_MultiAsterisk() {
 		var t = parse( '/**\r\n* something\r\n\t* else\r\n * again\r\n*/' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -320,7 +318,7 @@ class CssParserSpec {
 	
 	public function testCommentTypeClass() {
 		var t = parse( '/* comment1 */\r\n\r\nimg,\r\n.class {\r\n\tdisplay: block;\r\n}/*comment2*/' );
-		////untyped console.log( t );
+		
 		Assert.equals( 3, t.length );
 		Assert.isTrue( t[0].match( Comment( 'comment1' ) ) );
 		Assert.isTrue( t[2].match( Comment( 'comment2' ) ) );
@@ -352,7 +350,7 @@ class CssParserSpec {
 	
 	public function testChild() {
 		var t = parse( 'a > b { display: block; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -376,13 +374,13 @@ class CssParserSpec {
 	
 	public function testSingleCharacters() {
 		var t = parse( 'a { b: 1; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 	}
 	
 	public function testDecimalValue() {
 		var t = parse( 'a { b: 1.1; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -406,7 +404,7 @@ class CssParserSpec {
 	
 	public function testStringValue() {
 		var t = parse( 'a { b: "/unicode0123456789!?"£$"; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -430,7 +428,7 @@ class CssParserSpec {
 	
 	public function testMultiValue() {
 		var t = parse( 'a { b: 1, 2, 3; }' );
-		//untyped console.log( t );
+		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -488,7 +486,6 @@ class CssParserSpec {
 	
 	public function testDeclarationComment() {
 		var t = parse( 'a { /*c1*/b: 1;/*c:2;*/ }' );
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -515,7 +512,6 @@ class CssParserSpec {
 	
 	public function testUniversalSelector() {
 		var t = parse( '* { a:b; }' );
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -532,13 +528,10 @@ class CssParserSpec {
 	public function testNotPseduo() {
 		var t = parse( '*:not([type]) { a:b; }' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
-				//Assert.isTrue( s.match( Group( [Universal, Pseudo( 'not', '[type]' )] ) ) );
 				Assert.isTrue( s.match( Combinator(
 					Universal,
 					Pseudo('not', '[type]'),
@@ -561,8 +554,6 @@ class CssParserSpec {
 			case _: true;
 		} );
 		
-		//untyped console.log( remainder );
-		
 		Assert.equals( 0, remainder.length );
 		Assert.equals( 10, comments.length );
 		Assert.equals( 5, media.length );
@@ -580,9 +571,6 @@ class CssParserSpec {
 			case _: true;
 		} );
 		
-		//untyped console.log( t );
-		//untyped console.log( remainder );
-		
 		Assert.equals( 0, remainder.length );
 		Assert.equals( 46, comments.length );
 		Assert.equals( 0, media.length );
@@ -592,8 +580,6 @@ class CssParserSpec {
 	
 	public function testCssVariables() {
 		var t = parse( '.class { --my-colour: red;\r\ncolor: var(--my-colour); }' );
-		
-		//untyped console.log( t );
 		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, t)):
@@ -610,8 +596,6 @@ class CssParserSpec {
 	public function testCommentInSelector() {
 		var t = parse( 'a, /* 1 */ b { c:d; }' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -625,8 +609,6 @@ class CssParserSpec {
 	
 	public function testCalc() {
 		var t = parse( 'a { height: calc(100px - 2em); }' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -642,8 +624,6 @@ class CssParserSpec {
 	
 	public function testAtRule() {
 		var t = parse( '@media all and (min-width: 1156px) { a { b:c; } }' );
-		
-		//untyped console.log( t );
 		
 		switch (t[0]) {
 			case Keyword( AtRule(n, q, t) ):
@@ -664,8 +644,6 @@ class CssParserSpec {
 	
 	public function testAtRule_MultiExpr() {
 		var t = parse( '@media all and (max-width: 699px) and (min-width: 520px), (min-width: 1151px) {a {b:c;} }' );
-		
-		//untyped console.log( t );
 		
 		switch (t[0]) {
 			case Keyword( AtRule(n, q, t) ):
@@ -691,8 +669,6 @@ class CssParserSpec {
 	public function testRuleSet_Multi() {
 		var t = parse( 'a {b:c;} d {e:f;}' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 2, t.length );
 		
 		for (i in 0...t.length) switch (t[i]) {
@@ -715,8 +691,6 @@ class CssParserSpec {
 	public function testClassDeclaration_SpacedRuleSet() {
 		var t = parse( '.a .b .c .d { c:d; }' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -736,8 +710,6 @@ class CssParserSpec {
 	public function testClassDeclaration_ChainedRuleSet() {
 		var t = parse( '.a.b.c.d { c:d; }' );
 		
-		//untyped console.log( t );
-		
 		Assert.equals( 1, t.length );
 		
 		switch (t[0]) {
@@ -750,8 +722,6 @@ class CssParserSpec {
 	
 	public function testPseudo_JoinedRuleSet() {
 		var t = parse( 'a:first-child { b:c; }' );
-		
-		//untyped console.log( t );
 		
 		Assert.equals( 1, t.length );
 		
@@ -842,12 +812,11 @@ class CssParserSpec {
 		}
 	}
 	
-	public function testRelativeSelector_Single() {
-		// Manually tell `CssLexer` that the selector is scoped or not, it has no way of knowing by itself.
+	// CSS4 Relative Selectors
+	
+	public function testRelativeSelector_Child() {
 		CssLexer.scoped = true;
-		// This is invalid css. Relative selectors are only used via javascript.
-		var t = parse( '> #ID { a:b; }' );
-		// Set back to `false` so it doesnt screw which other lexer instances.
+		var t = parse( '> #A {a:b;}' );
 		CssLexer.scoped = false;
 		
 		Assert.equals( 1, t.length );
@@ -855,9 +824,45 @@ class CssParserSpec {
 		switch (t[0]) {
 			case Keyword(RuleSet(s, _)):
 				Assert.isTrue( s.match(
-					Combinator( Universal, Combinator(
-						Pseudo('scope', ''), ID('ID'), Child
-					), None)
+					Combinator( Universal, Combinator( Pseudo( 'scope', '' ), ID( 'A' ), Child ), None )
+				) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testRelativeSelector_Adjacent() {
+		CssLexer.scoped = true;
+		var t = parse( '+ #A {a:b;}' );
+		CssLexer.scoped = false;
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match(
+					Combinator( Universal, Combinator( Pseudo( 'scope', '' ), ID( 'A' ), Adjacent ), None )
+				) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testRelativeSelector_General() {
+		CssLexer.scoped = true;
+		var t = parse( '~ #A {a:b;}' );
+		CssLexer.scoped = false;
+		
+		Assert.equals( 1, t.length );
+		
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match(
+					Combinator( Universal, Combinator( Pseudo( 'scope', '' ), ID( 'A' ), General ), None )
 				) );
 				
 			case _:
@@ -868,7 +873,6 @@ class CssParserSpec {
 	
 	public function testRelativeSelector_Group() {
 		CssLexer.scoped = true;
-		// Again, invalid css.
 		var t = parse( '> #ID, + .class { a:b; }' );
 		CssLexer.scoped = false;
 		
