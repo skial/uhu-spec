@@ -29,7 +29,7 @@ class CssParserSpec {
 		try while (true) {
 			tokens.push( lexer.token( CssLexer.root ) );
 		} catch (e:Eof) { } catch (e:Dynamic) {
-			//untyped console.log( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
+			untyped console.log( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
 		}
 		
 		return tokens;
@@ -774,7 +774,7 @@ class CssParserSpec {
 		}
 	}
 	
-	public function testPseudo_ExprInExpr() {
+	public function testPseudo_ExprInExpr_1() {
 		var t = parse( 'a:not(:has(ab, ac, ad)) { a:b; }' );
 		
 		Assert.equals( 1, t.length );
@@ -786,6 +786,27 @@ class CssParserSpec {
 					Pseudo('not', ':has(ab, ac, ad)'),
 					None
 				) ) );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_ExprInExpr_2() {
+		var t = parse( 'style, link:not([rel="import"]), meta, script[async], script[defer] { a:b; }' );
+		
+		Assert.equals( 1, t.length );
+		trace(t[0]);
+		switch (t[0]) {
+			case Keyword(RuleSet(s, _)):
+				Assert.isTrue( s.match( 
+					Group( [ 
+						Type('style'), Combinator(Type('link'), Pseudo('not', '[rel="import"]'), None),
+						Type('meta'), Combinator(Type('script'), Attribute('async', -1, ''), None),
+						Combinator(Type('script'), Attribute('defer', -1, ''), None)
+					] )
+				) );
 				
 			case _:
 				Assert.fail();
