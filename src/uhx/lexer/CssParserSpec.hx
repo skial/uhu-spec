@@ -803,8 +803,8 @@ class CssParserSpec {
 				Assert.isTrue( s.match( 
 					Group( [ 
 						Type('style'), Combinator(Type('link'), Pseudo('not', '[rel="import"]'), None),
-						Type('meta'), Combinator(Type('script'), Attribute('async', -1, ''), None),
-						Combinator(Type('script'), Attribute('defer', -1, ''), None)
+						Type('meta'), Combinator(Type('script'), Attribute('async', Unknown, ''), None),
+						Combinator(Type('script'), Attribute('defer', Unknown, ''), None)
 					] )
 				) );
 				
