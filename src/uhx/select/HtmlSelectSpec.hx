@@ -1,5 +1,6 @@
 package uhx.select;
 
+import dtx.mo.NodeList;
 import haxe.io.Eof;
 import utest.Assert;
 import uhx.mo.Token;
@@ -762,6 +763,23 @@ class HtmlSelectSpec {
 		}
 	}
 	
+	public function testPseudo_Not_Group() {
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><b><c>Fail</c><d>!WIN!</d><c>Fail</c></b></a>' )[0],
+			':not(a, b, c)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'d', tokens:[Keyword(Text( { tokens:'!WIN!' } ))] } )):
+				Assert.isTrue( true );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
 	// LEVEL 4 CSS SELECTORS
 	
 	public function testPseudo_Scope_Stupid() {
@@ -898,5 +916,36 @@ class HtmlSelectSpec {
 		}
 	}
 	#end
+	
+	// Raw method testing
+	
+	@:access(uhx.select.html.Impl) public function testProcess_Group_Not() {
+		var selector = cssParse( 'a, b, c' );
+		
+		Assert.isTrue( selector.match( Group([ Type('a'), Type('b'), Type('c') ]) ) );
+		
+		// Manually construct and process elements.
+		var html = parse( '<a><b></b><c></c><d>WIN</d><e></e></a>' )[0];
+		var positives = [];
+		var negatives = [];
+		var results = [];
+		
+		for (s in [ Type('a'), Type('b'), Type('c') ]) {
+			positives = positives.concat( Impl.process( html, s, false, false, html ) );
+			negatives = negatives.concat( Impl.process( html, s, false, true, html ) );
+		}
+		
+		// Manually filter as if the selector was `:not(a, b, c)` which should return `d` and `e`.
+		// Cast `positives` and `results` to `NodeList` to use custom `indexOf` methods.
+		for (n in negatives) if ((positives:NodeList).indexOf( n ) == -1 && (results:NodeList).indexOf( n ) == -1) results.push( n );
+		
+		Assert.equals( '' + ['d', 'e'], '' + results.map( function(r:DOMNode) return r.nodeName ) );
+		
+		// Build list using `Impl.process`.
+		var impl_positives = Impl.process( html, selector, false, false, html );
+		var impl_negatives = Impl.process( html, selector, false, true, html );
+		
+		Assert.equals( '' + results.map( function(r:DOMNode) return r.nodeName ), '' + impl_negatives.map( function(r:DOMNode) return r.nodeName ) );
+	}
 	
 }
