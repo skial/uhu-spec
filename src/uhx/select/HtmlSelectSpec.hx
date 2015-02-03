@@ -736,7 +736,7 @@ class HtmlSelectSpec {
 		Assert.isTrue( mo[1].match( Keyword(Tag( { name:'div', tokens:[] } )) ) );
 	}
 	
-	public function testPseudo_Not() {
+	public function testPseudo_Not_None() {
 		var mo:Tokens = DocumentSelector.querySelectorAll(
 			parse( '<ul><li id=1></li><li class="different"></li><li id=2></li></ul>' )[0],
 			'li:not(.different)'
@@ -753,6 +753,98 @@ class HtmlSelectSpec {
 				
 		}
 		switch (mo[1]) {
+			case Keyword(Tag( { name:'li', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_Not_Child() {
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<ul><li><a id=1></a></li><li class="different"></li><li><b id=2></b></li></ul>' )[0],
+			'li > :not(.different)'
+		);
+		
+		Assert.equals( 2, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'a', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		switch (mo[1]) {
+			case Keyword(Tag( { name:'b', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_Not_Descendant() {
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<ul><li><a id=1></a></li><li class="different"></li><li><b id=2></b></li></ul>' )[0],
+			'li :not(.different)'
+		);
+		
+		Assert.equals( 2, mo.length );
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'a', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		switch (mo[1]) {
+			case Keyword(Tag( { name:'b', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_Not_Adjacent() {
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<ul><li><a id=1></a></li><li class="different"></li><li id=2></li></ul>' )[0],
+			'li + :not(.different)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
+			case Keyword(Tag( { name:'li', attributes:a, tokens:[] } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+	}
+	
+	public function testPseudo_Not_General() {
+		var mo:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<ul><li><a id=1></a></li><li class="different"></li><li id=2></li></ul>' )[0],
+			'li ~ :not(.different)'
+		);
+		
+		Assert.equals( 1, mo.length );
+		
+		switch (mo[0]) {
 			case Keyword(Tag( { name:'li', attributes:a, tokens:[] } )):
 				Assert.isTrue( a.exists('id') );
 				Assert.equals( '2', a.get('id') );
