@@ -797,7 +797,7 @@ class CssParserSpec {
 		var t = parse( 'style, link:not([rel="import"]), meta, script[async], script[defer] { a:b; }' );
 		
 		Assert.equals( 1, t.length );
-		trace(t[0]);
+		
 		switch (t[0]) {
 			case Keyword(RuleSet(s, _)):
 				Assert.isTrue( s.match( 
