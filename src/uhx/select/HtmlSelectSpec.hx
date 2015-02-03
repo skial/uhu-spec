@@ -1040,4 +1040,77 @@ class HtmlSelectSpec {
 		Assert.equals( '' + results.map( function(r:DOMNode) return r.nodeName ), '' + impl_negatives.map( function(r:DOMNode) return r.nodeName ) );
 	}
 	
+	@:access(uhx.select.html.Impl) public function testProcess_Scope() {
+		var selector = cssParse( ':scope > b' );
+		
+		Assert.isTrue( selector.match( Combinator( Universal, Combinator( Pseudo('scope', ''), Type('b'), Child ), None ) ) );
+		
+		// Manually construct and process elements. Set as `DOMNode` for simpler element navigation.
+		var html:DOMNode = parse( '<a><b></b><c><b></b><d><e><b></b></e></d></c></a>' )[0];
+		
+		// The parent of the very first `b` element.
+		var a = html;
+		// The parent of the second `b` element.
+		var c = html.childNodes[1];
+		// The parent of the third `b` element.
+		var e = c.childNodes[1].childNodes[0];
+		
+		// Test to make sure my manual selection is correct.
+		Assert.isTrue( a.token().match(Keyword(Tag( { name:'a' } ))) );
+		Assert.isTrue( c.token().match(Keyword(Tag( { name:'c' } ))) );
+		Assert.isTrue( e.token().match(Keyword(Tag( { name:'e' } ))) );
+		
+		// Set parameter `scope` to `a`.
+		var a_matches = Impl.process( html, selector, false, false, a );
+		// Set parameter `scope` to `a`.
+		var c_matches = Impl.process( html, selector, false, false, c );
+		// Set parameter `scope` to `a`.
+		var e_matches = Impl.process( html, selector, false, false, e );
+		
+		Assert.equals( 1, a_matches.length );
+		Assert.equals( 1, c_matches.length );
+		Assert.equals( 1, e_matches.length );
+	}
+	
+	@:access(uhx.select.html.Impl) public function testProcess_Has_Expression() {
+		var selector = cssParse( 'a:has(c)' );
+		
+		Assert.isTrue( selector.match( Combinator(Type('a'), Pseudo('has', 'c'), None) ) );
+		
+		// Manually construct and process elements.
+		var html = parse( '<a><b></b><c></c><d></d></a>' )[0];
+		var matches = Impl.process( html, Type('c'), false, false, html );
+		
+		Assert.equals( 1, matches.length );
+		Assert.isTrue( matches.length > 0 );
+		
+		// Build list using `Impl.process`.
+		// Descendant
+		var impl = Impl.process( html, selector, false, false, html );
+		
+		Assert.equals( 1, impl.length );
+		Assert.isTrue( impl[0].match( Keyword(Tag( { name:'a' } )) ) );
+		
+		// Alternative Descendant
+		selector = cssParse( 'a:has( c )' );
+		impl = Impl.process( html, selector, false, false, html );
+		
+		Assert.equals( 1, impl.length );
+		Assert.isTrue( impl[0].match( Keyword(Tag( { name:'a' } )) ) );
+		
+		// Child
+		selector = cssParse( 'a:has(> c )' );
+		impl = Impl.process( html, selector, false, false, html );
+		
+		Assert.equals( 1, impl.length );
+		Assert.isTrue( impl[0].match( Keyword(Tag( { name:'a' } )) ) );
+		
+		// Adjacent
+		selector = cssParse( 'b:has(+ c )' );
+		impl = Impl.process( html, selector, false, false, html );
+		
+		Assert.equals( 1, impl.length );
+		Assert.isTrue( impl[0].match( Keyword(Tag( { name:'b' } )) ) );
+	}
+	
 }
