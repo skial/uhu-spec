@@ -1046,7 +1046,7 @@ class HtmlSelectSpec {
 		Assert.isTrue( selector.match( Combinator( Universal, Combinator( Pseudo('scope', ''), Type('b'), Child ), None ) ) );
 		
 		// Manually construct and process elements. Set as `DOMNode` for simpler element navigation.
-		var html:DOMNode = parse( '<a><b></b><c><b></b><d><e><b></b></e></d></c></a>' )[0];
+		var html:DOMNode = parse( '<a id=1a><b id=1></b><c id=1c><b id=2></b><d><e id=1e><b id=3></b></e></d></c></a>' )[0];
 		
 		// The parent of the very first `b` element.
 		var a = html;
@@ -1060,16 +1060,87 @@ class HtmlSelectSpec {
 		Assert.isTrue( c.token().match(Keyword(Tag( { name:'c' } ))) );
 		Assert.isTrue( e.token().match(Keyword(Tag( { name:'e' } ))) );
 		
+		// Select the scope element.
+		var as = Impl.process( html, Pseudo('scope', ''), false, false, a );
+		var cs = Impl.process( html, Pseudo('scope', ''), false, false, c );
+		var es = Impl.process( html, Pseudo('scope', ''), false, false, e );
+		
+		// There should only be one element returned, the scope element.
+		Assert.equals( 1, as.length );
+		Assert.equals( 1, cs.length );
+		Assert.equals( 1, es.length );
+		
+		// Make sure the returned scope element is what we think it should be :P
+		switch (as[0]) {
+			case Keyword(Tag( { name:'a', attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1a', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		
+		switch (cs[0]) {
+			case Keyword(Tag( { name:'c', attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1c', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		
+		switch (es[0]) {
+			case Keyword(Tag( { name:'e', attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1e', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		
 		// Set parameter `scope` to `a`.
 		var a_matches = Impl.process( html, selector, false, false, a );
-		// Set parameter `scope` to `a`.
+		// Set parameter `scope` to `c`.
 		var c_matches = Impl.process( html, selector, false, false, c );
-		// Set parameter `scope` to `a`.
+		// Set parameter `scope` to `e`.
 		var e_matches = Impl.process( html, selector, false, false, e );
 		
 		Assert.equals( 1, a_matches.length );
 		Assert.equals( 1, c_matches.length );
 		Assert.equals( 1, e_matches.length );
+		
+		switch (a_matches[0]) {
+			case Keyword(Tag( { name:'b', attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '1', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		
+		switch (c_matches[0]) {
+			case Keyword(Tag( { name:'b', attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '2', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
+		
+		switch (e_matches[0]) {
+			case Keyword(Tag( { name:'b', attributes:a } )):
+				Assert.isTrue( a.exists('id') );
+				Assert.equals( '3', a.get('id') );
+				
+			case _:
+				Assert.fail();
+				
+		}
 	}
 	
 	@:access(uhx.select.html.Impl) public function testProcess_Has_Expression() {
