@@ -1178,6 +1178,31 @@ class HtmlSelectSpec {
 		
 		// Adjacent
 		selector = cssParse( 'b:has(+ c )' );
+		
+		// Manual
+		var manual = Impl.process( 
+			html, 
+			Combinator(
+				Universal, 
+				Combinator(
+					Pseudo('scope', ''), 
+					Type('c'), 
+					Adjacent
+				), 
+				None
+			), 
+			false, 
+			false, 
+			// This is element `b` which is the scope.
+			(html:DOMNode).childNodes[0] 
+		);
+		
+		Assert.equals( 1, manual.length );
+		Assert.isTrue( manual[0].match( 
+			Keyword(Tag( { name:'c' } ))
+		) );
+		
+		// Automatic
 		impl = Impl.process( html, selector, false, false, html );
 		
 		Assert.equals( 1, impl.length );
