@@ -10,17 +10,18 @@
 ## Comment out any of the following libraries to reduce tests.
 
 -lib uhu
-#-lib klas
--lib mo
-#-lib wait
-#-lib yield
-#-lib named
+-lib klas
+#-lib mo
+-lib wait
+-lib yield
+-lib named
 #-lib tuli
-#-lib cmd
+-lib cmd
 #-lib requests
 #-lib ajou
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
 #-lib fisel	
+-lib seri
 
 ## Flags to silent third party libraries without exluding them
 -D disable_detox
