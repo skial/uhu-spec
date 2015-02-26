@@ -23,6 +23,10 @@ package ;
 	import uhx.sys.LodSpec;
 #end
 
+#if seri
+	import uhx.seri.SeriSpec;
+#end
+
 #if (uhu && klas)
 	//import uhx.macro.TraitSpec;
 #end
@@ -148,7 +152,6 @@ class AllTests {
 		#if cmd
 			runner.addCase( new LodSpec() );
 			runner.addCase( new LiySpec() );
-			runner.addCase( new EdeSpec() );
 		#end
 		
 		// Experimental Build Macros
@@ -172,6 +175,14 @@ class AllTests {
 			#if requests
 				runner.addCase( new RequestSpec() );
 			#end
+			
+			#if cmd
+				runner.addCase( new EdeSpec() );
+			#end
+		#end
+		
+		#if seri
+			runner.addCase( new SeriSpec() );
 		#end
 		
 		#if (sys && tuli)
