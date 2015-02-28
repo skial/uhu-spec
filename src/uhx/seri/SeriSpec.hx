@@ -18,7 +18,8 @@ class SeriSpec {
 	}
 	
 	public function testCategory() {
-		var codepoints = Seri.getCategory( 'Zs' );
+		var codepoints0 = Seri.getCategory( 'Zs' );
+		var codepoints1 = Seri.getCategory( 'P' );
 	}
 	
 }
