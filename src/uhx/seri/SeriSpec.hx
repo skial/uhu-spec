@@ -53,7 +53,7 @@ class SeriSpec {
 		Assert.isTrue( codepoints1.indexOf( 0x11049 ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0x1BC9F ) > -1 );
 		
-		var category = 'Po';
+		var category = 'Nd';
 		var codepoints2 = Seri.getCategory( category );
 	}
 	
@@ -81,6 +81,36 @@ class SeriSpec {
 		Assert.equals( 640, blockpoints3.length );
 		Assert.isTrue( blockpoints3.indexOf( 0x1400 ) > -1 );
 		Assert.isTrue( blockpoints3.indexOf( 0x167F ) > -1 );
+	}
+	
+	public function testScripts() {
+		var scriptpoints0 = Seri.getScript( 'Syriac' );
+		
+		Assert.equals( 77, scriptpoints0.length );
+		Assert.isTrue( scriptpoints0.indexOf( 0x0700 ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x070F ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x0710 ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x071F ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x0720 ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x072F ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x0730 ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x073F ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x0740 ) > -1 );
+		Assert.isTrue( scriptpoints0.indexOf( 0x074F ) > -1 );
+		
+		var scriptpoints1 = Seri.getScript( 'Warang_Citi' );
+		
+		Assert.equals( 84, scriptpoints1.length );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118A0 ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118AF ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118B0 ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118BF ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118C0 ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118CF ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118D0 ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118DF ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118E0 ) > -1 );
+		Assert.isTrue( scriptpoints1.indexOf( 0x118EF ) > -1 );
 	}
 	
 }
