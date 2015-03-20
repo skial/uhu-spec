@@ -5,15 +5,20 @@ package ;
 #end
 
 #if (uhu && mo)
-	import uhx.select.HtmlSelectSpec;
-	import uhx.select.JsonSelectSpec;
+	#if html_select
+		import uhx.select.HtmlSelectSpec;
+	#end
+	
+	#if json_select
+		import uhx.select.JsonSelectSpec;
+	#end
 #end
 
 #if (sys && tuli)
 	import uhx.tuli.plugins.AtomSpec;
 #end
 
-#if detox
+#if (detox && !disable_detox)
 	import dtx.*;
 #end
 
@@ -23,7 +28,7 @@ package ;
 	import uhx.sys.LodSpec;
 #end
 
-#if seri
+#if (seri && !disable_seri)
 	import uhx.seri.SeriSpec;
 #end
 
@@ -32,18 +37,30 @@ package ;
 #end
 
 #if mo
-	//import uhx.lexer.HaxeParserSpec;
-	import uhx.lexer.CssParserSpec;
-	import uhx.lexer.HtmlLexerSpec;
-	//import uhx.select.Json;
-	import uhx.lexer.MarkdownParserSpec;
+	#if haxe_lexer
+		import uhx.lexer.HaxeParserSpec;
+	#end
+	
+	#if css_lexer
+		import uhx.lexer.CssParserSpec;
+	#end
+	
+	#if html_lexer
+		import uhx.lexer.HtmlLexerSpec;
+	#end
+	
+	#if markdown_lexer
+		import uhx.lexer.MarkdownParserSpec;
+	#end
 #end
 
-#if (uhu && mo && detox && fisel)
+#if (uhu && mo && detox && fisel && !disable_detox)
 	import uhx.fisel.FiselSpec;
 #end
 
 #if klas
+	import uhx.macro.KlasSpec;
+	
 	#if wait
 		import uhx.macro.WaitSpec;
 	#end
@@ -121,16 +138,31 @@ class AllTests {
 		
 		// Lexer and Parser Tests
 		#if mo
-			//runner.addCase( new MoSpec() );
-			//runner.addCase( new HaxeParserSpec() );
-			runner.addCase( new MarkdownParserSpec() );
-			runner.addCase( new CssParserSpec() );
-			runner.addCase( new HtmlLexerSpec() );
+			#if haxe_lexer
+				runner.addCase( new HaxeParserSpec() );
+			#end
+			
+			#if markdown_lexer
+				runner.addCase( new MarkdownParserSpec() );
+			#end
+			
+			#if css_lexer
+				runner.addCase( new CssParserSpec() );
+			#end
+			
+			#if html_lexer
+				runner.addCase( new HtmlLexerSpec() );
+			#end
 		#end
 		
 		#if (uhu && mo)
-			runner.addCase( new HtmlSelectSpec() );
-			//runner.addCase( new JsonSelectSpec() );
+			#if html_select
+				runner.addCase( new HtmlSelectSpec() );
+			#end
+			
+			#if json_select
+				//runner.addCase( new JsonSelectSpec() );
+			#end
 		#end
 		
 		#if (mo && detox && !disable_detox)
@@ -144,7 +176,7 @@ class AllTests {
 			runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
-		#if (uhu && mo && detox && fisel)
+		#if (uhu && mo && detox && fisel && !disable_detox)
 			runner.addCase( new FiselSpec() );
 		#end
 		
@@ -156,6 +188,7 @@ class AllTests {
 		
 		// Experimental Build Macros
 		#if klas
+			runner.addCase( new KlasSpec() );
 			#if trait
 				runner.addCase( new TraitSpec() );
 			#end
@@ -181,7 +214,7 @@ class AllTests {
 			#end
 		#end
 		
-		#if seri
+		#if (seri && !disable_seri)
 			runner.addCase( new SeriSpec() );
 		#end
 		
