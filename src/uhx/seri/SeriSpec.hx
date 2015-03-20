@@ -17,6 +17,7 @@ class SeriSpec {
 		Assert.equals( '7.0.0', Seri.version );
 	}
 	
+	// @see http://en.wikipedia.org/wiki/Unicode#Character_General_Category
 	public function testCategory() {
 		var codepoints0 = Seri.getCategory( 'Zs' );
 		
@@ -48,15 +49,21 @@ class SeriSpec {
 		Assert.isTrue( codepoints1.indexOf( 0x0021 ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0x1B5D ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0x2E0F ) > -1 );
+		Assert.isTrue( codepoints1.indexOf( '\u2E0F'.code ) > -1 );
+		Assert.isTrue( codepoints1.indexOf( '⸏'.code ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0xA6F6 ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0xFF1B ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0x11049 ) > -1 );
 		Assert.isTrue( codepoints1.indexOf( 0x1BC9F ) > -1 );
 		
-		var category = 'Nd';
-		var codepoints2 = Seri.getCategory( category );
+		var category0 = 'Nd';
+		var codepoints2 = Seri.getCategory( category0 );
+		
+		var category1 = 'P';
+		var codepoints3 = Seri.getCategory( category1 );
 	}
 	
+	// @see http://en.wikipedia.org/wiki/Unicode_block
 	public function testBlocks() {
 		var blockpoints0 = Seri.getBlock( 'Basic Latin' );
 		
@@ -83,6 +90,7 @@ class SeriSpec {
 		Assert.isTrue( blockpoints3.indexOf( 0x167F ) > -1 );
 	}
 	
+	// @see http://en.wikipedia.org/wiki/Script_(Unicode)
 	public function testScripts() {
 		var scriptpoints0 = Seri.getScript( 'Syriac' );
 		
