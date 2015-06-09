@@ -16,6 +16,7 @@ import uhx.select.Html.ElementSelector;
 import uhx.select.Html.DocumentSelector;
 import uhx.select.Html.CollectionSelector;
 
+using StringTools;
 #if detox
 using Detox;
 #end
@@ -32,11 +33,12 @@ class HtmlSelectSpec {
 	
 	private function parse(html:String):Array<Token<HtmlKeywords>> {
 		HtmlLexer.openTags = [];
-		var lexer = new HtmlLexer( ByteData.ofString( html ), 'html' );
+		var lexer = new HtmlLexer( ByteData.ofString( html ), 'htmlselectspec' );
 		var tokens = [];
 		
 		try while ( true ) {
 			tokens.push( lexer.token( HtmlLexer.root ) );
+			
 		} catch (_e:Eof) { } catch (_e:Dynamic) {
 			
 		}
@@ -937,11 +939,19 @@ class HtmlSelectSpec {
 	}
 	
 	public function testPseudo_Not_Has() {
+		trace( 'not has pseudo' );
 		var mo:Tokens = DocumentSelector.querySelectorAll(
 			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' )[0],
 			'b:not(:has(h1, h4))'
 		);
+		trace( mo.length, mo);
+		trace( 'has pseduo' );
+		var mo2:Tokens = DocumentSelector.querySelectorAll(
+			parse( '<a><b id=1><h1></h1></b> <b id=2>WIN</b> <b id=3><h4></h4></b></a>' )[0],
+			'b:has(h1, h4)'
+		);
 		
+		trace( mo2.length, mo2 );
 		Assert.equals( 1, mo.length );
 		switch (mo[0]) {
 			case Keyword(Tag( { name:'b', attributes:a, tokens:[Keyword(Text( { tokens:'WIN' } ))] } )):
@@ -994,9 +1004,8 @@ class HtmlSelectSpec {
 	#if (detox && sys)
 	public function testParentless_UsingDetox() {
 		var tokens:Array<dtx.mo.DOMNode> = parse( '<head><meta name="og:description" content="Under Construction" /><link rel="import" href="D.html" /></head><body></body>' );
-		var collection = new DOMCollection( cast tokens );
+		var collection = new DOMCollection( tokens );
 		var mo = collection.find( 'head' );
-		
 		Assert.equals( 1, mo.length );
 		switch ((mo.getNode():Token<HtmlKeywords>)) {
 			case Keyword(Tag( { name:'head', tokens:t } )):
@@ -1006,6 +1015,52 @@ class HtmlSelectSpec {
 				Assert.fail();
 				
 		}
+	}
+	
+	// From Detox Traversing Test file.
+	public function testRecursive_UsingDetox() {
+		var tokens:Array<dtx.mo.DOMNode> = parse( "<xml><div id='recursive' class='level1'>
+				<div class='level2'>
+					<div class='level3'>
+						<div class='level4'>
+						</div>
+					</div>
+				</div>
+			</div></xml>" );
+		
+		var collection = new DOMCollection( tokens );
+		var old_document = Detox.document;
+		Detox.setDocument( collection.getNode() );
+		var recursive = '#recursive'.find().getNode();
+		Assert.equals(1, recursive.find('.level4').length);
+		Assert.equals(1, recursive.find('.level4').length);
+		Assert.equals(3, recursive.find('div').length);
+		Detox.setDocument( old_document );
+	}
+	
+	private static function debugPrettyPrint(tokens:Tokens, tabs:String = ''):String {
+		var results = '';
+		
+		for (token in tokens) {
+			results += '\n$tabs';
+			switch (token) {
+				case Keyword(Tag( { name:n, attributes:a, tokens:t } )):
+					results += '<$n>::' + [for (k in a.keys()) '$k=${a.get(k)}'].join(', ');
+					if (t.length > 0) {
+						tabs += '  ';
+						results += '\n$tabs' + debugPrettyPrint( t, tabs );
+					}
+					
+				case Keyword(Text( { tokens:t } )):
+					results += 'text::' + t.replace('\n', '\\n').replace('\t', '\\t').replace('\r', '\\r');
+					
+				case _:
+					
+			}
+			
+		}
+		
+		return results;
 	}
 	#end
 	

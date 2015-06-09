@@ -18,7 +18,7 @@ package ;
 	import uhx.tuli.plugins.AtomSpec;
 #end
 
-#if (detox && !disable_detox)
+#if (detox)
 	import dtx.*;
 #end
 
@@ -54,7 +54,7 @@ package ;
 	#end
 #end
 
-#if (uhu && mo && detox && fisel && !disable_detox)
+#if (uhu && mo && detox && fisel)
 	import uhx.fisel.FiselSpec;
 #end
 
@@ -176,7 +176,7 @@ class AllTests {
 			runner.addCase( new CollectionDOMManipulationSpec() );
 		#end
 		
-		#if (uhu && mo && detox && fisel && !disable_detox)
+		#if (uhu && mo && detox && fisel)
 			runner.addCase( new FiselSpec() );
 		#end
 		

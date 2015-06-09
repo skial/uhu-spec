@@ -315,7 +315,6 @@ class TraversingSpec
 		Assert.equals(2, sampleDocument.find('ul').length);
 		Assert.equals(7, sampleDocument.find('div').length);
 		Assert.equals(1, sampleDocument.find('#a').length);
-
 		var recursive = "#recursive".find().getNode();
 		Assert.equals(1, recursive.find('.level4').length);
 		Assert.equals(1, recursive.find('.level4').length);

@@ -11,20 +11,20 @@
 
 -lib uhu
 -lib klas
--lib seri
+#-lib seri
 -lib mo
--lib wait
--lib yield
--lib named
+#-lib wait
+#-lib yield
+#-lib named
 #-lib tuli
--lib cmd
+#-lib cmd
 #-lib requests
 #-lib ajou
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
 #-lib fisel	
 
 ## Flags to enable class specific tests which belong to a parent library.
-#-D html_select
+-D html_select
 #-D json_select
 #-D markdown_lexer
 #-D html_lexer
@@ -33,7 +33,7 @@
 -D klas_verboses
 
 ## Flags to silent third party libraries without exluding them.
--D disable_detox
+#-D disable_detox
 #-D disable_seri
 
 ## Experimental libraries.
@@ -42,12 +42,15 @@
 ## Enable analyzer optimizations
 #-D analyzer
 
+## Disable features
+#-D DISABLE_HTML_SELECT_FILTER
+
 ## Include extra projects
 -cp src
 #-cp ../taurine/src
 #-cp ../../../haxe.io/src
 -debug
--D js_unflatten
+#-D js_unflatten
 #-dce full
 #-D dump
 #-D macro_times
@@ -99,11 +102,11 @@
 
 --each
 
--js bin/spec.js
+#-js bin/spec.js
 
 #--next
 
-#-neko bin/spec.n
+-neko bin/spec.n
 
 #--next
 
