@@ -21,7 +21,7 @@ class CssParserSpec {
 		parser = new CssParser();
 	}
 	
-	public function parse(value:String):Array<Token<CssKeywords>> {
+	@:access(hxparse.Lexer) public function parse(value:String):Array<Token<CssKeywords>> {
 		var tokens = [];
 		
 		lexer = new CssLexer( ByteData.ofString( value ), 'css-lexer-spec' );
@@ -29,7 +29,7 @@ class CssParserSpec {
 		try while (true) {
 			tokens.push( lexer.token( CssLexer.root ) );
 		} catch (e:Eof) { } catch (e:Dynamic) {
-			untyped console.log( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
+			trace( lexer.input.readString( lexer.curPos().pmin, lexer.curPos().pmax ) );
 		}
 		
 		return tokens;
