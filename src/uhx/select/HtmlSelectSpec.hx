@@ -1049,6 +1049,7 @@ class HtmlSelectSpec {
 					if (t.length > 0) {
 						tabs += '  ';
 						results += '\n$tabs' + debugPrettyPrint( t, tabs );
+						tabs = tabs.substring(0, tabs.length - 2);
 					}
 					
 				case Keyword(Text( { tokens:t } )):
@@ -1063,6 +1064,33 @@ class HtmlSelectSpec {
 		return results;
 	}
 	#end
+	private function testReplaceSingleNodeWithCollection_UsingDetox() {
+		var collection = '<xml><a1></a1><b2><div><span><code></code></span></div></b2><c3></c3></xml>'.parse();
+		var b = collection.find( 'b2' );
+		Assert.equals( 1, b.length );
+		Assert.equals( 'b2', collection.getNode().children().getNode( 1 ).nodeName.toLowerCase() );
+		
+		// replace with parsed tokens.
+		b.replaceWith( b.children() );
+		
+		b = collection.find( 'b2' );
+		// length should be 0
+		Assert.equals( 0, b.length );
+		Assert.equals( 'div', collection.getNode().children().getNode( 1 ).nodeName.toLowerCase() );
+		
+		// the contents of <template> will be a string, needing to be parsed.
+		collection = '<xml><a1></a1><b2><script><div><span><code></code></span></div></script></b2><c3></c3></xml>'.parse();
+		b = collection.find( 'b2' );
+		Assert.equals( 1, b.length );
+		Assert.equals( 'b2', collection.getNode().children().getNode( 1 ).nodeName.toLowerCase() );
+		
+		b.replaceWith( b.find('script').text().parse() );
+		
+		b = collection.find( 'b2' );
+		// length should be 0
+		Assert.equals( 0, b.length );
+		Assert.equals( 'div', collection.getNode().children().getNode( 1 ).nodeName.toLowerCase() );
+	}
 	
 	// Raw method testing
 	
@@ -1086,13 +1114,13 @@ class HtmlSelectSpec {
 		// Cast `positives` and `results` to `NodeList` to use custom `indexOf` methods.
 		for (n in negatives) if ((positives:NodeList).indexOf( n ) == -1 && (results:NodeList).indexOf( n ) == -1) results.push( n );
 		
-		Assert.equals( '' + ['d', 'e'], '' + results.map( function(r:DOMNode) return r.nodeName ) );
+		Assert.equals( '' + ['d', 'e'], '' + results.map( function(r:dtx.mo.DOMNode) return r.nodeName ) );
 		
 		// Build list using `Impl.process`.
 		var impl_positives = Impl.process( html, selector, false, false, html );
 		var impl_negatives = Impl.process( html, selector, false, true, html );
 		
-		Assert.equals( '' + results.map( function(r:DOMNode) return r.nodeName ), '' + impl_negatives.map( function(r:DOMNode) return r.nodeName ) );
+		Assert.equals( '' + results.map( function(r:dtx.mo.DOMNode) return r.nodeName ), '' + impl_negatives.map( function(r:dtx.mo.DOMNode) return r.nodeName ) );
 	}
 	
 	@:access(uhx.select.html.Impl) public function testProcess_Scope() {
@@ -1101,7 +1129,7 @@ class HtmlSelectSpec {
 		Assert.isTrue( selector.match( Combinator( Universal, Combinator( Pseudo('scope', ''), Type('b'), Child ), None ) ) );
 		
 		// Manually construct and process elements. Set as `DOMNode` for simpler element navigation.
-		var html:DOMNode = parse( '<a id=1a><b id=1></b><c id=1c><b id=2></b><d><e id=1e><b id=3></b></e></d></c></a>' )[0];
+		var html:dtx.mo.DOMNode = parse( '<a id=1a><b id=1></b><c id=1c><b id=2></b><d><e id=1e><b id=3></b></e></d></c></a>' )[0];
 		
 		// The parent of the very first `b` element.
 		var a = html;
@@ -1249,7 +1277,7 @@ class HtmlSelectSpec {
 			false, 
 			false, 
 			// This is element `b` which is the scope.
-			(html:DOMNode).childNodes[0] 
+			(html:dtx.mo.DOMNode).childNodes[0] 
 		);
 		
 		Assert.equals( 1, manual.length );
