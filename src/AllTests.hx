@@ -52,6 +52,14 @@ package ;
 	#if markdown_lexer
 		import uhx.lexer.MarkdownParserSpec;
 	#end
+	
+	#if mime_lexer
+		import uhx.lexer.MimeLexerSpec;
+		
+		#if media_types
+			import uhx.mt.MediaTypeSpec;
+		#end
+	#end
 #end
 
 #if (uhu && mo && detox && fisel)
@@ -152,6 +160,14 @@ class AllTests {
 			
 			#if html_lexer
 				runner.addCase( new HtmlLexerSpec() );
+			#end
+			
+			#if mime_lexer
+				runner.addCase( new MimeLexerSpec() );
+				
+				#if media_types
+					runner.addCase( new MediaTypeSpec() );
+				#end
 			#end
 		#end
 		
