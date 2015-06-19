@@ -36,6 +36,11 @@ class FiselSpec {
 			''.parse()
 		#end;
 		
+		for (json in ['{"title":"JSON Title"}', '{"comment":"Hello JSON World"}']) {
+			fisel.data.set( json, haxe.Json.parse( json ) );
+			
+		}
+		
 		fisel.location = path.normalize();
 		fisel.linkMap = new StringMap();
 		fisel.linkMap.set( path, fisel );
@@ -48,7 +53,7 @@ class FiselSpec {
 		var content = fisel.document.find( 'content[select]' );
 		
 		Assert.equals( 2, imports.length );
-		Assert.equals( 3, content.length );
+		Assert.equals( 4, content.length );
 		
 		trace( print( fisel.document.collection.filter( noWhitespace ) ) );
 	}
@@ -75,6 +80,8 @@ class FiselSpec {
 		Assert.equals( 'footer', body.children().getNode( 2 ).nodeName );
 		Assert.equals( 1, body.children().getNode( 2 ).children().length );	// <ul>
 		Assert.equals( 3, body.children().getNode( 2 ).children().getNode().children().length );	// <li>
+		
+		Assert.equals( 'Header H1! | FooBar.io JSON Title', fisel.document.find( 'title' ).text() );
 		
 		trace( print( fisel.document.collection.filter( noWhitespace ) ) );
 	}
