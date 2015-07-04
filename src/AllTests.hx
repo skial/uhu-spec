@@ -60,6 +60,10 @@ package ;
 			import uhx.mt.MediaTypeSpec;
 		#end
 	#end
+	
+	#if uri_lexer
+		import uhx.lexer.UriLexerSpec;
+	#end
 #end
 
 #if (uhu && mo && detox && fisel)
@@ -168,6 +172,10 @@ class AllTests {
 				#if media_types
 					runner.addCase( new MediaTypeSpec() );
 				#end
+			#end
+			
+			#if uri_lexer
+				runner.addCase( new UriLexerSpec() );
 			#end
 		#end
 		

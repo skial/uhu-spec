@@ -9,6 +9,9 @@
 -lib mo
 -lib utest
 -lib detox
+-lib fisel
+-lib seri
+-lib media-types
 -cp src
 -js bin/uhuspec.js
--main Main
+-main example.extended_gadt.Main

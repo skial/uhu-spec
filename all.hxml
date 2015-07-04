@@ -21,22 +21,23 @@
 #-lib requests
 #-lib ajou
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
--lib fisel
+#-lib fisel
 -lib media-types
 
 ## Flags to enable class specific tests which belong to a parent library.
--D html_select
+#-D html_select
 #-D json_select
 #-D markdown_lexer
 #-D html_lexer
 #-D css_lexer
 #-D haxe_lexer
--D mime_lexer
+#-D mime_lexer
+-D uri_lexer
 -D klas_verboses
 
 ## Flags to silent third party libraries without exluding them.
 -D disable_detox
-#-D disable_seri
+-D disable_seri
 
 ## Experimental libraries.
 #-D trait
