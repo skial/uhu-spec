@@ -1,10 +1,11 @@
 package uhx.lexer;
 
 import utest.Assert;
-import byte.ByteData;
 import uhx.mo.Token;
-import uhx.lexer.HaxeLexer;
-import uhx.lexer.HaxeParser;
+import byte.ByteData;
+import uhx.lexer.Haxe.HaxeKeywords;
+import uhx.lexer.Haxe as HaxeLexer;
+import uhx.parser.Haxe as HaxeParser;
 
 /**
  * ...

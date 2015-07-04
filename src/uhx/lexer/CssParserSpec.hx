@@ -4,7 +4,9 @@ import haxe.io.Eof;
 import utest.Assert;
 import uhx.mo.Token;
 import byte.ByteData;
-import uhx.lexer.CssLexer;
+import uhx.lexer.Css;
+import uhx.lexer.Css as CssLexer;
+import uhx.parser.Css as CssParser;
 
 using StringTools;
 

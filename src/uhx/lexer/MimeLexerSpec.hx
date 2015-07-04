@@ -1,10 +1,11 @@
 package uhx.lexer;
 
-import byte.ByteData;
 import haxe.io.Eof;
 import utest.Assert;
 import uhx.mo.Token;
-import uhx.lexer.MimeLexer;
+import byte.ByteData;
+import uhx.lexer.Mime.MimeKeywords;
+import uhx.lexer.Mime as MimeLexer;
 
 /**
  * ...

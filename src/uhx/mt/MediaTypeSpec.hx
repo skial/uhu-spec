@@ -18,7 +18,7 @@ class MediaTypeSpec {
 		
 		Assert.equals( 'text', mt.toplevel );
 		Assert.equals( 'plain', mt.subtype );
-		Assert.isTrue( mt.isText );
+		Assert.isTrue( mt.isText() );
 		Assert.isNull( mt.suffix );
 		Assert.isNull( mt.parameters );
 		Assert.equals( 'text/plain', '$mt' );
@@ -28,8 +28,8 @@ class MediaTypeSpec {
 		var mt:MediaType = 'text/plain+xml';
 		
 		Assert.equals( 'xml', mt.suffix );
-		Assert.isTrue( mt.isXml );
-		Assert.isFalse( mt.isJson );
+		Assert.isTrue( mt.isXml() );
+		Assert.isFalse( mt.isJson() );
 	}
 	
 	public function testParameter() {
@@ -57,11 +57,11 @@ class MediaTypeSpec {
 	public function testTree() {
 		var mt:MediaType = 'text/vnd.a.b.1.2';
 		
-		Assert.isTrue( mt.isVendor );
-		Assert.isFalse( mt.isPersonal );
-		Assert.isFalse( mt.isVanity );
-		Assert.isFalse( mt.isStandard );
-		Assert.isFalse( mt.isUnregistered );
+		Assert.isTrue( mt.isVendor() );
+		Assert.isFalse( mt.isPersonal() );
+		Assert.isFalse( mt.isVanity() );
+		Assert.isFalse( mt.isStandard() );
+		Assert.isFalse( mt.isUnregistered() );
 		Assert.equals( 'vnd.a.b.1.2', mt.tree );
 	}
 	

@@ -1,14 +1,15 @@
 package uhx.lexer;
 
-import dtx.DOMType;
 import dtx.Tools;
 import haxe.io.Eof;
-import hxparse.UnexpectedChar;
+import dtx.DOMType;
 import uhx.mo.Token;
 import utest.Assert;
 import byte.ByteData;
-import uhx.lexer.HtmlLexer;
 import dtx.mo.DOMNode;
+import hxparse.UnexpectedChar;
+import uhx.lexer.Html;
+import uhx.lexer.Html as HtmlLexer;
 
 using Lambda;
 
@@ -510,9 +511,9 @@ class HtmlLexerSpec {
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 3, dom.childNodes.length );
-		Assert.equals( uhx.lexer.HtmlLexer.NodeType.Text, dom.childNodes[0].nodeType );
-		Assert.equals( uhx.lexer.HtmlLexer.NodeType.Element, dom.childNodes[1].nodeType );
-		Assert.equals( uhx.lexer.HtmlLexer.NodeType.Text, dom.childNodes[2].nodeType );
+		Assert.equals( uhx.lexer.Html.NodeType.Text, dom.childNodes[0].nodeType );
+		Assert.equals( uhx.lexer.Html.NodeType.Element, dom.childNodes[1].nodeType );
+		Assert.equals( uhx.lexer.Html.NodeType.Text, dom.childNodes[2].nodeType );
 	}
 	
 	public function testTextAndSameTags() {
