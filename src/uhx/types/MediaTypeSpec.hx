@@ -1,4 +1,4 @@
-package uhx.mt;
+package uhx.types;
 
 import utest.Assert;
 import uhx.types.MediaType;
