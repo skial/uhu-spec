@@ -1,7 +1,7 @@
 package uhx.mt;
 
-import MediaType;
 import utest.Assert;
+import uhx.types.MediaType;
 
 /**
  * ...
