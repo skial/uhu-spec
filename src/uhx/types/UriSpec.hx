@@ -1,4 +1,4 @@
-package uhx.io;
+package uhx.types;
 
 import utest.Assert;
 import uhx.types.Uri;
@@ -7,7 +7,7 @@ import uhx.types.Uri;
  * ...
  * @author Skial Bainn
  */
-class AbstractUriSpec {
+class UriSpec {
 
 	public function new() {
 		
