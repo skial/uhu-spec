@@ -57,7 +57,7 @@ package ;
 		import uhx.lexer.MimeLexerSpec;
 		
 		#if media_types
-			import uhx.mt.MediaTypeSpec;
+			import uhx.types.MediaTypeSpec;
 		#end
 	#end
 	
@@ -176,6 +176,10 @@ class AllTests {
 			
 			#if uri_lexer
 				runner.addCase( new UriLexerSpec() );
+			#end
+			
+			#if uri
+				runner.addCase( new uhx.types.UriSpec() );
 			#end
 		#end
 		
