@@ -7,7 +7,7 @@ import utest.Assert;
  * ...
  * @author Skial Bainn
  */
-class WaitSpec implements Klas {
+class WaitSpec {
 
 	public function new() {
 		

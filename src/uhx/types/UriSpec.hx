@@ -17,7 +17,7 @@ class UriSpec {
 		var uri:Uri = 'http://google.com';
 		
 		Assert.equals( 'http', uri.scheme );
-		Assert.equals( 'google.com', uri.hostname );
+		Assert.equals( 'google.com', uri.domain );
 	}
 	
 	public function testPath() {
@@ -60,14 +60,14 @@ class UriSpec {
 		Assert.equals( '123pass', uri.password );
 	}
 	
-	public function testHostname_set() {
+	public function testDomain_set() {
 		var uri:Uri = 'http://haxe.org';
 		
-		Assert.equals( 'haxe.org', uri.hostname );
+		Assert.equals( 'haxe.org', uri.domain );
 		
-		uri.hostname = 'haxe.io';
+		uri.domain = 'haxe.io';
 		
-		Assert.equals( 'haxe.io', uri.hostname );
+		Assert.equals( 'haxe.io', uri.domain );
 	}
 	
 	public function testPort() {
