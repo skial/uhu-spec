@@ -25,7 +25,7 @@ private class TraitA {
 	
 }
 
-private class TestA implements Klas {
+private class TestA {
 	
 	public var word:String = 'nik';
 	
@@ -41,7 +41,7 @@ private class TestA implements Klas {
 	
 }
 
-private class TestB implements Klas {
+private class TestB {
 	
 	@:use var traits = [TraitA];
 	

@@ -6,7 +6,7 @@ package help.macro;
 @:cmd
 @:keep
 @:usage('person [options]')
-class Person implements Klas {
+class Person {
 	
 	/**
 	 * This person is female/
