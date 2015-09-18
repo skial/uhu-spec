@@ -23,38 +23,38 @@ class SeriSpec {
 		
 		Assert.equals( 17, codepoints0.length );
 		
-		Assert.isTrue( codepoints0.indexOf( 0x0020 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x00A0 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x1680 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2000 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2001 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2002 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2003 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2004 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2005 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2006 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2007 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2008 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x2009 ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x200A ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x202F ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x205F ) > -1 );
-		Assert.isTrue( codepoints0.indexOf( 0x3000 ) > -1 );
+		Assert.isTrue( codepoints0.has( 0x0020 ) );
+		Assert.isTrue( codepoints0.has( 0x00A0 ) );
+		Assert.isTrue( codepoints0.has( 0x1680 ) );
+		Assert.isTrue( codepoints0.has( 0x2000 ) );
+		Assert.isTrue( codepoints0.has( 0x2001 ) );
+		Assert.isTrue( codepoints0.has( 0x2002 ) );
+		Assert.isTrue( codepoints0.has( 0x2003 ) );
+		Assert.isTrue( codepoints0.has( 0x2004 ) );
+		Assert.isTrue( codepoints0.has( 0x2005 ) );
+		Assert.isTrue( codepoints0.has( 0x2006 ) );
+		Assert.isTrue( codepoints0.has( 0x2007 ) );
+		Assert.isTrue( codepoints0.has( 0x2008 ) );
+		Assert.isTrue( codepoints0.has( 0x2009 ) );
+		Assert.isTrue( codepoints0.has( 0x200A ) );
+		Assert.isTrue( codepoints0.has( 0x202F ) );
+		Assert.isTrue( codepoints0.has( 0x205F ) );
+		Assert.isTrue( codepoints0.has( 0x3000 ) );
 		
 		var codepoints1 = Seri.getCategory( 'Po' );
 		
 		Assert.equals( 484, codepoints1.length );
 		
 		// Test a random selection of codepoints existence.
-		Assert.isTrue( codepoints1.indexOf( 0x0021 ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( 0x1B5D ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( 0x2E0F ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( '\u2E0F'.code ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( '⸏'.code ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( 0xA6F6 ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( 0xFF1B ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( 0x11049 ) > -1 );
-		Assert.isTrue( codepoints1.indexOf( 0x1BC9F ) > -1 );
+		Assert.isTrue( codepoints1.has( 0x0021 ) );
+		Assert.isTrue( codepoints1.has( 0x1B5D ) );
+		Assert.isTrue( codepoints1.has( 0x2E0F ) );
+		Assert.isTrue( codepoints1.has( '\u2E0F'.code ) );
+		Assert.isTrue( codepoints1.has( '⸏'.code ) );
+		Assert.isTrue( codepoints1.has( 0xA6F6 ) );
+		Assert.isTrue( codepoints1.has( 0xFF1B ) );
+		Assert.isTrue( codepoints1.has( 0x11049 ) );
+		Assert.isTrue( codepoints1.has( 0x1BC9F ) );
 		
 		var category0 = 'Nd';
 		var codepoints2 = Seri.getCategory( category0 );
@@ -67,58 +67,70 @@ class SeriSpec {
 	public function testBlocks() {
 		var blockpoints0 = Seri.getBlock( 'Basic Latin' );
 		
+		Assert.notNull( blockpoints0 );
 		Assert.equals( 128, blockpoints0.length );
-		Assert.isTrue( blockpoints0.indexOf( 0x0000 ) > -1 );
-		Assert.isTrue( blockpoints0.indexOf( 0x007F ) > -1 );
+		Assert.isTrue( blockpoints0.has( 0x0000 ) );
+		Assert.isTrue( blockpoints0.has( 0x007F ) );
 		
 		var blockpoints1 = Seri.getBlock( 'Cyrillic' );
 		
+		Assert.notNull( blockpoints1 );
 		Assert.equals( 256, blockpoints1.length );
-		Assert.isTrue( blockpoints1.indexOf( 0x0400 ) > -1 );
-		Assert.isTrue( blockpoints1.indexOf( 0x04FF ) > -1 );
+		Assert.isTrue( blockpoints1.has( 0x0400 ) );
+		Assert.isTrue( blockpoints1.has( 0x04FF ) );
 		
 		var blockpoints2 = Seri.getBlock( 'Ethiopic' );
 		
+		Assert.notNull( blockpoints2 );
 		Assert.equals( 384, blockpoints2.length );
-		Assert.isTrue( blockpoints2.indexOf( 0x1200 ) > -1 );
-		Assert.isTrue( blockpoints2.indexOf( 0x137F ) > -1 );
+		Assert.isTrue( blockpoints2.has( 0x1200 ) );
+		Assert.isTrue( blockpoints2.has( 0x137F ) );
 		
 		var blockpoints3 = Seri.getBlock( 'Unified Canadian Aboriginal Syllabics' );
 		
+		Assert.notNull( blockpoints3 );
 		Assert.equals( 640, blockpoints3.length );
-		Assert.isTrue( blockpoints3.indexOf( 0x1400 ) > -1 );
-		Assert.isTrue( blockpoints3.indexOf( 0x167F ) > -1 );
+		Assert.isTrue( blockpoints3.has( 0x1400 ) );
+		Assert.isTrue( blockpoints3.has( 0x167F ) );
 	}
 	
 	// @see http://en.wikipedia.org/wiki/Script_(Unicode)
 	public function testScripts() {
 		var scriptpoints0 = Seri.getScript( 'Syriac' );
 		
+		Assert.notNull( scriptpoints0 );
 		Assert.equals( 77, scriptpoints0.length );
-		Assert.isTrue( scriptpoints0.indexOf( 0x0700 ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x070F ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x0710 ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x071F ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x0720 ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x072F ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x0730 ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x073F ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x0740 ) > -1 );
-		Assert.isTrue( scriptpoints0.indexOf( 0x074F ) > -1 );
+		Assert.isTrue( scriptpoints0.has( 0x0700 ) );
+		Assert.isTrue( scriptpoints0.has( 0x070F ) );
+		Assert.isTrue( scriptpoints0.has( 0x0710 ) );
+		Assert.isTrue( scriptpoints0.has( 0x071F ) );
+		Assert.isTrue( scriptpoints0.has( 0x0720 ) );
+		Assert.isTrue( scriptpoints0.has( 0x072F ) );
+		Assert.isTrue( scriptpoints0.has( 0x0730 ) );
+		Assert.isTrue( scriptpoints0.has( 0x073F ) );
+		Assert.isTrue( scriptpoints0.has( 0x0740 ) );
+		Assert.isTrue( scriptpoints0.has( 0x074F ) );
+		
+		var expandedscripts = [for (p in scriptpoints0) p];
+		Assert.equals( 77, expandedscripts.length );
 		
 		var scriptpoints1 = Seri.getScript( 'Warang_Citi' );
 		
+		Assert.notNull( scriptpoints1 );
 		Assert.equals( 84, scriptpoints1.length );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118A0 ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118AF ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118B0 ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118BF ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118C0 ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118CF ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118D0 ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118DF ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118E0 ) > -1 );
-		Assert.isTrue( scriptpoints1.indexOf( 0x118EF ) > -1 );
+		Assert.isTrue( scriptpoints1.has( 0x118A0 ) );
+		Assert.isTrue( scriptpoints1.has( 0x118AF ) );
+		Assert.isTrue( scriptpoints1.has( 0x118B0 ) );
+		Assert.isTrue( scriptpoints1.has( 0x118BF ) );
+		Assert.isTrue( scriptpoints1.has( 0x118C0 ) );
+		Assert.isTrue( scriptpoints1.has( 0x118CF ) );
+		Assert.isTrue( scriptpoints1.has( 0x118D0 ) );
+		Assert.isTrue( scriptpoints1.has( 0x118DF ) );
+		Assert.isTrue( scriptpoints1.has( 0x118E0 ) );
+		Assert.isTrue( scriptpoints1.has( 0x118EF ) );
+		
+		var expandedscripts = [for (p in scriptpoints1) p];
+		Assert.equals( 84, expandedscripts.length );
 	}
 	
 }
