@@ -111,6 +111,7 @@
 -resource resources/commonmark/0.22/287.md@0.22.287.md
 -resource resources/commonmark/0.22/288.md@0.22.288.md
 -resource resources/commonmark/0.22/289.md@0.22.289.md
+-resource resources/commonmark/0.22/290.md@0.22.290.md
 
 --each
 

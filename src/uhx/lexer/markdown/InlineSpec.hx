@@ -136,7 +136,6 @@ class InlineSpec {
 		var md = load( '0.22.289.md' );
 		var tokens = tokenize( md );
 		
-		trace( tokens );
 		Assert.equals( 17, tokens.length );
 		
 		Assert.isTrue( tokens[0].match( { type:AInline.Text, tokens:[ amp.encode(true) ] } ) );
@@ -144,6 +143,15 @@ class InlineSpec {
 		
 		Assert.isTrue( tokens[15].match( { type:AInline.Text, tokens:[ amp.encode(true) ] } ) );
 		Assert.isTrue( tokens[16].match( { type:AInline.Text, tokens:[ 'hi?;' ] } ) );
+	}
+	
+	public function testExample290() {
+		var md = load( '0.22.290.md' );
+		var tokens = tokenize( md );
+		
+		Assert.equals( 2, tokens.length );
+		Assert.isTrue( tokens[0].match( { type:AInline.Text, tokens:[ amp.encode(true) ] } ) );
+		Assert.isTrue( tokens[1].match( { type:AInline.Text, tokens:[ copy ] } ) );
 	}
 	
 }
