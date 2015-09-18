@@ -60,6 +60,18 @@ class InlineSpec {
 	}
 	
 	/**
+	 * @see http://spec.commonmark.org/0.22/#example-273
+	 */
+	public function testASCIIBackslash() {
+		var md = load( '0.22.273.md' );
+		var tokens = tokenize( md );
+		
+		trace( tokens );
+		Assert.equals( 32, tokens.length );
+		Assert.equals( 32, tokens.filter( function(t) return t.type == AInline.BackSlash ).length );
+	}
+	
+	/**
 	 * @see http://spec.commonmark.org/0.22/#name-entities
 	 */
 	public function testNamedEntities() {
