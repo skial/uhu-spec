@@ -6,12 +6,14 @@
 -lib unifill
 -lib utest
 -lib detox
+-lib regle
+-lib html-entities
 
 ## Comment out any of the following libraries to reduce tests.
 
 -lib uhu
 -lib klas
-#-lib seri
+-lib seri
 -lib mo
 #-lib wait
 #-lib yield
@@ -22,22 +24,23 @@
 #-lib ajou
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
 #-lib fisel
--lib media-types
+#-lib media-types
+#-lib uri
 
 ## Flags to enable class specific tests which belong to a parent library.
 #-D html_select
 #-D json_select
-#-D markdown_lexer
+-D markdown_lexer
 #-D html_lexer
 #-D css_lexer
 #-D haxe_lexer
 #-D mime_lexer
--D uri_lexer
+#-D uri_lexer
 -D klas_verboses
 
 ## Flags to silent third party libraries without exluding them.
 -D disable_detox
--D disable_seri
+#-D disable_seri
 
 ## Experimental libraries.
 #-D trait
@@ -58,6 +61,7 @@
 #-D dump
 #-D macro_times
 -main AllTests
+
 -resource resources/markdown/be_paragraph.html@be_paragraph.html
 -resource resources/markdown/be_paragraph.md@be_paragraph.md
 -resource resources/markdown/code_in_blockquote.html@code_in_blockquote.html
@@ -102,6 +106,11 @@
 -resource resources/css/haxe.io.css@haxe.io.css
 -resource resources/css/normalize.css@normalize.css
 -resource resources/html/input.html@input.html
+
+-resource resources/commonmark/286.md@286.md
+-resource resources/commonmark/287.md@287.md
+-resource resources/commonmark/288.md@288.md
+-resource resources/commonmark/289.md@289.md
 
 --each
 
