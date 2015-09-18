@@ -5,7 +5,7 @@ import utest.Assert;
  * ...
  * @author Skial Bainn
  */
-class NamedArgsSpec implements Klas {
+class NamedArgsSpec {
 
 	public function new() {
 		

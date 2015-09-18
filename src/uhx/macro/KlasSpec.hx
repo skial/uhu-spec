@@ -6,7 +6,7 @@ import utest.Assert;
  * ...
  * @author Skial Bainn
  */
-class KlasSpec implements Klas {
+class KlasSpec {
 
 	public function new() {
 		

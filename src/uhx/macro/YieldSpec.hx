@@ -7,7 +7,7 @@ import utest.Assert;
  * ...
  * @author Skial Bainn
  */
-class YieldSpec implements Klas {
+class YieldSpec {
 
 	public function new() {
 		
