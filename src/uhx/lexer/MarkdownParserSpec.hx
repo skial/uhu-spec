@@ -11,7 +11,9 @@ import utest.Assert;
 import haxe.Resource;
 import byte.ByteData;
 import hxparse.Position;
-import uhx.lexer.Markdown.MarkdownKeywords;
+import uhx.lexer.Markdown.ABlock;
+import uhx.lexer.Markdown.ALeaf;
+import uhx.lexer.Markdown.AInline;
 import uhx.lexer.Markdown as MarkdownLexer;
 import uhx.parser.Markdown as MarkdownParser;
 
@@ -58,10 +60,6 @@ class MarkdownParserSpec {
 		var parser = new MarkdownParser();
 		var tokens = parser.toTokens( ByteData.ofString( md ), 'md-issue19' );
 		trace( tokens );
-		//for (token in tokens) trace(token.token);
-		//trace( escape( tokens.map( function(t) return parser.printString(t) ).join('') ) );
-		
-		Assert.equals( 2, tokens.length );
 	}
 	
 	
