@@ -89,20 +89,6 @@ package ;
 		import uhx.http.RequestSpec;
 	#end
 #end
-/*import uhx.mo.MoSpec;
-
-//import haxe.Utf8Spec;
-//import uhx.web.URISpec;
-//import uhx.fmt.ASCIISpec;
-//import uhx.oauth.GithubSpec;
-
-/*#if sys
-import uhx.oauth.OAuth10aSpec;
-#end
-
-import uhx.crypto.Base64Spec;
-import uhx.crypto.HMACSpec;
-import uhx.crypto.MD5Spec;*/
 
 import utest.Runner;
 import utest.ui.Report;
