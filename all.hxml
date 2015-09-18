@@ -12,7 +12,7 @@
 ## Comment out any of the following libraries to reduce tests.
 
 -lib uhu
--lib klas
+#-lib klas
 -lib seri
 -lib mo
 #-lib wait
@@ -107,10 +107,10 @@
 -resource resources/css/normalize.css@normalize.css
 -resource resources/html/input.html@input.html
 
--resource resources/commonmark/286.md@286.md
--resource resources/commonmark/287.md@287.md
--resource resources/commonmark/288.md@288.md
--resource resources/commonmark/289.md@289.md
+-resource resources/commonmark/0.22/286.md@0.22.286.md
+-resource resources/commonmark/0.22/287.md@0.22.287.md
+-resource resources/commonmark/0.22/288.md@0.22.288.md
+-resource resources/commonmark/0.22/289.md@0.22.289.md
 
 --each
 

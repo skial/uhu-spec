@@ -59,8 +59,11 @@ class InlineSpec {
 		return results;
 	}
 	
+	/**
+	 * @see http://spec.commonmark.org/0.22/#name-entities
+	 */
 	public function testNamedEntities() {
-		var md = load( '286.md' );
+		var md = load( '0.22.286.md' );
 		var tokens = tokenize( md );
 		
 		Assert.equals( 19, tokens.length );
@@ -81,8 +84,11 @@ class InlineSpec {
 		
 	}
 	
+	/**
+	 * @see http://spec.commonmark.org/0.22/#decimal-entities
+	 */
 	public function testDecimalEntities() {
-		var md = load( '287.md' );
+		var md = load( '0.22.287.md' );
 		var tokens = tokenize( md );
 		
 		Assert.equals( 9, tokens.length );
@@ -101,8 +107,11 @@ class InlineSpec {
 		] } ) );
 	}
 	
+	/**
+	 * @see http://spec.commonmark.org/0.22/#hexadecimal-entities
+	 */
 	public function testHexadecimalEntities() {
-		var md = load( '288.md' );
+		var md = load( '0.22.288.md' );
 		var tokens = tokenize( md );
 		
 		Assert.equals( 5, tokens.length );
@@ -120,8 +129,11 @@ class InlineSpec {
 		] } ) );
 	}
 	
+	/**
+	 * @see http://spec.commonmark.org/0.22/#example-289
+	 */
 	public function testNonEntities() {
-		var md = load( '289.md' );
+		var md = load( '0.22.289.md' );
 		var tokens = tokenize( md );
 		
 		trace( tokens );
