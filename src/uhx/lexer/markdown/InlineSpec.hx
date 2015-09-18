@@ -154,4 +154,13 @@ class InlineSpec {
 		Assert.isTrue( tokens[1].match( { type:AInline.Text, tokens:[ copy ] } ) );
 	}
 	
+	public function testExample291() {
+		var md = load( '0.22.291.md' );
+		var tokens = tokenize( md );
+		
+		Assert.equals( 2, tokens.length );
+		Assert.isTrue( tokens[0].match( { type:AInline.Text, tokens:[ amp.encode(true) ] } ) );
+		Assert.isTrue( tokens[1].match( { type:AInline.Text, tokens:[ 'MadeUpEntity;' ] } ) );
+	}
+	
 }
