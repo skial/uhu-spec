@@ -66,9 +66,16 @@ class InlineSpec {
 		var md = load( '0.22.273.md' );
 		var tokens = tokenize( md );
 		
-		trace( tokens );
 		Assert.equals( 32, tokens.length );
 		Assert.equals( 32, tokens.filter( function(t) return t.type == AInline.BackSlash ).length );
+		
+		Assert.isTrue( tokens[1].match( { type:AInline.BackSlash, tokens:[
+			quot.encode( true )
+		] } ) );
+		
+		Assert.isTrue( tokens[5].match( { type:AInline.BackSlash, tokens:[
+			amp.encode( true )
+		] } ) );
 	}
 	
 	/**
