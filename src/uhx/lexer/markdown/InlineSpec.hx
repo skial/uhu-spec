@@ -2,9 +2,13 @@ package uhx.lexer.markdown;
 
 import byte.ByteData;
 import haxe.Resource;
+import hxparse.UnexpectedChar;
 import uhx.sys.HtmlEntities;
 import uhx.sys.HtmlEntity;
+import unifill.CodePoint;
+import unifill.CodePointIter;
 import unifill.InternalEncoding;
+import unifill.InternalEncodingIter;
 import utest.Assert;
 import uhx.lexer.Markdown;
 import uhx.lexer.Markdown.Inline;
@@ -45,14 +49,20 @@ class InlineSpec {
 		return Resource.getString( file );
 	}
 	
-	public function tokenize(value:String):Array<Inline> {
+	public function tokenize(value:String, name:String = ''):Array<Inline> {
 		var results = [];
-		var markdown = new Markdown( ByteData.ofString( value ), 'commonmark-inline-spec' );
+		var bytedata = ByteData.ofString( value );
+		trace( bytedata );
+		var markdown = new Markdown( bytedata, 'commonmark-inline-spec+$name' );
 		
 		try while (true) {
 			results.push( markdown.token( Markdown.inlineBlocks ) );
 			
+		} catch (e:UnexpectedChar) {
+			trace( e.char, e.pos );
+			
 		} catch (e:Dynamic) {
+			trace( e );
 			
 		}
 		
@@ -76,6 +86,14 @@ class InlineSpec {
 		Assert.isTrue( tokens[5].match( { type:AInline.BackSlash, tokens:[
 			amp.encode( true )
 		] } ) );
+	}
+	
+	public function testExample274() {
+		var md = load( '0.22.274.md' );
+		var tokens = tokenize( md, '0.22.274.md' );
+		
+		trace( tokens );
+		Assert.equals( 7, tokens.length );
 	}
 	
 	/**
