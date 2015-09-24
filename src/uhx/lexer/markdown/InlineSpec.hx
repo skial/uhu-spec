@@ -117,6 +117,26 @@ class InlineSpec {
 		] } ) );
 	}
 	
+	public function testExample277() {
+		var md = load( '0.22.277.md' );
+		var tokens = tokenize( md, '0.22.277.md' );
+		
+		trace( tokens );
+		Assert.equals( 3, tokens.length );
+		
+		Assert.isTrue( tokens[0].match( { type:AInline.Text, tokens:[
+			'foo'
+		] } ) );
+		
+		Assert.isTrue( tokens[1].match( { type:AInline.Text, tokens:[
+			'<br />'
+		] } ) );
+		
+		Assert.isTrue( tokens[2].match( { type:AInline.Text, tokens:[
+			'bar'
+		] } ) );
+	}
+	
 	/**
 	 * @see http://spec.commonmark.org/0.22/#name-entities
 	 */
