@@ -52,7 +52,6 @@ class InlineSpec {
 	public function tokenize(value:String, name:String = ''):Array<Inline> {
 		var results = [];
 		var bytedata = ByteData.ofString( value );
-		trace( bytedata );
 		var markdown = new Markdown( bytedata, 'commonmark-inline-spec+$name' );
 		
 		try while (true) {
@@ -92,8 +91,15 @@ class InlineSpec {
 		var md = load( '0.22.274.md' );
 		var tokens = tokenize( md, '0.22.274.md' );
 		
-		trace( tokens );
 		Assert.equals( 7, tokens.length );
+		
+		Assert.isTrue( tokens[0].match( { type:AInline.Text, tokens:[
+			'\u005C\u2192'
+		] } ) );
+		
+		Assert.isTrue( tokens[6].match( { type:AInline.Text, tokens:[
+			'\u005C\u00AB'
+		] } ) );
 	}
 	
 	/**

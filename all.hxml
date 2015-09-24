@@ -3,6 +3,7 @@
 -lib tink_core
 -lib tink_macro
 -lib tjson
+-lib hxparse
 -lib unifill
 -lib utest
 -lib detox
@@ -108,6 +109,7 @@
 -resource resources/html/input.html@input.html
 
 -resource resources/commonmark/0.22/273.md@0.22.273.md
+-resource resources/commonmark/0.22/274.md@0.22.274.md
 -resource resources/commonmark/0.22/286.md@0.22.286.md
 -resource resources/commonmark/0.22/287.md@0.22.287.md
 -resource resources/commonmark/0.22/288.md@0.22.288.md
