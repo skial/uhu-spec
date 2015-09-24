@@ -51,6 +51,9 @@ package ;
 	
 	#if markdown_lexer
 		import uhx.lexer.MarkdownParserSpec;
+		import uhx.lexer.markdown.BlockSpec;
+		import uhx.lexer.markdown.LeafSpec;
+		import uhx.lexer.markdown.InlineSpec;
 	#end
 	
 	#if mime_lexer
@@ -86,24 +89,16 @@ package ;
 		import uhx.http.RequestSpec;
 	#end
 #end
-/*import uhx.mo.MoSpec;
-
-//import haxe.Utf8Spec;
-//import uhx.web.URISpec;
-//import uhx.fmt.ASCIISpec;
-//import uhx.oauth.GithubSpec;
-
-/*#if sys
-import uhx.oauth.OAuth10aSpec;
-#end
-
-import uhx.crypto.Base64Spec;
-import uhx.crypto.HMACSpec;
-import uhx.crypto.MD5Spec;*/
 
 import utest.Runner;
 import utest.ui.Report;
 import utest.TestHandler;
+
+#if macro
+using StringTools;
+using haxe.io.Path;
+using sys.FileSystem;
+#end
 
 /**
  * ...
@@ -113,7 +108,27 @@ import utest.TestHandler;
 #if !disable_macro_tests
 //@:build( MacroTests.run() )
 #end
-class AllTests {
+@:KLAS_SKIP class AllTests {
+	
+	#if macro
+	public static function embedResources(path:String) {
+		path = '${Sys.getCwd()}/$path'.normalize();
+		if (path.exists()) for (file in path.readDirectory()) {
+			if (!'$path/$file'.normalize().isDirectory()) {
+				//trace( '$path/$file', file );
+				haxe.macro.Context.addResource( file, sys.io.File.getBytes( '$path/$file'.normalize() ) );
+				
+			} else {
+				//trace( '$path/$file' );
+				embedResources( '$path/$file'.replace( Sys.getCwd(), '' ) );
+				
+			}
+			
+		}
+		
+		return null;
+	}
+	#end
 	
 	public static function main() {	
 		var runner = new Runner();
@@ -155,7 +170,10 @@ class AllTests {
 			#end
 			
 			#if markdown_lexer
-				runner.addCase( new MarkdownParserSpec() );
+				//runner.addCase( new MarkdownParserSpec() );
+				//runner.addCase( new BlockSpec() );
+				//runner.addCase( new LeafSpec() );
+				runner.addCase( new InlineSpec() );
 			#end
 			
 			#if css_lexer
@@ -176,10 +194,10 @@ class AllTests {
 			
 			#if uri_lexer
 				runner.addCase( new UriLexerSpec() );
-			#end
-			
-			#if uri
-				runner.addCase( new uhx.types.UriSpec() );
+				
+				#if uri
+					runner.addCase( new uhx.types.UriSpec() );
+				#end
 			#end
 		#end
 		

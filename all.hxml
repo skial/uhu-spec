@@ -3,15 +3,18 @@
 -lib tink_core
 -lib tink_macro
 -lib tjson
+-lib hxparse
 -lib unifill
 -lib utest
 -lib detox
+-lib regle
+-lib html-entities
 
 ## Comment out any of the following libraries to reduce tests.
 
 -lib uhu
--lib klas
-#-lib seri
+#-lib klas
+-lib seri
 -lib mo
 #-lib wait
 #-lib yield
@@ -22,22 +25,23 @@
 #-lib ajou
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
 #-lib fisel
--lib media-types
+#-lib media-types
+#-lib uri
 
 ## Flags to enable class specific tests which belong to a parent library.
 #-D html_select
 #-D json_select
-#-D markdown_lexer
+-D markdown_lexer
 #-D html_lexer
 #-D css_lexer
 #-D haxe_lexer
 #-D mime_lexer
--D uri_lexer
+#-D uri_lexer
 -D klas_verboses
 
 ## Flags to silent third party libraries without exluding them.
 -D disable_detox
--D disable_seri
+#-D disable_seri
 
 ## Experimental libraries.
 #-D trait
@@ -58,50 +62,64 @@
 #-D dump
 #-D macro_times
 -main AllTests
--resource resources/markdown/be_paragraph.html@be_paragraph.html
--resource resources/markdown/be_paragraph.md@be_paragraph.md
--resource resources/markdown/code_in_blockquote.html@code_in_blockquote.html
--resource resources/markdown/code_in_blockquote.md@code_in_blockquote.md
--resource resources/markdown/headers.html@headers.html
--resource resources/markdown/headers.md@headers.md
--resource resources/markdown/horizontal_rules.html@horizontal_rules.html
--resource resources/markdown/horizontal_rules.md@horizontal_rules.md
--resource resources/markdown/indent_code.html@indent_code.html
--resource resources/markdown/indent_code.md@indent_code.md
--resource resources/markdown/inline_links.html@inline_links.html
--resource resources/markdown/inline_links.md@inline_links.md
--resource resources/markdown/lazy_blockquote.html@lazy_blockquote.html
--resource resources/markdown/lazy_blockquote.md@lazy_blockquote.md
--resource resources/markdown/list_paragraphs.html@list_paragraphs.html
--resource resources/markdown/list_paragraphs.md@list_paragraphs.md
--resource resources/markdown/nested_blockquotes.html@nested_blockquotes.html
--resource resources/markdown/nested_blockquotes.md@nested_blockquotes.md
--resource resources/markdown/ordered_lists.html@ordered_lists.html
--resource resources/markdown/ordered_lists.md@ordered_lists.md
--resource resources/markdown/unordered_lists.html@unordered_lists.html
--resource resources/markdown/unordered_lists.md@unordered_lists.md
--resource resources/markdown/reference_links.html@reference_links.html
--resource resources/markdown/reference_links.md@reference_links.md
--resource resources/markdown/issue1.html@issue1.html
--resource resources/markdown/issue1.md@issue1.md
--resource resources/markdown/issue3.html@issue3.html
--resource resources/markdown/issue3.md@issue3.md
--resource resources/markdown/issue6.html@issue6.html
--resource resources/markdown/issue6.md@issue6.md
--resource resources/markdown/issue7.html@issue7.html
--resource resources/markdown/issue7.md@issue7.md
--resource resources/markdown/issue8.html@issue8.html
--resource resources/markdown/issue8.md@issue8.md
--resource resources/markdown/issue14.html@issue14.html
--resource resources/markdown/issue14.md@issue14.md
--resource resources/markdown/issue19.html@issue19.html
--resource resources/markdown/issue19.md@issue19.md
+
+#-resource resources/markdown/be_paragraph.html@be_paragraph.html
+#-resource resources/markdown/be_paragraph.md@be_paragraph.md
+#-resource resources/markdown/code_in_blockquote.html@code_in_blockquote.html
+#-resource resources/markdown/code_in_blockquote.md@code_in_blockquote.md
+#-resource resources/markdown/headers.html@headers.html
+#-resource resources/markdown/headers.md@headers.md
+#-resource resources/markdown/horizontal_rules.html@horizontal_rules.html
+#-resource resources/markdown/horizontal_rules.md@horizontal_rules.md
+#-resource resources/markdown/indent_code.html@indent_code.html
+#-resource resources/markdown/indent_code.md@indent_code.md
+#-resource resources/markdown/inline_links.html@inline_links.html
+#-resource resources/markdown/inline_links.md@inline_links.md
+#-resource resources/markdown/lazy_blockquote.html@lazy_blockquote.html
+#-resource resources/markdown/lazy_blockquote.md@lazy_blockquote.md
+#-resource resources/markdown/list_paragraphs.html@list_paragraphs.html
+#-resource resources/markdown/list_paragraphs.md@list_paragraphs.md
+#-resource resources/markdown/nested_blockquotes.html@nested_blockquotes.html
+#-resource resources/markdown/nested_blockquotes.md@nested_blockquotes.md
+#-resource resources/markdown/ordered_lists.html@ordered_lists.html
+#-resource resources/markdown/ordered_lists.md@ordered_lists.md
+#-resource resources/markdown/unordered_lists.html@unordered_lists.html
+#-resource resources/markdown/unordered_lists.md@unordered_lists.md
+#-resource resources/markdown/reference_links.html@reference_links.html
+#-resource resources/markdown/reference_links.md@reference_links.md
+#-resource resources/markdown/issue1.html@issue1.html
+#-resource resources/markdown/issue1.md@issue1.md
+#-resource resources/markdown/issue3.html@issue3.html
+#-resource resources/markdown/issue3.md@issue3.md
+#-resource resources/markdown/issue6.html@issue6.html
+#-resource resources/markdown/issue6.md@issue6.md
+#-resource resources/markdown/issue7.html@issue7.html
+#-resource resources/markdown/issue7.md@issue7.md
+#-resource resources/markdown/issue8.html@issue8.html
+#-resource resources/markdown/issue8.md@issue8.md
+#-resource resources/markdown/issue14.html@issue14.html
+#-resource resources/markdown/issue14.md@issue14.md
+#-resource resources/markdown/issue19.html@issue19.html
+#-resource resources/markdown/issue19.md@issue19.md
 -resource resources/json/level1/basic.json@l1basic.json
 -resource resources/json/level2/sibling.json@l2sibling.json
 -resource resources/json/level3/basic.json@l3basic.json
 -resource resources/css/haxe.io.css@haxe.io.css
 -resource resources/css/normalize.css@normalize.css
 -resource resources/html/input.html@input.html
+
+-resource resources/commonmark/0.22/273.md@0.22.273.md
+-resource resources/commonmark/0.22/274.md@0.22.274.md
+
+-resource resources/commonmark/0.22/276.md@0.22.276.md
+-resource resources/commonmark/0.22/277.md@0.22.277.md
+
+-resource resources/commonmark/0.22/286.md@0.22.286.md
+-resource resources/commonmark/0.22/287.md@0.22.287.md
+-resource resources/commonmark/0.22/288.md@0.22.288.md
+-resource resources/commonmark/0.22/289.md@0.22.289.md
+-resource resources/commonmark/0.22/290.md@0.22.290.md
+-resource resources/commonmark/0.22/291.md@0.22.291.md
 
 --each
 
