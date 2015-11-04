@@ -12,6 +12,9 @@
 -lib fisel
 -lib seri
 -lib media-types
+-lib uri
+-lib hxnodejs
+-lib ne
 -cp src
 -js bin/uhuspec.js
 -main example.extended_gadt.Main
