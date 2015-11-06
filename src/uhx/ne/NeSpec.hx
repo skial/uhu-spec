@@ -28,6 +28,14 @@ class NeSpec {
 		return parser.toTokens( ByteData.ofString( html ), 'ne-spec' );
 	}
 	
+	#if js
+	public function DOM(html:String) {
+		var dummy = Browser.document.createElement( 'div' );
+		dummy.innerHTML = html;
+		return dummy.childNodes[0];
+	}
+	#end
+	
 	public function testElement_basic() {
 		var html =  '<a>Hey</a>';
 		var n:NeNode = parse( html )[0];
@@ -37,9 +45,7 @@ class NeSpec {
 		Assert.equals( NeNode.ELEMENT_NODE, n.nodeType );
 		
 		#if js
-		var dummy = Browser.document.createElement( 'html' );
-		dummy.innerHTML = html ;
-		var j = dummy.getElementsByTagName( 'a' )[0];
+		var j = DOM( html );
 		
 		// HTML documents return node names in upper case.
 		Assert.equals( 'A', j.nodeName );
@@ -53,21 +59,46 @@ class NeSpec {
 	}
 	
 	public function testInstruction_basic1() {
-		var n:NeNode = parse( '<!-- hey from ne! -->' )[0];
+		var html = '<!-- hey from ne! -->';
+		var n:NeNode = parse( html )[0];
 		
 		Assert.equals( '#comment', n.nodeName );
 		Assert.equals( NeNode.COMMENT_NODE, n.nodeType );
-		Assert.equals( 'hey from ne!', n.nodeValue );
+		Assert.equals( ' hey from ne! ', n.nodeValue );
 		Assert.equals( 0, n.childNodes.length );
+		
+		#if js
+		var j = DOM( html );
+		
+		Assert.equals( '#comment', j.nodeName );
+		Assert.equals( JsNode.COMMENT_NODE, j.nodeType );
+		Assert.equals( ' hey from ne! ', j.nodeValue );
+		Assert.equals( 0, j.childNodes.length );
+		
+		Assert.equals( n.nodeName, j.nodeName );
+		Assert.equals( n.nodeType, j.nodeType );
+		Assert.equals( n.nodeValue, j.nodeValue );
+		Assert.equals( n.childNodes.length, j.childNodes.length );
+		#end
 	}
 	
 	public function testInstruction_basic2() {
-		var n:NeNode = parse( '<! hey from ne! >' )[0];
+		var html = '<?hey from ne! ?>';
+		var n:NeNode = parse( html )[0];
 		
-		Assert.equals( 'hey', n.nodeName );
-		Assert.equals( NeNode.PROCESSING_INSTRUCTION_NODE, n.nodeType );
-		Assert.equals( 'hey from ne!', n.nodeValue );
+		Assert.equals( '#comment', n.nodeName );
+		Assert.equals( NeNode.COMMENT_NODE, n.nodeType );
+		Assert.equals( '?hey from ne! ?', n.nodeValue );
 		Assert.equals( 0, n.childNodes.length );
+		
+		#if js
+		var j = DOM( html );
+		
+		Assert.equals( '#comment', j.nodeName );
+		Assert.equals( JsNode.COMMENT_NODE, j.nodeType );
+		Assert.equals( '?hey from ne! ?', j.nodeValue );
+		Assert.equals( 0, j.childNodes.length );
+		#end
 	}
 	
 }
