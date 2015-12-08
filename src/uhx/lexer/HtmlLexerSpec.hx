@@ -1,5 +1,6 @@
 package uhx.lexer;
 
+import dtx.DOMCollection;
 import dtx.Tools;
 import haxe.io.Eof;
 import dtx.DOMType;
@@ -11,6 +12,7 @@ import hxparse.UnexpectedChar;
 import uhx.lexer.Html;
 import uhx.lexer.Html as HtmlLexer;
 
+using Detox;
 using Lambda;
 
 /**
@@ -348,6 +350,7 @@ class HtmlLexerSpec {
 		Assert.isTrue( t[1].match( Keyword(Text( { tokens:' \r\n\t ' } )) ) );
 		Assert.isTrue( t[2].match( Keyword(Tag( { name:'a' } )) ) );
 		
+		#if !js
 		var collection:dtx.DOMCollection = new dtx.DOMCollection( cast t );
 		var a:DOMNode = cast collection.getNode(2);
 		
@@ -355,6 +358,7 @@ class HtmlLexerSpec {
 		Assert.isTrue( a.childNodes[0].token().match( Keyword(Text( { tokens:' \r\n\t ' } )) ) );
 		Assert.isTrue( a.childNodes[1].token().match( Keyword(Tag( { name:'b' } )) ) );
 		Assert.isTrue( a.childNodes[2].token().match( Keyword(Text( { tokens:' \r\n\t ' } )) ) );
+		#end
 	}
 	
 	public function testHtmlCategories() {
@@ -508,12 +512,14 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 1, t.length );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 3, dom.childNodes.length );
 		Assert.equals( uhx.lexer.Html.NodeType.Text, dom.childNodes[0].nodeType );
 		Assert.equals( uhx.lexer.Html.NodeType.Element, dom.childNodes[1].nodeType );
 		Assert.equals( uhx.lexer.Html.NodeType.Text, dom.childNodes[2].nodeType );
+		#end
 	}
 	
 	public function testTextAndSameTags() {
@@ -521,9 +527,11 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 1, t.length );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 3, dom.childNodes.length );
+		#end
 	}
 	
 	public function testText_parent() {
@@ -556,6 +564,7 @@ class HtmlLexerSpec {
 		#end
 	}
 	
+	#if !js
 	public function testDOMNode_clone() {
 		var t = parse( '<a><b><c>Hello</c></b></a>' );
 		
@@ -623,6 +632,52 @@ class HtmlLexerSpec {
 		cloneDiv1.textContent = 'Goodbye';
 		
 		Assert.isFalse( origDiv1.textContent == cloneDiv1.textContent );
+	}
+	
+	public function testDOMNode_cloneParent() {
+		var t = parse( '<parent><a><b>Hello World</b></a></parent>' );
+		
+		var node:DOMNode = t[0];
+		var a:DOMNode = node.childNodes[0];
+		var aClone:DOMNode = a.cloneNode( true );
+		
+		Assert.equals( a.textContent, aClone.textContent );
+		
+		aClone.textContent = 'Goodbye World';
+		
+		Assert.notEquals( a.textContent, aClone.textContent );
+		Assert.notNull( a.parentNode );
+		// JavaScript's `cloneNode` marks the parentNode as `null`, as it's not attached to any document.
+		Assert.isNull( aClone.parentNode );
+		
+		aClone.setAttribute( 'clone', 'true' );
+		a.parentNode.appendChild( aClone );
+		a.parentNode.removeChild( a );
+		
+		Assert.notNull( aClone.parentNode );
+		Assert.isNull( a.parentNode );
+		Assert.equals( 'Goodbye World', node.textContent );
+		
+		// Now with `using Detox`.
+		var c = '<parent><a><b>Hello World</b></a></parent>'.parse();
+		var a = c.children();
+		var aClone = a.clone();
+		
+		Assert.equals( a.text(), aClone.text() );
+		
+		aClone.setText( 'Goodbye World' );
+		
+		Assert.notEquals( a.text(), aClone.text() );
+		Assert.notNull( a.getNode().parent() );
+		// JavaScript's `cloneNode` marks the parentNode as `null`, as it's not attached to any document.
+		Assert.isNull( aClone.getNode().parent() );
+		
+		aClone.setAttr( 'clone', 'true' );
+		a.replaceWith( aClone );
+		
+		Assert.notNull( aClone.getNode().parent() );
+		Assert.isNull( a.getNode().parent() );
+		Assert.equals( 'Goodbye World', c.text() );
 	}
 	
 	public function testDOMNode_removeChild() {
@@ -738,6 +793,7 @@ class HtmlLexerSpec {
 		Assert.equals( 'hello', dom.getAttribute('data-a') );
 		Assert.equals( 'world', dom.getAttribute('b') );
 	}
+	#end
 	
 	public function testInstruction_content() {
 		var t = parse( '<!-- hello world -->' );
@@ -759,6 +815,7 @@ class HtmlLexerSpec {
 		Assert.equals( 'world', values[2] );
 		Assert.equals( '--', values[3] );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		Assert.equals( ' hello world ', dom.nodeValue );
 		
@@ -781,8 +838,10 @@ class HtmlLexerSpec {
 		Assert.equals( ' ', values[2] );
 		Assert.equals( 'world', values[3] );
 		Assert.equals( '--', values[4] );
+		#end
 	}
 	
+	#if !js
 	public function testDOMNode_nextSibling() {
 		var t = parse( '<a><b></b><c></c><d></d></a>' );
 		
@@ -956,6 +1015,7 @@ class HtmlLexerSpec {
 		Assert.equals( 4, elementsOnly[1].parentNode.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
 		Assert.equals( 4, dom.childNodes.indexOf( elementsOnly[1].childNodes[1].lastChild.parentNode.parentNode.nextSibling ) );
 	}
+	#end
 	
 	public function testElementCount() {
 		var t = parse( "<myxml>
@@ -971,6 +1031,7 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 1, t.length );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 3, dom.childNodes.length );
@@ -999,6 +1060,7 @@ class HtmlLexerSpec {
 		Assert.equals( 3, dom.childNodes[1].childNodes[1].childNodes[1].childNodes.length );
 		Assert.equals( 'level4', dom.childNodes[1].childNodes[1].childNodes[1].childNodes[1].getAttribute('class') );
 		Assert.equals( 1, dom.childNodes[1].childNodes[1].childNodes[1].childNodes[1].childNodes.length );
+		#end
 	}
 	
 	public function testTitleContentTags() {
@@ -1006,6 +1068,7 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 1, t.length );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 2, dom.childNodes.length );
@@ -1013,6 +1076,7 @@ class HtmlLexerSpec {
 		var head = dom.childNodes[0];
 		Assert.equals( 'head', head.nodeName );
 		Assert.equals( 1, head.childNodes.length );
+		#end
 	}
 	
 	public function testNamespace_Attributes() {
@@ -1020,6 +1084,7 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 1, t.length );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		
 		for (attribute in dom.attributes) switch (attribute.name) {
@@ -1035,6 +1100,7 @@ class HtmlLexerSpec {
 				Assert.fail();
 				
 		}
+		#end
 	}
 	
 	public function testNamespace_Tag() {
@@ -1042,10 +1108,67 @@ class HtmlLexerSpec {
 		
 		Assert.equals( 1, t.length );
 		
+		#if !js
 		var dom:DOMNode = t[0];
 		
 		Assert.equals( 'a:namespace', dom.nodeName );
 		Assert.equals( 1, dom.childNodes.length );
+		#end
+	}
+	
+	public function testRemoval_EscapedAttributes() {
+		var t = parse( '<parent><a b-="1" c+="2"></a></parent>' );
+		
+		// Manual, bare metal, removal.
+		switch (t[0]) {
+			case Keyword(Tag( { tokens:tokens } )):
+				
+				Assert.equals( 1, tokens.length );
+				
+				switch (tokens[0]) {
+					case Keyword(Tag( { attributes:a } )):
+						Assert.isTrue( tokens.remove( tokens[0] ) );
+						
+					case _:
+						
+				}
+				
+				Assert.equals( 0, tokens.length );
+				
+			case _:
+				
+		}
+		
+		#if !js
+		// Low level removal
+		var d:DOMNode = parse( '<parent><a b-="1" c+="2"></a></parent>' )[0];
+		Assert.equals( 1, d.childNodes.length );
+		
+		var f = d.firstChild;
+		d.removeChild( d.firstChild );
+		
+		Assert.equals( 0, d.childNodes.length );
+		
+		// Library removal
+		var c = '<parent><a b-="1" c+="2"></a></parent>'.parse();
+		
+		Assert.equals( 1, c.children().length );
+		
+		c.children().remove();
+		
+		Assert.equals( 0, c.children().length );
+		
+		// Library removal, again
+		var c = '<parent><a b-="1" c+="2"></a></parent>'.parse();
+		
+		Assert.equals( 1, c.children().length );
+		
+		var delete = new DOMCollection();
+		for (child in c.children()) delete.add( child );
+		delete.remove();
+		
+		Assert.equals( 0, c.children().length );
+		#end
 	}
 	
 	public function testMacro_parse() {
