@@ -24,6 +24,7 @@
 #-lib fisel
 -lib media-types
 -lib uri
+-lib ne
 
 ## Flags to enable class specific tests which belong to a parent library.
 #-D html_select
@@ -107,9 +108,9 @@
 
 --each
 
-#-js bin/spec.js
+-js bin/spec.js
 
-#--next
+--next
 
 -neko bin/spec.n
 

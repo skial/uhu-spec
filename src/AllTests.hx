@@ -1,7 +1,7 @@
 package ;
 
 #if uhu
-	import uhx.io.UriSpec;
+	//import uhx.io.UriSpec;
 #end
 
 #if (uhu && mo)
@@ -86,6 +86,10 @@ package ;
 		import uhx.http.RequestSpec;
 	#end
 #end
+
+#if (mo && ne)
+	import uhx.ne.NeSpec;
+#end
 /*import uhx.mo.MoSpec;
 
 //import haxe.Utf8Spec;
@@ -116,6 +120,25 @@ import utest.TestHandler;
 class AllTests {
 	
 	public static function main() {	
+		trace(
+		#if (js && !hxnodejs)
+		'---- Running JavaScript ----'
+		#elseif cs
+		'---- Running C# ----'
+		#elseif java
+		'---- Running Java ----'
+		#elseif python
+		'---- Running Python ----'
+		#elseif cpp
+		'---- Running C++ ----'
+		#elseif (js && hxnodejs)
+		'---- Running NodeJS ----'
+		#elseif neko
+		'---- Running Neko ----'
+		#else
+		'---- Running Unknown Target ----'
+		#end
+		);
 		var runner = new Runner();
 		
 		//runner.addCase( new ASCIISpec() );
@@ -145,7 +168,7 @@ class AllTests {
 		#end
 		
 		#if uhu
-			runner.addCase( new UriSpec() );
+			//runner.addCase( new UriSpec() );
 		#end
 		
 		// Lexer and Parser Tests
@@ -178,8 +201,12 @@ class AllTests {
 				runner.addCase( new UriLexerSpec() );
 			#end
 			
-			#if uri
+			#if (uri && !disable_uri)
 				runner.addCase( new uhx.types.UriSpec() );
+			#end
+			
+			#if ne
+				runner.addCase( new NeSpec() );
 			#end
 		#end
 		
