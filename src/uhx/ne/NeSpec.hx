@@ -160,4 +160,9 @@ class NeSpec {
 		#end
 	}
 	
+	public function testBrowser() {
+		var doc = uhx.ne.Browser.document;
+		trace( doc );
+	}
+	
 }
