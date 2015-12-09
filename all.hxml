@@ -30,7 +30,7 @@
 #-D html_select
 #-D json_select
 #-D markdown_lexer
--D html_lexer
+#-D html_lexer
 #-D css_lexer
 #-D haxe_lexer
 #-D mime_lexer
