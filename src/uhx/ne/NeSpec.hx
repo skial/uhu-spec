@@ -161,8 +161,14 @@ class NeSpec {
 	}
 	
 	public function testBrowser() {
-		var doc = uhx.ne.Browser.document;
-		trace( doc );
+		var n = uhx.ne.Browser.document.querySelector( 'body' );
+		Assert.equals( 'body', n.nodeName );
+		
+		#if js
+		var j = js.Browser.document.querySelector( 'body' );
+		Assert.equals( 'body', j.nodeName.toLowerCase() );
+		Assert.equals( j.nodeName.toLowerCase(), n.nodeName.toLowerCase() );
+		#end
 	}
 	
 }

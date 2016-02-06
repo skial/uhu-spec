@@ -28,7 +28,7 @@ class HtmlLexerSpec {
 	}
 	
 	private function parse(html:String):Array<Token<HtmlKeywords>> {
-		HtmlLexer.openTags = [];
+		//HtmlLexer.openTags = [];
 		var lexer = new HtmlLexer( ByteData.ofString( html ), 'html' );
 		var tokens = [];
 		
@@ -1176,7 +1176,7 @@ class HtmlLexerSpec {
 	}
 	
 	private static macro function macroValue() {
-		HtmlLexer.openTags = [];
+		//HtmlLexer.openTags = [];
 		var bytes = ByteData.ofString( "<doc><ul><li>One</li><li class='special'>Two</li></ul></doc>" );
 		var lexer = new HtmlLexer( bytes, 'macro-html' );
 		var tokens:Array<DOMNode> = [];
