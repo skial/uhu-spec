@@ -64,6 +64,10 @@ package ;
 	#if uri_lexer
 		import uhx.lexer.UriLexerSpec;
 	#end
+	
+	#if hxml_lexer
+		import uhx.lexer.HxmlLexerSpec;
+	#end
 #end
 
 #if (uhu && mo && detox && fisel)
@@ -207,6 +211,10 @@ class AllTests {
 			
 			#if ne
 				runner.addCase( new NeSpec() );
+			#end
+			
+			#if hxml_lexer
+				runner.addCase( new HxmlLexerSpec() );
 			#end
 		#end
 		
