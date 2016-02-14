@@ -7,7 +7,7 @@ import utest.Assert;
  * ...
  * @author Skial Bainn
  */
-class YieldSpec implements Klas {
+class YieldSpec/* implements Klas*/ {
 
 	public function new() {
 		
@@ -145,6 +145,18 @@ class YieldSpec implements Klas {
 		Assert.equals(false, fib.hasNext());
 	}
 	
+	public function testClass0() {
+		var y = new Yielder();
+		var iter = y.ifun0();
+		y.string = 'blah!';
+		Assert.isTrue( iter.hasNext() );
+		Assert.equals( 'obo', iter.next() );
+		y.string = 'bob';
+		Assert.isTrue( iter.hasNext() );
+		Assert.equals( 'bob!', iter.next() );
+		Assert.isFalse( iter.hasNext() );
+	}
+	
 	public function log(v:Dynamic) {
 		return v;
 	}
@@ -216,6 +228,28 @@ class YieldSpec implements Klas {
 			if (result > limit) break;
 			return result;
 		}
+	}
+	
+}
+
+class Yielder {
+	
+	public var string:String = 'bob';
+	public var integer:Int = 1010999;
+	public var float:Float = 0.123456789;
+	public var array:Array<String> = ['a', 'b', 'c', 'd'];
+	
+	@:generator public static function sfun0() {
+		
+	}
+	
+	public function new() {
+		
+	}
+	
+	@:generator public function ifun0() {
+		if (string != 'bob') return 'obo';
+		if (string == 'bob') return 'bob!';
 	}
 	
 }

@@ -45,4 +45,13 @@ class LodSpec {
 		Assert.equals('Hello Skial', map.get('d')[0]);
 	}
 	
+	public function testUnknown() {
+		var l = new Lod( ['sub', '-a', '1', '-b', '2', '-c', '3'] );
+		
+		var map = l.parse();
+		
+		Assert.equals( '1', map.get('a')[0] );
+		trace( map );
+	}
+	
 }

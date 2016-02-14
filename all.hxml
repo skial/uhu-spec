@@ -14,10 +14,10 @@
 #-lib seri
 -lib mo
 #-lib wait
-#-lib yield
+-lib yield
 #-lib named
 #-lib tuli
-#-lib cmd
+-lib cmd
 #-lib requests
 #-lib ajou
 ## Fisel applies `-D DISABLE_HTML_SELECT_FILTER`
@@ -47,7 +47,7 @@
 #-D trait
 
 ## Enable analyzer optimizations
--D analyzer
+#-D analyzer
 
 ## Disable features
 #-D DISABLE_HTML_SELECT_FILTER

@@ -1,5 +1,6 @@
 package uhx.sys;
 
+import haxe.ds.StringMap;
 import utest.Assert;
 import help.macro.Person;
 
@@ -49,6 +50,64 @@ class EdeSpec {
 		Assert.isFalse( peep.male );
 		Assert.isTrue( peep.female );
 		Assert.equals(25, peep.age);
+	}
+	
+	public function testSubcommands_sub1() {
+		var boss = new SubTest( ['sub1', '-n', 'skial'] );
+		
+		Assert.equals( 'skial', boss.sub1.name );
+		Assert.isNull( boss.sub2 );
+	}
+	
+	public function testSubcommands_sub1Alias() {
+		var boss = new SubTest( ['a', '-n', 'skial'] );
+		
+		Assert.equals( 'skial', boss.sub1.name );
+		Assert.isNull( boss.sub2 );
+	}
+	
+}
+
+@:cmd
+class SubTest {
+	
+	@alias('a')
+	public var sub1:Sub1;
+	
+	@alias('b')
+	public var sub2:Sub2;
+	
+	public function new(args:Array<String>) {
+		trace( args );
+		@:cmd _;
+	}
+	
+}
+
+@:cmd
+class Sub1 {
+	
+	@alias('n')
+	public var name:String;
+	
+	public function new(args:StringMap<Array<Dynamic>>) {
+		trace( args );
+		@:cmd _;
+		
+	}
+	
+}
+
+@:cmd
+class Sub2 {
+	
+	@alias('n')
+	public var name:String;
+	
+	public function new(args:StringMap<Array<Dynamic>>) {
+		trace( args );
+		@:cmd _;
+		
 	}
 	
 }
