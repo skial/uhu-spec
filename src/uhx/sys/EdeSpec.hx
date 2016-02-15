@@ -66,6 +66,15 @@ class EdeSpec {
 		Assert.isNull( boss.sub2 );
 	}
 	
+	@:access(uhx.sys.Sub3) public function testSubcommands_sub3() {
+		var boss = new SubTest( ['c', '-n', 'skial'] );
+		
+		Assert.equals( 'skial', boss.sub3.name );
+		Assert.equals( 'a', boss.sub3.a );
+		Assert.equals( 'MACRO BOOM!', boss.sub3.b );
+		Assert.isNull( boss.sub2 );
+	}
+	
 }
 
 @:cmd
@@ -77,8 +86,12 @@ class SubTest {
 	@alias('b')
 	public var sub2:Sub2;
 	
+	@alias('c')
+	public var sub3:Sub3 = Sub3.new.bind(_, 'a', var1);
+	
 	public function new(args:Array<String>) {
 		trace( args );
+		var var1 = 'MACRO BOOM!';
 		@:cmd _;
 	}
 	
@@ -107,6 +120,25 @@ class Sub2 {
 	public function new(args:StringMap<Array<Dynamic>>) {
 		trace( args );
 		@:cmd _;
+		
+	}
+	
+}
+
+@:cmd
+class Sub3 {
+	
+	@alias('n')
+	public var name:String;
+	
+	private var a:String;
+	private var b:String;
+	
+	public function new(args:StringMap<Array<Dynamic>>, a1:String, a2:String) {
+		trace( args, a1, a2 );
+		@:cmd _;
+		a = a1;
+		b = a2;
 		
 	}
 	
